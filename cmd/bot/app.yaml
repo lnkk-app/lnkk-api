@@ -1,0 +1,15 @@
+service: default
+
+runtime: go112
+instance_class: F1
+main: github.com/lnkk-ai/lnk/cmd/bot
+
+handlers:
+- url: /.*
+  script: auto
+
+env_variables:
+  PROJECT_ID: 'majord-url-shortener'
+  SERVICE_NAME: 'url-shortener'
+  INITIAL_ADMIN_TOKEN: 'xoxo-1234'
+  GIN_MODE: 'release'
