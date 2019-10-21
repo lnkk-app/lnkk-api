@@ -32,7 +32,6 @@ func main() {
 	// default endpoints that are not part of the API namespace
 	router.GET("/", a.DefaultEndpoint)
 	router.GET("/robots.txt", a.RobotsEndpoint)
-	//router.GET("/debug", a.DebugEndpoint)
 
 	// start the router on port 8080, unless ENV PORT is set to something else
 	router.Run()
