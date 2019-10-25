@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -10,7 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 
 	a "github.com/lnkk-ai/lnkk/internal/api"
-	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
 )
 
@@ -32,17 +30,10 @@ func main() {
 	router.Use(gin.Recovery())
 
 	// default endpoints that are not part of the API namespace
-	router.GET("/", defaultEndpoint)
-	router.GET("/robots.txt", a.RobotsEndpoint)
+	router.GET("/r/:uri", a.DefaultEndpoint)
 
 	// start the router on port 8080, unless ENV PORT is set to something else
 	router.Run()
-}
-
-// defaultEndpoint maps to GET /*
-func defaultEndpoint(c *gin.Context) {
-	// TODO: real implementation, logging & auditing
-	c.JSON(http.StatusOK, gin.H{"app": "bot", "vesion": api.Version, "status": "ok"})
 }
 
 func shutdown() {

@@ -11,6 +11,9 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+# other
+stuff.md
+
 # possible binaries
 cmd/bot/bot
 

@@ -1,0 +1,5 @@
+dispatch:
+  - url: "*/r/*"
+    service: url-shortener
+  #- url: "*/r/*"
+  #  service: url-shortener
