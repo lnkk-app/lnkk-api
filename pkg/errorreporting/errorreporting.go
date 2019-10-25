@@ -36,13 +36,3 @@ func Close() {
 func Report(err error) {
 	errorClient.Report(er.Entry{Error: err})
 }
-
-/*
-
-	Debug(ctx context.Context, topic, format string, args ...interface{})
-	Critical(ctx context.Context, topic, format string, args ...interface{})
-	Info(ctx context.Context, topic, format string, args ...interface{})
-	Warn(ctx context.Context, topic, format string, args ...interface{})
-	Error(ctx context.Context, topic, format string, args ...interface{})
-
-*/
