@@ -29,8 +29,10 @@ func main() {
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	router.Use(gin.Recovery())
 
+	router.POST("/sl/s", a.CmdShortenEndpoint)
+
 	// default endpoints that are not part of the API namespace
-	router.GET("/r/:uri", a.DefaultEndpoint)
+	router.GET("/r/:uri", a.RedirectEndpoint)
 
 	// start the router on port 8080, unless ENV PORT is set to something else
 	router.Run()

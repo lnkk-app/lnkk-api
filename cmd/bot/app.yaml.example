@@ -11,4 +11,7 @@ handlers:
 
 env_variables:
   PROJECT_ID: 'project_id'
+  SLACK_APP_ID: 'xoxo'
+  SLACK_CLIENT_ID: 'xoxo'
+  SLACK_CLIENT_SECRET: 'xoxo'
   GIN_MODE: 'release'

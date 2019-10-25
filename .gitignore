@@ -16,6 +16,7 @@ stuff.md
 
 # possible binaries
 cmd/bot/bot
+cmd/url/url
 
 # MAY CONTAIN SECRETS
 app.yaml
