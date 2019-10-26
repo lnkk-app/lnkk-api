@@ -8,7 +8,7 @@ import (
 	"github.com/majordomusio/commons/pkg/util"
 	"google.golang.org/appengine"
 
-	"github.com/lnkk-ai/lnkk/internal/store"
+	"github.com/lnkk-ai/lnkk/internal/backend"
 	"github.com/lnkk-ai/lnkk/internal/types"
 )
 
@@ -36,7 +36,7 @@ func CmdShortenEndpoint(c *gin.Context) {
 		Tags:      "",
 	}
 
-	err := store.CreateAsset(ctx, &asset)
+	err := backend.CreateAsset(ctx, &asset)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "msg": err.Error()})
 	}

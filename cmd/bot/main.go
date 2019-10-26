@@ -10,8 +10,17 @@ import (
 	"github.com/gin-gonic/gin"
 
 	a "github.com/lnkk-ai/lnkk/internal/api"
+
 	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
+	"github.com/lnkk-ai/lnkk/pkg/store"
+)
+
+const (
+	// SchedulerBaseURL is the prefix for all scheduller/cron tasks
+	SchedulerBaseURL string = "/_i/1/scheduler"
+	// JobsBaseURL is the prefix for all scheduled jobs
+	JobsBaseURL string = "/_i/1/jobs"
 )
 
 func main() {
@@ -35,6 +44,14 @@ func main() {
 	router.GET("/", defaultEndpoint)
 	router.GET("/robots.txt", a.RobotsEndpoint)
 
+	router.GET(SchedulerBaseURL+"/workspace", a.UpdateWorkspaces)
+	router.GET(SchedulerBaseURL+"/messages", a.CollectMessages)
+
+	// // group of internal endpoints for scheduling
+	//scheduleNS := router.Group(types.SchedulerBaseURL)
+	//scheduleNS.GET("/workspace", scheduler.UpdateWorkspaces)
+	//scheduleNS.GET("/msgs", scheduler.CollectMessages)
+
 	// start the router on port 8080, unless ENV PORT is set to something else
 	router.Run()
 }
@@ -48,6 +65,7 @@ func defaultEndpoint(c *gin.Context) {
 func shutdown() {
 	log.Printf("Shutting down ...")
 
+	store.Close()
 	errorreporting.Close()
 
 	log.Printf("... done")

@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lnkk-ai/lnkk/internal/store"
+	"github.com/lnkk-ai/lnkk/internal/backend"
 	"github.com/lnkk-ai/lnkk/internal/types"
 	"github.com/majordomusio/commons/pkg/util"
 	"google.golang.org/appengine"
@@ -23,7 +23,7 @@ func RedirectEndpoint(c *gin.Context) {
 		return
 	}
 
-	a, err := store.GetAsset(ctx, uri)
+	a, err := backend.GetAsset(ctx, uri)
 	if err != nil {
 		// TODO log this event
 		c.String(http.StatusOK, "42")
@@ -39,7 +39,7 @@ func RedirectEndpoint(c *gin.Context) {
 		AcceptLanguage: strings.ToLower(c.GetHeader("Accept-Language")),
 		Created:        util.Timestamp(),
 	}
-	store.CreateMeasurement(ctx, &m)
+	backend.CreateMeasurement(ctx, &m)
 
 	// TODO log the event
 	c.Redirect(http.StatusTemporaryRedirect, a.URL)

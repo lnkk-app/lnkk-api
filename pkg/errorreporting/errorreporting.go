@@ -27,6 +27,9 @@ func init() {
 
 // Close releases the error reporting client
 func Close() {
+	if errorClient == nil {
+		return
+	}
 	errorClient.Flush()
 	errorClient.Close()
 	errorClient = nil

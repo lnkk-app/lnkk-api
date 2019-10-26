@@ -10,6 +10,7 @@ import (
 
 	a "github.com/lnkk-ai/lnkk/internal/api"
 	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
+	"github.com/lnkk-ai/lnkk/pkg/store"
 )
 
 func main() {
@@ -41,6 +42,7 @@ func main() {
 func shutdown() {
 	log.Printf("Shutting down ...")
 
+	store.Close()
 	errorreporting.Close()
 
 	log.Printf("... done")

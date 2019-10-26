@@ -1,4 +1,4 @@
-package store
+package backend
 
 import (
 	"context"
@@ -10,25 +10,9 @@ import (
 	"github.com/lnkk-ai/lnkk/internal/types"
 	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
-	"github.com/majordomusio/commons/pkg/env"
+	s "github.com/lnkk-ai/lnkk/pkg/store"
 	"github.com/majordomusio/commons/pkg/util"
 )
-
-var dsClient *datastore.Client
-
-func init() {
-	ctx := context.Background()
-	c, err := datastore.NewClient(ctx, env.Getenv("PROJECT_ID", ""))
-	if err != nil {
-		errorreporting.Report(err)
-	}
-	dsClient = c
-}
-
-// Close does the clean-up
-func Close() {
-	dsClient.Close()
-}
 
 // AssetKey creates the datastore key for an asset
 func AssetKey(uri string) *datastore.Key {
@@ -45,7 +29,7 @@ func CreateAsset(ctx context.Context, as *types.AssetDS) error {
 	as.Created = util.Timestamp()
 
 	k := AssetKey(as.URI)
-	if _, err := dsClient.Put(ctx, k, as); err != nil {
+	if _, err := s.Client().Put(ctx, k, as); err != nil {
 		errorreporting.Report(err)
 		return err
 	}
@@ -58,7 +42,7 @@ func GetAsset(ctx context.Context, uri string) (*api.Asset, error) {
 	var as types.AssetDS
 	k := AssetKey(uri)
 
-	if err := dsClient.Get(ctx, k, &as); err != nil {
+	if err := s.Client().Get(ctx, k, &as); err != nil {
 		return nil, err
 	}
 
@@ -75,7 +59,7 @@ func CreateMeasurement(ctx context.Context, m *types.MeasurementDS) error {
 	CreateGeoLocation(ctx, m.IP)
 
 	k := datastore.IncompleteKey(types.DatastoreMeasurement, nil)
-	if _, err := dsClient.Put(ctx, k, m); err != nil {
+	if _, err := s.Client().Put(ctx, k, m); err != nil {
 		errorreporting.Report(err)
 		return err
 	}
@@ -89,7 +73,7 @@ func CreateGeoLocation(ctx context.Context, ip string) error {
 	var loc types.GeoLocationDS
 	k := GeoLocationKey(ip)
 
-	if err := dsClient.Get(ctx, k, &loc); err != nil {
+	if err := s.Client().Get(ctx, k, &loc); err != nil {
 		// assuming the location is unknown
 		l, err := lookupGeoLocation(ip)
 		if err != nil {
@@ -97,7 +81,7 @@ func CreateGeoLocation(ctx context.Context, ip string) error {
 			return err
 		}
 
-		if _, err := dsClient.Put(ctx, k, l.AsInternal()); err != nil {
+		if _, err := s.Client().Put(ctx, k, l.AsInternal()); err != nil {
 			errorreporting.Report(err)
 			return err
 		}
