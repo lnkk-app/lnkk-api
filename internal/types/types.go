@@ -1,14 +1,5 @@
 package types
 
-const (
-	// DatastoreAssets collection ASSETS
-	DatastoreAssets string = "ASSETS"
-	// DatastoreMeasurement collection MEASUREMENT
-	DatastoreMeasurement string = "MEASUREMENT"
-	// DatastoreGeoLocation collection GEO_LOCATION
-	DatastoreGeoLocation string = "GEO_LOCATION"
-)
-
 type (
 	// AssetDS is the interal structure used to store assets
 	AssetDS struct {

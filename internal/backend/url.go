@@ -16,12 +16,12 @@ import (
 
 // AssetKey creates the datastore key for an asset
 func AssetKey(uri string) *datastore.Key {
-	return datastore.NameKey(types.DatastoreAssets, uri, nil)
+	return datastore.NameKey(DatastoreAssets, uri, nil)
 }
 
 // GeoLocationKey creates the datastore key for a geolocation
 func GeoLocationKey(ip string) *datastore.Key {
-	return datastore.NameKey(types.DatastoreGeoLocation, ip, nil)
+	return datastore.NameKey(DatastoreGeoLocations, ip, nil)
 }
 
 // CreateAsset stores an asset in the Datastore
@@ -58,7 +58,7 @@ func CreateMeasurement(ctx context.Context, m *types.MeasurementDS) error {
 	// TODO: use a queue here, go routine will not work !
 	CreateGeoLocation(ctx, m.IP)
 
-	k := datastore.IncompleteKey(types.DatastoreMeasurement, nil)
+	k := datastore.IncompleteKey(DatastoreMeasurements, nil)
 	if _, err := s.Client().Put(ctx, k, m); err != nil {
 		errorreporting.Report(err)
 		return err
