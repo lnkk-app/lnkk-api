@@ -6,11 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lnkk-ai/lnkk/internal/backend"
 	"github.com/lnkk-ai/lnkk/pkg/api"
-	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
-	"github.com/lnkk-ai/lnkk/pkg/logger"
 	"github.com/lnkk-ai/lnkk/pkg/slack"
-	"github.com/lnkk-ai/lnkk/pkg/tasks"
 	"github.com/majordomusio/commons/pkg/env"
+	"github.com/majordomusio/platform/pkg/errorreporting"
+	"github.com/majordomusio/platform/pkg/logger"
+	"github.com/majordomusio/platform/pkg/tasks"
 	"google.golang.org/appengine"
 )
 

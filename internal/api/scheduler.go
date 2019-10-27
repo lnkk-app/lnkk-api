@@ -8,10 +8,10 @@ import (
 	"google.golang.org/appengine"
 
 	"github.com/lnkk-ai/lnkk/pkg/api"
-	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
-	"github.com/lnkk-ai/lnkk/pkg/logger"
-	"github.com/lnkk-ai/lnkk/pkg/store"
-	"github.com/lnkk-ai/lnkk/pkg/tasks"
+	"github.com/majordomusio/platform/pkg/errorreporting"
+	"github.com/majordomusio/platform/pkg/logger"
+	"github.com/majordomusio/platform/pkg/store"
+	"github.com/majordomusio/platform/pkg/tasks"
 
 	"github.com/lnkk-ai/lnkk/internal/backend"
 	"github.com/lnkk-ai/lnkk/internal/types"

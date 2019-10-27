@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/lnkk-ai/lnkk/internal/types"
-	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
-	"github.com/lnkk-ai/lnkk/pkg/store"
+	"github.com/majordomusio/platform/pkg/errorreporting"
+	"github.com/majordomusio/platform/pkg/store"
 	"github.com/majordomusio/commons/pkg/util"
 	"google.golang.org/appengine/memcache"
 )

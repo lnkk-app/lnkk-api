@@ -9,8 +9,8 @@ import (
 
 	"github.com/lnkk-ai/lnkk/internal/types"
 	"github.com/lnkk-ai/lnkk/pkg/api"
-	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
-	s "github.com/lnkk-ai/lnkk/pkg/store"
+	"github.com/majordomusio/platform/pkg/errorreporting"
+	s "github.com/majordomusio/platform/pkg/store"
 	"github.com/majordomusio/commons/pkg/util"
 )
 

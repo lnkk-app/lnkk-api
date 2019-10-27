@@ -4,8 +4,8 @@ import (
 	"cloud.google.com/go/datastore"
 	"golang.org/x/net/context"
 
-	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
-	"github.com/lnkk-ai/lnkk/pkg/store"
+	"github.com/majordomusio/platform/pkg/errorreporting"
+	"github.com/majordomusio/platform/pkg/store"
 	"github.com/majordomusio/commons/pkg/util"
 )
 
