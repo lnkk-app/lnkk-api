@@ -31,13 +31,11 @@ func UpdateWorkspaces(c *gin.Context) {
 	if err == nil {
 		for i := range workspaces {
 
-			//job.ScheduleJob(ctx, backend.BackgroundWorkQueue, types.JobsBaseURL+"/workspace?id="+workspaces[i].ID)
-			//job.ScheduleJob(ctx, backend.BackgroundWorkQueue, types.JobsBaseURL+"/users?id="+workspaces[i].ID)
+			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/users?id="+workspaces[i].ID)
 			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/channels?id="+workspaces[i].ID)
 
 			backend.MarkWorkspaceUpdated(ctx, workspaces[i].ID)
 			logger.Info(topic, "workspace=%s", workspaces[i].ID)
-
 		}
 	} else {
 		errorreporting.Report(err)

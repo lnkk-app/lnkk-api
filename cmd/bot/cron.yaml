@@ -6,5 +6,5 @@ cron:
 
 - description: "Periodically schedule message crawling"
   url: /_i/1/scheduler/messages
-  schedule: every 60 minutes
+  schedule: every 120 minutes
   target: default

@@ -48,11 +48,8 @@ func main() {
 
 	// jobs endpoints, used by the taskqueue
 	router.POST(api.JobsBaseURL+"/channels", jobs.UpdateChannelsJob)
+	router.POST(api.JobsBaseURL+"/users", jobs.UpdateUsersJob)
 
-	// group of internal endpoints for jobs
-	//jobsNS := router.Group(types.JobsBaseURL)
-	//jobsNS.POST("/workspace", jobs.UpdateWorkspaceJob)
-	//jobsNS.POST("/channels", jobs.UpdateChannelsJob)
 	//jobsNS.POST("/msgs", jobs.CollectMessagesJob)
 
 	// start the router on port 8080, unless ENV PORT is set to something else

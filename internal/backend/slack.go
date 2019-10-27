@@ -148,3 +148,39 @@ func UpdateChannel(ctx context.Context, id, team, name, topic, purpose string, a
 	_, err = store.Client().Put(ctx, key, &channel)
 	return err
 }
+
+// UpdateUser updates the user metadata
+func UpdateUser(ctx context.Context, id, team, name, realName, firstName, lastName, email string, deleted, bot bool) error {
+
+	var user = types.User{}
+	key := UserKey(id, team)
+	err := store.Client().Get(ctx, key, &user)
+
+	if err == nil {
+		user.Name = name
+		user.RealName = realName
+		user.FirstName = firstName
+		user.LastName = lastName
+		user.EMail = email
+		user.IsDeleted = deleted
+		user.IsBot = bot
+		user.Updated = util.Timestamp()
+	} else {
+		user = types.User{
+			ID:        id,
+			TeamID:    team,
+			Name:      name,
+			RealName:  realName,
+			FirstName: firstName,
+			LastName:  lastName,
+			EMail:     email,
+			IsDeleted: deleted,
+			IsBot:     bot,
+			Created:   util.Timestamp(),
+			Updated:   util.Timestamp(),
+		}
+	}
+
+	_, err = store.Client().Put(ctx, key, &user)
+	return err
+}

@@ -44,13 +44,11 @@ func AuthEndpoint(c *gin.Context) {
 			backend.UpdateWorkspace(ctx, resp.TeamID, resp.TeamName)
 
 			// schedule the first update of the new workspace
-			//job.ScheduleJob(ctx, backend.BackgroundWorkQueue, types.JobsBaseURL+"/workspace?id="+resp.TeamID)
-			//job.ScheduleJob(ctx, backend.BackgroundWorkQueue, types.JobsBaseURL+"/users?id="+resp.TeamID)
+			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/users?id="+resp.TeamID)
 			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/channels?id="+resp.TeamID)
 
 			backend.MarkWorkspaceUpdated(ctx, resp.TeamID)
-
-			logger.Info(topic, "id=%s, name=%s", resp.TeamID, resp.TeamName)
+			logger.Info(topic, "workspace=%s", resp.TeamID)
 		}
 	}
 
