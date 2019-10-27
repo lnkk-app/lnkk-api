@@ -1,10 +1,10 @@
 cron:
 - description: "Periodically update workspace metadata"
   url: /_i/1/scheduler/workspace
-  schedule: every 30 minutes
+  schedule: every 120 minutes
   target: default
 
 - description: "Periodically schedule message crawling"
   url: /_i/1/scheduler/messages
-  schedule: every 30 minutes
+  schedule: every 60 minutes
   target: default

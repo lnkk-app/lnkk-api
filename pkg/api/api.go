@@ -7,6 +7,15 @@ const (
 	Version string = "1.0"
 )
 
+const (
+	// BotBaseURL is the prefix for all public API endpoints
+	BotBaseURL string = "/a/1"
+	// SchedulerBaseURL is the prefix for all scheduller/cron tasks
+	SchedulerBaseURL string = "/_i/1/scheduler"
+	// JobsBaseURL is the prefix for all scheduled jobs
+	JobsBaseURL string = "/_i/1/jobs"
+)
+
 type (
 	// Asset is the basic entity used in the shortener
 	Asset struct {

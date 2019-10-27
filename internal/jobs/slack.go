@@ -1,5 +1,22 @@
 package jobs
 
+import (
+	"fmt"
+
+	"google.golang.org/appengine"
+
+	"github.com/gin-gonic/gin"
+
+	"github.com/lnkk-ai/lnkk/pkg/api"
+	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
+	"github.com/lnkk-ai/lnkk/pkg/job"
+	"github.com/lnkk-ai/lnkk/pkg/logger"
+	"github.com/lnkk-ai/lnkk/pkg/metrics"
+	"github.com/lnkk-ai/lnkk/pkg/slack"
+
+	"github.com/lnkk-ai/lnkk/internal/backend"
+)
+
 /*
 
 
@@ -60,15 +77,18 @@ func UpdateUsersJob(c *gin.Context) {
 	}
 }
 
+*/
+
 // UpdateChannelsJob updates the workspace metadata periodically
 func UpdateChannelsJob(c *gin.Context) {
+	topic := "jobs.update.channels"
 	ctx := appengine.NewContext(c.Request)
 
 	id := c.Query("id")
 	cursor := c.Query("cursor")
 	auth := backend.GetAuthToken(ctx, id)
 
-	logger.Info(ctx, "jobs.update.channels", "workspace=%s", id)
+	logger.Info(topic, "workspace=%s", id)
 
 	// update the list of channels
 	channels, err := slack.ChannelsList(ctx, auth, cursor)
@@ -76,33 +96,31 @@ func UpdateChannelsJob(c *gin.Context) {
 
 		if channels.OK {
 
-			logger.Info(ctx, "jobs.update.channels", "channels=%d", len(channels.Channels))
+			logger.Info(topic, "channels=%d", len(channels.Channels))
 			metrics.Count(ctx, "jobs.update.channels", id, len(channels.Channels))
 
 			for i := range channels.Channels {
 				err := backend.UpdateChannel(ctx, channels.Channels[i].ID, id, channels.Channels[i].Name, channels.Channels[i].Topic.Value, channels.Channels[i].Purpose.Value, channels.Channels[i].IsArchived, channels.Channels[i].IsPrivate, false)
 
 				if err != nil {
-					logger.Error(ctx, "jobs.update.channels", err.Error())
+					errorreporting.Report(err)
 				} else {
-					logger.Info(ctx, "jobs.update.channels", "channel=%s", channels.Channels[i].ID)
+					logger.Info(topic, "channel=%s", channels.Channels[i].ID)
 				}
 			}
 
 			nextCursor := channels.ResponseMetadata["next_cursor"]
 			if nextCursor != "" {
 				// there is more data, schedule its retrieval
-				job.ScheduleJob(ctx, backend.BackgroundWorkQueue, fmt.Sprintf(types.JobsBaseURL+"/channels?id=%v&cursor=%v", id, nextCursor))
-				logger.Info(ctx, "jobs.update.channels", "next=%s", nextCursor)
+				job.ScheduleJob(ctx, backend.BackgroundWorkQueue, fmt.Sprintf(api.JobsBaseURL+"/channels?id=%v&cursor=%v", id, nextCursor))
+				logger.Info(topic, "next=%s", nextCursor)
 			}
 		} else {
 			// Slack API returned an error
-			logger.Critical(ctx, "jobs.update.channels", "status=%s", channels.Error)
+			logger.Critical(topic, "status=%s", channels.Error)
 		}
 
 	} else {
-		logger.Error(ctx, "jobs.update.channels", err.Error())
+		errorreporting.Report(err)
 	}
 }
-
-*/

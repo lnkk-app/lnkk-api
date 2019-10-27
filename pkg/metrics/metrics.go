@@ -4,7 +4,7 @@ import (
 	"cloud.google.com/go/datastore"
 	"golang.org/x/net/context"
 
-	"github.com/lnkk-ai/lnkk/pkg/logger"
+	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
 	"github.com/lnkk-ai/lnkk/pkg/store"
 	"github.com/majordomusio/commons/pkg/util"
 )
@@ -44,6 +44,6 @@ func Count(ctx context.Context, topic, label string, value int) {
 	_, err := store.Client().Put(ctx, key, &m)
 
 	if err != nil {
-		logger.Error(ctx, "metrics.count", err.Error())
+		errorreporting.Report(err)
 	}
 }

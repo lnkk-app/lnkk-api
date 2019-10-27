@@ -9,6 +9,16 @@ const (
 	DatastoreGeoLocations string = "GEO_LOCATIONS"
 	// DatastoreAuthorizations collection AUTHORIZATION
 	DatastoreAuthorizations string = "AUTHORIZATIONS"
+	// DatastoreWorkspaces collection WORKSPACES
+	DatastoreWorkspaces string = "WORKSPACES"
+	// DatastoreUsers collection USERS
+	DatastoreUsers string = "USERS"
+	// DatastoreChannels collection CHANNELS
+	DatastoreChannels string = "CHANNELS"
+	// DatastoreMessages collection of messages
+	DatastoreMessages string = "MESSAGES"
+	// DatastoreAttachments collection of message attachments
+	DatastoreAttachments string = "ATTACHMENTS"
 
 	// BackgroundWorkQueue is the default background job queue
 	BackgroundWorkQueue string = "background-work"

@@ -10,19 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 
 	a "github.com/lnkk-ai/lnkk/internal/api"
+	"github.com/lnkk-ai/lnkk/internal/jobs"
 
 	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
 	"github.com/lnkk-ai/lnkk/pkg/store"
-)
-
-const (
-	// BotBaseURL is the prefix for all public API endpoints
-	BotBaseURL string = "/a/1"
-	// SchedulerBaseURL is the prefix for all scheduller/cron tasks
-	SchedulerBaseURL string = "/_i/1/scheduler"
-	// JobsBaseURL is the prefix for all scheduled jobs
-	JobsBaseURL string = "/_i/1/jobs"
 )
 
 func main() {
@@ -50,13 +42,18 @@ func main() {
 	router.GET("/auth", a.AuthEndpoint)
 
 	// scheduler endpoints
-	router.GET(SchedulerBaseURL+"/workspace", a.UpdateWorkspaces)
-	router.GET(SchedulerBaseURL+"/messages", a.CollectMessages)
+	router.GET(api.SchedulerBaseURL+"/workspace", a.UpdateWorkspaces)
+	router.GET(api.SchedulerBaseURL+"/messages", a.CollectMessages)
 
-	// // group of internal endpoints for scheduling
-	//scheduleNS := router.Group(types.SchedulerBaseURL)
-	//scheduleNS.GET("/workspace", scheduler.UpdateWorkspaces)
-	//scheduleNS.GET("/msgs", scheduler.CollectMessages)
+	// jobs endpoints, used by the taskqueue
+	router.POST(api.JobsBaseURL+"/channels", jobs.UpdateChannelsJob)
+
+	// group of internal endpoints for jobs
+	//jobsNS := router.Group(types.JobsBaseURL)
+	//jobsNS.POST("/workspace", jobs.UpdateWorkspaceJob)
+	//jobsNS.POST("/users", jobs.UpdateUsersJob)
+	//jobsNS.POST("/channels", jobs.UpdateChannelsJob)
+	//jobsNS.POST("/msgs", jobs.CollectMessagesJob)
 
 	// start the router on port 8080, unless ENV PORT is set to something else
 	router.Run()

@@ -1,9 +1,11 @@
-package jobs
+package job
 
 import (
 	"golang.org/x/net/context"
+	"google.golang.org/appengine/taskqueue"
 
 	"cloud.google.com/go/datastore"
+	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
 	"github.com/lnkk-ai/lnkk/pkg/store"
 )
 
@@ -50,14 +52,11 @@ func UpdateLastRun(ctx context.Context, name string, ts int64) error {
 	return err
 }
 
-/*
-
 // ScheduleJob creates a background job
 func ScheduleJob(ctx context.Context, q, req string) {
 	t := taskqueue.NewPOSTTask(req, nil)
 	_, err := taskqueue.Add(ctx, t, q)
 	if err != nil {
-		logger.Error(ctx, "schedule.jobs", err.Error())
+		errorreporting.Report(err)
 	}
 }
-*/

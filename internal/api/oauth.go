@@ -5,7 +5,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/lnkk-ai/lnkk/internal/backend"
+	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
+	"github.com/lnkk-ai/lnkk/pkg/job"
 	"github.com/lnkk-ai/lnkk/pkg/logger"
 	"github.com/lnkk-ai/lnkk/pkg/slack"
 	"google.golang.org/appengine"
@@ -38,12 +40,12 @@ func AuthEndpoint(c *gin.Context) {
 
 			// FIXME error handling ?
 			backend.UpdateAuthorization(ctx, resp.TeamID, resp.TeamName, resp.AccessToken, resp.Scope, resp.AuthorizingUser.UserID, resp.InstallerUser.UserID)
-			//backend.UpdateWorkspace(ctx, resp.TeamID, resp.TeamName)
+			backend.UpdateWorkspace(ctx, resp.TeamID, resp.TeamName)
 
 			// schedule the first update of the new workspace
 			//job.ScheduleJob(ctx, backend.BackgroundWorkQueue, types.JobsBaseURL+"/workspace?id="+resp.TeamID)
 			//job.ScheduleJob(ctx, backend.BackgroundWorkQueue, types.JobsBaseURL+"/users?id="+resp.TeamID)
-			//job.ScheduleJob(ctx, backend.BackgroundWorkQueue, types.JobsBaseURL+"/channels?id="+resp.TeamID)
+			job.ScheduleJob(ctx, backend.BackgroundWorkQueue, api.JobsBaseURL+"/channels?id="+resp.TeamID)
 
 			//backend.MarkWorkspaceUpdated(ctx, resp.TeamID)
 
