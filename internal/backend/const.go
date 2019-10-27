@@ -23,11 +23,11 @@ const (
 	// BackgroundWorkQueue is the default background job queue
 	BackgroundWorkQueue string = "background-work"
 	// DefaultCacheDuration default time to keep stuff in memory
-	DefaultCacheDuration string = "10m"
+	DefaultCacheDuration string = "15m"
 	// DefaultCrawlerBatchSize number of messages per crawl
 	DefaultCrawlerBatchSize int = 20
 	// DefaultCrawlerSchedule default time between crawls in seconds
-	DefaultCrawlerSchedule int = 600
+	DefaultCrawlerSchedule int = 7200
 	// DefaultUpdateSchedule default time between workspace updates in seconds
-	DefaultUpdateSchedule int = 6000
+	DefaultUpdateSchedule int = 7200
 )

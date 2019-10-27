@@ -18,8 +18,8 @@ type taskDS struct {
 	LastRun int64
 }
 
-// LastRun retrieves the timestamp a task has last run
-func LastRun(ctx context.Context, name string) int64 {
+// Last retrieves the timestamp a task has last run
+func Last(ctx context.Context, name string) int64 {
 	key := datastore.NameKey(datastoreTasks, name, nil)
 	var task taskDS
 
@@ -30,8 +30,8 @@ func LastRun(ctx context.Context, name string) int64 {
 	return task.LastRun
 }
 
-// UpdateLastRun updates the task with a timestamp when it has last run
-func UpdateLastRun(ctx context.Context, name string, ts int64) error {
+// Update updates the task with a timestamp when it has last run
+func Update(ctx context.Context, name string, ts int64) error {
 	key := datastore.NameKey(datastoreTasks, name, nil)
 	var task taskDS
 

@@ -27,7 +27,7 @@ func UpdateWorkspaces(c *gin.Context) {
 	now := util.Timestamp()
 	var workspaces []types.WorkspaceDS
 
-	q := datastore.NewQuery(backend.DatastoreWorkspaces).Filter("NextUpdate <", now)
+	q := datastore.NewQuery(backend.DatastoreWorkspaces).Filter("Next <", now)
 	_, err := store.Client().GetAll(ctx, q, &workspaces)
 
 	if err == nil {
@@ -47,13 +47,13 @@ func UpdateWorkspaces(c *gin.Context) {
 
 // CollectMessages schedules the collection of messages in a given team & channel
 func CollectMessages(c *gin.Context) {
-	topic := "scheduler.update.messages"
+	topic := "scheduler.collect.messages"
 	ctx := appengine.NewContext(c.Request)
 
 	now := util.Timestamp()
 	var channels []types.ChannelDS
 
-	q := datastore.NewQuery(backend.DatastoreChannels).Filter("NextUpdate <", now)
+	q := datastore.NewQuery(backend.DatastoreChannels).Filter("Next <", now)
 	_, err := store.Client().GetAll(ctx, q, &channels)
 
 	if err == nil {

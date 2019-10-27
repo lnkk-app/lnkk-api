@@ -10,8 +10,9 @@ type (
 		Scope           string
 		AuthorizingUser string
 		InstallerUser   string
-		Created         int64
-		Updated         int64
+		// Internal
+		Created int64
+		Updated int64
 	}
 
 	// WorkspaceDS basic workspace metadata
@@ -19,7 +20,7 @@ type (
 		ID   string `json:"id"`
 		Name string `json:"name"`
 		// Scheduler
-		NextUpdate     int64 `json:"-"` // scheduled time of the next crawl
+		Next           int64 `json:"-"` // scheduled time of the next crawl
 		UpdateSchedule int   `json:"-"` // interval, in seconds
 		// Internal
 		Created int64 `json:"-"`
@@ -56,15 +57,15 @@ type (
 		IsDeleted  bool   `json:"deleted"`
 		// Scheduler
 		Latest          int64 `json:"-"` // ts of the last message crawl
-		NextCrawl       int64 `json:"-"` // scheduled time of the next crawl
+		Next            int64 `json:"-"` // scheduled time of the next crawl
 		CrawlerSchedule int   `json:"-"` // interval, in seconds
 		// Internal
 		Created int64 `json:"-"` // ts this record was created
 		Updated int64 `json:"-"` // ts this record was last updated
 	}
 
-	// Message holds slack messages
-	Message struct {
+	// MessageDS holds slack messages
+	MessageDS struct {
 		ChannelID       string
 		TeamID          string
 		User            string
@@ -76,8 +77,8 @@ type (
 		Updated int64 // ts this record was last updated
 	}
 
-	// Attachment related to messages
-	Attachment struct {
+	// AttachmentDS related to messages
+	AttachmentDS struct {
 		MessageID string
 		ChannelID string
 		TeamID    string
@@ -87,21 +88,5 @@ type (
 		// Internal
 		Created int64 // ts this record was created
 		Updated int64 // ts this record was last updated
-	}
-
-	// ArchivedMessage is the body of a message
-	ArchivedMessage struct {
-		Text           string                      `json:"text,omitempty"`
-		User           string                      `json:"user,omitempty"`
-		Created        string                      `json:"created,omitempty"`
-		Timestamp      int64                       `json:"ts,omitempty"`
-		HasAttachments bool                        `json:"has_attachments"`
-		Attachments    []ArchivedMessageAttachment `json:"attachments,omitempty"`
-	}
-
-	// ArchivedMessageAttachment holds the metadata of an attachment
-	ArchivedMessageAttachment struct {
-		Text         string `json:"text,omitempty"`
-		FallbackText string `json:"fallback_text,omitempty"`
 	}
 )
