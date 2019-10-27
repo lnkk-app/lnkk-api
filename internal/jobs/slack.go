@@ -9,10 +9,10 @@ import (
 
 	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
-	"github.com/lnkk-ai/lnkk/pkg/job"
 	"github.com/lnkk-ai/lnkk/pkg/logger"
 	"github.com/lnkk-ai/lnkk/pkg/metrics"
 	"github.com/lnkk-ai/lnkk/pkg/slack"
+	"github.com/lnkk-ai/lnkk/pkg/tasks"
 
 	"github.com/lnkk-ai/lnkk/internal/backend"
 )
@@ -86,41 +86,40 @@ func UpdateChannelsJob(c *gin.Context) {
 
 	id := c.Query("id")
 	cursor := c.Query("cursor")
-	auth := backend.GetAuthToken(ctx, id)
+
+	auth, err := backend.GetAuthToken(ctx, id)
+	if err != nil {
+		errorreporting.Report(err)
+		return
+	}
 
 	logger.Info(topic, "workspace=%s", id)
 
 	// update the list of channels
 	channels, err := slack.ChannelsList(ctx, auth, cursor)
-	if err == nil {
-
-		if channels.OK {
-
-			logger.Info(topic, "channels=%d", len(channels.Channels))
-			metrics.Count(ctx, "jobs.update.channels", id, len(channels.Channels))
-
-			for i := range channels.Channels {
-				err := backend.UpdateChannel(ctx, channels.Channels[i].ID, id, channels.Channels[i].Name, channels.Channels[i].Topic.Value, channels.Channels[i].Purpose.Value, channels.Channels[i].IsArchived, channels.Channels[i].IsPrivate, false)
-
-				if err != nil {
-					errorreporting.Report(err)
-				} else {
-					logger.Info(topic, "channel=%s", channels.Channels[i].ID)
-				}
-			}
-
-			nextCursor := channels.ResponseMetadata["next_cursor"]
-			if nextCursor != "" {
-				// there is more data, schedule its retrieval
-				job.ScheduleJob(ctx, backend.BackgroundWorkQueue, fmt.Sprintf(api.JobsBaseURL+"/channels?id=%v&cursor=%v", id, nextCursor))
-				logger.Info(topic, "next=%s", nextCursor)
-			}
-		} else {
-			// Slack API returned an error
-			logger.Critical(topic, "status=%s", channels.Error)
-		}
-
-	} else {
+	if err != nil {
 		errorreporting.Report(err)
+		return
 	}
+
+	logger.Info(topic, "channels=%d", len(channels.Channels))
+	metrics.Count(ctx, "jobs.slack.update.channels", id, len(channels.Channels))
+
+	for i := range channels.Channels {
+		err := backend.UpdateChannel(ctx, channels.Channels[i].ID, id, channels.Channels[i].Name, channels.Channels[i].Topic.Value, channels.Channels[i].Purpose.Value, channels.Channels[i].IsArchived, channels.Channels[i].IsPrivate, false)
+
+		if err != nil {
+			errorreporting.Report(err)
+		} else {
+			logger.Info(topic, "channel=%s", channels.Channels[i].ID)
+		}
+	}
+
+	nextCursor := channels.ResponseMetadata["next_cursor"]
+	if nextCursor != "" {
+		// there is more data, schedule its retrieval
+		tasks.Schedule(ctx, backend.BackgroundWorkQueue, fmt.Sprintf(api.JobsBaseURL+"/channels?id=%v&cursor=%v", id, nextCursor))
+		logger.Info(topic, "next=%s", nextCursor)
+	}
+
 }

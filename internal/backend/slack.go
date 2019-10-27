@@ -2,16 +2,18 @@ package backend
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/lnkk-ai/lnkk/internal/types"
+	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
 	"github.com/lnkk-ai/lnkk/pkg/store"
 	"github.com/majordomusio/commons/pkg/util"
 	"google.golang.org/appengine/memcache"
 )
 
 // GetAuthorization returns the authorization granted for a workspace
-func GetAuthorization(ctx context.Context, id string) *types.AuthorizationDS {
+func GetAuthorization(ctx context.Context, id string) (*types.AuthorizationDS, error) {
 	var auth = types.AuthorizationDS{}
 	key := "workspace.auth" + id
 	_, err := memcache.Gob.Get(ctx, key, &auth)
@@ -25,20 +27,23 @@ func GetAuthorization(ctx context.Context, id string) *types.AuthorizationDS {
 			cache.Expiration, _ = time.ParseDuration(DefaultCacheDuration)
 			memcache.Gob.Set(ctx, &cache)
 		} else {
-			return nil
+			return nil, err
 		}
 	}
 
-	return &auth
+	return &auth, nil
 }
 
 // GetAuthToken returns the oauth token of the workspace
-func GetAuthToken(ctx context.Context, id string) string {
-	auth := GetAuthorization(ctx, id)
-	if auth != nil {
-		return auth.AccessToken
+func GetAuthToken(ctx context.Context, id string) (string, error) {
+	auth, err := GetAuthorization(ctx, id)
+	if err != nil {
+		return "", err
 	}
-	return ""
+	if auth == nil {
+		return "", errorreporting.New(fmt.Sprintf("No authorization token for workspace '%s'", id))
+	}
+	return auth.AccessToken, nil
 }
 
 // UpdateAuthorization updates the authorization, or creates a new one.

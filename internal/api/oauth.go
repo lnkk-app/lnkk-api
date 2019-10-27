@@ -7,9 +7,10 @@ import (
 	"github.com/lnkk-ai/lnkk/internal/backend"
 	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
-	"github.com/lnkk-ai/lnkk/pkg/job"
 	"github.com/lnkk-ai/lnkk/pkg/logger"
 	"github.com/lnkk-ai/lnkk/pkg/slack"
+	"github.com/lnkk-ai/lnkk/pkg/tasks"
+	"github.com/majordomusio/commons/pkg/env"
 	"google.golang.org/appengine"
 )
 
@@ -45,9 +46,9 @@ func AuthEndpoint(c *gin.Context) {
 			// schedule the first update of the new workspace
 			//job.ScheduleJob(ctx, backend.BackgroundWorkQueue, types.JobsBaseURL+"/workspace?id="+resp.TeamID)
 			//job.ScheduleJob(ctx, backend.BackgroundWorkQueue, types.JobsBaseURL+"/users?id="+resp.TeamID)
-			job.ScheduleJob(ctx, backend.BackgroundWorkQueue, api.JobsBaseURL+"/channels?id="+resp.TeamID)
+			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/channels?id="+resp.TeamID)
 
-			//backend.MarkWorkspaceUpdated(ctx, resp.TeamID)
+			backend.MarkWorkspaceUpdated(ctx, resp.TeamID)
 
 			logger.Info(topic, "id=%s, name=%s", resp.TeamID, resp.TeamName)
 		}

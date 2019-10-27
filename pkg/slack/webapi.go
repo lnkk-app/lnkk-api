@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"golang.org/x/net/context"
-	"google.golang.org/appengine/urlfetch"
 )
 
 // PostRequest is used to invoke a Slack Web API method by posting a JSON payload
@@ -27,7 +26,8 @@ func GetRequest(ctx context.Context, token, apiMethod, query string, response in
 	req.Header.Set("Authorization", "Bearer "+token)
 
 	// post the request to Slack
-	client := urlfetch.Client(ctx)
+	//client := urlfetch.Client(ctx)
+	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		return err
@@ -57,7 +57,8 @@ func post(ctx context.Context, token, url string, body interface{}) (*StandardRe
 	req.Header.Set("Authorization", "Bearer "+token)
 
 	// post the request to Slack
-	client := urlfetch.Client(ctx)
+	//client := urlfetch.Client(ctx)
+	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err

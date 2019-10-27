@@ -11,4 +11,6 @@ handlers:
 
 env_variables:
   PROJECT_ID: 'project_id'
+  LOCATION_ID: 'location_id'
+  BASE_URL: 'https://...'
   GIN_MODE: 'release'

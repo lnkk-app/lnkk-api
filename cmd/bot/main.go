@@ -15,6 +15,7 @@ import (
 	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
 	"github.com/lnkk-ai/lnkk/pkg/store"
+	"github.com/lnkk-ai/lnkk/pkg/tasks"
 )
 
 func main() {
@@ -51,7 +52,6 @@ func main() {
 	// group of internal endpoints for jobs
 	//jobsNS := router.Group(types.JobsBaseURL)
 	//jobsNS.POST("/workspace", jobs.UpdateWorkspaceJob)
-	//jobsNS.POST("/users", jobs.UpdateUsersJob)
 	//jobsNS.POST("/channels", jobs.UpdateChannelsJob)
 	//jobsNS.POST("/msgs", jobs.CollectMessagesJob)
 
@@ -70,6 +70,7 @@ func shutdown() {
 
 	store.Close()
 	errorreporting.Close()
+	tasks.Close()
 
 	log.Printf("... done")
 }

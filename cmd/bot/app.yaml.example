@@ -11,6 +11,8 @@ handlers:
 
 env_variables:
   PROJECT_ID: 'project_id'
+  LOCATION_ID: 'location_id'
+  BASE_URL: 'https://...'
   SLACK_APP_ID: 'xoxo'
   SLACK_CLIENT_ID: 'xoxo'
   SLACK_CLIENT_SECRET: 'xoxo'

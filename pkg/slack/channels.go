@@ -9,6 +9,7 @@ import (
 // ChannelsList lists all channels in a Slack team
 // See https://api.slack.com/methods/channels.list
 func ChannelsList(ctx context.Context, token, cursor string) (*ChannelsListResponse, error) {
+	cmd := "channels.list"
 	var q string
 
 	if cursor != "" {
@@ -16,10 +17,14 @@ func ChannelsList(ctx context.Context, token, cursor string) (*ChannelsListRespo
 	}
 
 	var resp ChannelsListResponse
-	err := GetRequest(ctx, token, "channels.list", q, &resp)
+	err := GetRequest(ctx, token, cmd, q, &resp)
 
 	if err != nil {
 		return nil, err
+	}
+
+	if !resp.OK {
+		return nil, newError(cmd, resp.Error)
 	}
 
 	return &resp, nil
@@ -28,13 +33,18 @@ func ChannelsList(ctx context.Context, token, cursor string) (*ChannelsListRespo
 // ChannelsInfo gets information about a channel
 // See https://api.slack.com/methods/channels.info
 func ChannelsInfo(ctx context.Context, token, channelID string) (*ChannelsInfoResponse, error) {
+	cmd := "channels.info"
 	q := "channel=" + channelID
 
 	var resp ChannelsInfoResponse
-	err := GetRequest(ctx, token, "channels.info", q, &resp)
+	err := GetRequest(ctx, token, cmd, q, &resp)
 
 	if err != nil {
 		return nil, err
+	}
+
+	if !resp.OK {
+		return nil, newError(cmd, resp.Error)
 	}
 
 	return &resp, nil
@@ -46,6 +56,7 @@ func ChannelsInfo(ctx context.Context, token, channelID string) (*ChannelsInfoRe
 // In case a timeframe is specified, the first parameter represents the
 // newest message, the second the oldest message to include.
 func ChannelsHistory(ctx context.Context, token, channelID string, count int, t ...string) (*ChannelsHistoryResponse, error) {
+	cmd := "channels.history"
 	var q string
 
 	if len(t) == 0 {
@@ -57,10 +68,14 @@ func ChannelsHistory(ctx context.Context, token, channelID string, count int, t 
 	}
 
 	var resp ChannelsHistoryResponse
-	err := GetRequest(ctx, token, "channels.history", q, &resp)
+	err := GetRequest(ctx, token, cmd, q, &resp)
 
 	if err != nil {
 		return nil, err
+	}
+
+	if !resp.OK {
+		return nil, newError(cmd, resp.Error)
 	}
 
 	return &resp, nil

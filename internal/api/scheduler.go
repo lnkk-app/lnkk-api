@@ -3,14 +3,15 @@ package api
 import (
 	"cloud.google.com/go/datastore"
 	"github.com/gin-gonic/gin"
+	"github.com/majordomusio/commons/pkg/env"
 	"github.com/majordomusio/commons/pkg/util"
 	"google.golang.org/appengine"
 
 	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/lnkk-ai/lnkk/pkg/errorreporting"
-	"github.com/lnkk-ai/lnkk/pkg/job"
 	"github.com/lnkk-ai/lnkk/pkg/logger"
 	"github.com/lnkk-ai/lnkk/pkg/store"
+	"github.com/lnkk-ai/lnkk/pkg/tasks"
 
 	"github.com/lnkk-ai/lnkk/internal/backend"
 	"github.com/lnkk-ai/lnkk/internal/types"
@@ -32,7 +33,7 @@ func UpdateWorkspaces(c *gin.Context) {
 
 			//job.ScheduleJob(ctx, backend.BackgroundWorkQueue, types.JobsBaseURL+"/workspace?id="+workspaces[i].ID)
 			//job.ScheduleJob(ctx, backend.BackgroundWorkQueue, types.JobsBaseURL+"/users?id="+workspaces[i].ID)
-			job.ScheduleJob(ctx, backend.BackgroundWorkQueue, api.JobsBaseURL+"/channels?id="+workspaces[i].ID)
+			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/channels?id="+workspaces[i].ID)
 
 			backend.MarkWorkspaceUpdated(ctx, workspaces[i].ID)
 			logger.Info(topic, "workspace=%s", workspaces[i].ID)
@@ -42,7 +43,6 @@ func UpdateWorkspaces(c *gin.Context) {
 		errorreporting.Report(err)
 		logger.Critical(topic, err.Error())
 	}
-
 }
 
 // CollectMessages schedules the collection of messages in a given team & channel
