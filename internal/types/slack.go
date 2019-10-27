@@ -88,4 +88,20 @@ type (
 		Created int64 // ts this record was created
 		Updated int64 // ts this record was last updated
 	}
+
+	// ArchivedMessage is the body of a message
+	ArchivedMessage struct {
+		Text           string                      `json:"text,omitempty"`
+		User           string                      `json:"user,omitempty"`
+		Created        string                      `json:"created,omitempty"`
+		Timestamp      int64                       `json:"ts,omitempty"`
+		HasAttachments bool                        `json:"has_attachments"`
+		Attachments    []ArchivedMessageAttachment `json:"attachments,omitempty"`
+	}
+
+	// ArchivedMessageAttachment holds the metadata of an attachment
+	ArchivedMessageAttachment struct {
+		Text         string `json:"text,omitempty"`
+		FallbackText string `json:"fallback_text,omitempty"`
+	}
 )

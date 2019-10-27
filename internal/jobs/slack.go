@@ -7,14 +7,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/lnkk-ai/lnkk/pkg/api"
-	"github.com/lnkk-ai/lnkk/pkg/metrics"
-	"github.com/lnkk-ai/lnkk/pkg/slack"
+	"github.com/majordomusio/commons/pkg/env"
+	"github.com/majordomusio/commons/pkg/util"
 	"github.com/majordomusio/platform/pkg/errorreporting"
 	"github.com/majordomusio/platform/pkg/logger"
 	"github.com/majordomusio/platform/pkg/tasks"
 
 	"github.com/lnkk-ai/lnkk/internal/backend"
+	"github.com/lnkk-ai/lnkk/pkg/api"
+	"github.com/lnkk-ai/lnkk/pkg/metrics"
+	"github.com/lnkk-ai/lnkk/pkg/slack"
 )
 
 // UpdateUsersJob updates the list of users of a workspace
@@ -103,5 +105,71 @@ func UpdateChannelsJob(c *gin.Context) {
 		tasks.Schedule(ctx, backend.BackgroundWorkQueue, fmt.Sprintf(api.JobsBaseURL+"/channels?id=%v&cursor=%v", id, nextCursor))
 		logger.Info(topic, "next=%s", nextCursor)
 	}
+
+}
+
+// CollectMessagesJob collects all new messages in a team & channel
+// /_i/1/jobs/msgs?id=..&c=..&latest=..
+func CollectMessagesJob(c *gin.Context) {
+	topic := "jobs.slack.collect.messages"
+	ctx := appengine.NewContext(c.Request)
+
+	id := c.Query("id")
+	channel := c.Query("c")
+	latest := c.Query("l")
+	ts := ""
+
+	auth, err := backend.GetAuthToken(ctx, id)
+	if err != nil {
+		errorreporting.Report(err)
+		return
+	}
+
+	logger.Info(topic, "workspace=%s, channel=%s", id, channel)
+
+	// setup the markers
+	now := util.Timestamp()
+	oldest := backend.GetChannelLatestCrawled(ctx, channel, id)
+
+	if latest == "" {
+		ts = fmt.Sprintf("%d", now)
+	} else {
+		ts = latest
+	}
+
+	// collect messages since ts
+	msgs, err := slack.ChannelsHistory(ctx, auth, channel, backend.DefaultCrawlerBatchSize, ts)
+	if err != nil {
+		errorreporting.Report(err)
+		return
+	}
+
+	n := 0
+	for i := range msgs.Messages {
+
+		if slack.Timestamp(msgs.Messages[i].TS) > oldest {
+			backend.StoreSlackMessage(ctx, channel, id, &msgs.Messages[i])
+			n++
+		} else {
+			// we have reached the last known message
+			backend.MarkChannelCrawled(ctx, channel, id, now)
+			// final auditing
+			logger.Info(topic, "new=%d", n)
+			metrics.Count(ctx, "jobs.slack.messages.count", channel, n)
+			return
+		}
+	}
+
+	if msgs.HasMore {
+		n := len(msgs.Messages)
+		tasks.Schedule(ctx, backend.BackgroundWorkQueue, fmt.Sprintf("%s%s/messages?id=%s&c=%s&l=%s", env.Getenv("BASE_URL", ""), api.JobsBaseURL, id, channel, msgs.Messages[n-1].TS))
+	} else {
+		// we have reached the last known message
+		backend.MarkChannelCrawled(ctx, channel, id, now)
+	}
+
+	// final auditing
+	logger.Info(topic, "new=%d", n)
+	metrics.Count(ctx, "jobs.slack.messages.count", channel, n)
 
 }

@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/lnkk-ai/lnkk/internal/types"
+	"github.com/majordomusio/commons/pkg/util"
 	"github.com/majordomusio/platform/pkg/errorreporting"
 	"github.com/majordomusio/platform/pkg/store"
-	"github.com/majordomusio/commons/pkg/util"
 	"google.golang.org/appengine/memcache"
 )
 
@@ -183,4 +183,31 @@ func UpdateUser(ctx context.Context, id, team, name, realName, firstName, lastNa
 
 	_, err = store.Client().Put(ctx, key, &user)
 	return err
+}
+
+// GetUserName returns user's full name
+func GetUserName(ctx context.Context, userID, teamID string) string {
+
+	k := userID + "." + teamID
+	n, err := memcache.Get(ctx, k)
+
+	if err != nil {
+		var user = types.User{}
+		key := UserKey(userID, teamID)
+		err := store.Client().Get(ctx, key, &user)
+
+		if err == nil {
+			// add the user to the cache
+			var n memcache.Item
+			n.Key = k
+			n.Value = ([]byte)(user.RealName)
+			n.Expiration, _ = time.ParseDuration(DefaultCacheDuration)
+			memcache.Set(ctx, &n)
+
+			return user.RealName
+		}
+		// user was not found in the datastore either
+		return ""
+	}
+	return (string)(n.Value)
 }
