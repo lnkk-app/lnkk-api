@@ -17,6 +17,8 @@ import (
 )
 
 const (
+	// BotBaseURL is the prefix for all public API endpoints
+	BotBaseURL string = "/a/1"
 	// SchedulerBaseURL is the prefix for all scheduller/cron tasks
 	SchedulerBaseURL string = "/_i/1/scheduler"
 	// JobsBaseURL is the prefix for all scheduled jobs
@@ -44,6 +46,10 @@ func main() {
 	router.GET("/", defaultEndpoint)
 	router.GET("/robots.txt", a.RobotsEndpoint)
 
+	// authenticate the app
+	router.GET("/auth", a.AuthEndpoint)
+
+	// scheduler endpoints
 	router.GET(SchedulerBaseURL+"/workspace", a.UpdateWorkspaces)
 	router.GET(SchedulerBaseURL+"/messages", a.CollectMessages)
 

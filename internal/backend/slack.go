@@ -19,7 +19,7 @@ func GetAuthorization(ctx context.Context, id string) *types.Authorization {
 	_, err := memcache.Gob.Get(ctx, key, &auth)
 
 	if err != nil {
-		err = store.Client().Get(ctx, AuthorizationKey(ctx, id), &auth)
+		err = store.Client().Get(ctx, AuthorizationKey(id), &auth)
 		if err == nil {
 			cache := memcache.Item{}
 			cache.Key = key
@@ -47,7 +47,7 @@ func GetAuthToken(ctx context.Context, id string) string {
 func UpdateAuthorization(ctx context.Context, id, name, token, scope, authorizingUser, installerUser string) error {
 
 	var auth = types.Authorization{}
-	key := AuthorizationKey(ctx, id)
+	key := AuthorizationKey(id)
 	err := store.Client().Get(ctx, key, &auth)
 
 	if err == nil {
@@ -72,6 +72,6 @@ func UpdateAuthorization(ctx context.Context, id, name, token, scope, authorizin
 }
 
 // AuthorizationKey creates a datastore key for a workspace authorization based on the team_id.
-func AuthorizationKey(ctx context.Context, id string) *datastore.Key {
+func AuthorizationKey(id string) *datastore.Key {
 	return datastore.NameKey(DatastoreAuthorizations, id, nil)
 }
