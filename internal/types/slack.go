@@ -27,8 +27,8 @@ type (
 		Updated int64 `json:"-"`
 	}
 
-	// User data
-	User struct {
+	// UserDS data
+	UserDS struct {
 		ID        string
 		TeamID    string
 		Name      string
@@ -66,12 +66,13 @@ type (
 
 	// MessageDS holds slack messages
 	MessageDS struct {
-		ChannelID       string
-		TeamID          string
-		User            string
-		TS              int64  // ts the message was created, according to the Slack API
-		Text            string `datastore:",noindex"`
-		HasAttachements bool
+		ChannelID    string
+		TeamID       string
+		User         string
+		TS           int64  // ts the message was created, according to the Slack API
+		Text         string `datastore:",noindex"`
+		Attachements bool
+		Reactions    bool
 		// Internal
 		Created int64 // ts this record was created
 		Updated int64 // ts this record was last updated
@@ -85,6 +86,19 @@ type (
 		ID        int
 		Text      string `datastore:",noindex"`
 		Fallback  string `datastore:",noindex"`
+		// Internal
+		Created int64 // ts this record was created
+		Updated int64 // ts this record was last updated
+	}
+
+	// ReactionDS related to messages
+	ReactionDS struct {
+		MessageID string
+		ChannelID string
+		TeamID    string
+		Reaction  string
+		Count     int
+		Users     []string
 		// Internal
 		Created int64 // ts this record was created
 		Updated int64 // ts this record was last updated

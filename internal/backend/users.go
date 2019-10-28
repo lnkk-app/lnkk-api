@@ -13,7 +13,7 @@ import (
 // UpdateUser updates the user metadata
 func UpdateUser(ctx context.Context, id, team, name, realName, firstName, lastName, email string, deleted, bot bool) error {
 
-	var user = types.User{}
+	var user = types.UserDS{}
 	key := UserKey(id, team)
 	err := store.Client().Get(ctx, key, &user)
 
@@ -27,7 +27,7 @@ func UpdateUser(ctx context.Context, id, team, name, realName, firstName, lastNa
 		user.IsBot = bot
 		user.Updated = util.Timestamp()
 	} else {
-		user = types.User{
+		user = types.UserDS{
 			ID:        id,
 			TeamID:    team,
 			Name:      name,
@@ -53,7 +53,7 @@ func GetUserName(ctx context.Context, userID, teamID string) string {
 	n, err := memcache.Get(ctx, k)
 
 	if err != nil {
-		var user = types.User{}
+		var user = types.UserDS{}
 		key := UserKey(userID, teamID)
 		err := store.Client().Get(ctx, key, &user)
 

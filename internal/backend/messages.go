@@ -2,14 +2,12 @@ package backend
 
 import (
 	"context"
-	"time"
 
 	"github.com/lnkk-ai/lnkk/internal/types"
 	"github.com/lnkk-ai/lnkk/pkg/slack"
 	"github.com/majordomusio/commons/pkg/util"
+	"github.com/majordomusio/platform/pkg/errorreporting"
 	"github.com/majordomusio/platform/pkg/store"
-
-	"google.golang.org/appengine/memcache"
 )
 
 // MarkChannelCrawled updates the craler data on a channel
@@ -39,36 +37,35 @@ func GetChannelLatestCrawled(ctx context.Context, id, team string) int64 {
 	return channel.Latest
 }
 
-// StoreSlackMessage stores a slack message
-func StoreSlackMessage(ctx context.Context, id, team string, message *slack.ChannelMessage) error {
+// StoreMessage stores a slack message
+func StoreMessage(ctx context.Context, id, team string, message *slack.ChannelMessage) error {
 	user := message.User
 	ts := message.TS
 	attachments := false
+	reactions := false
+	now := util.Timestamp()
 
-	var msg = types.MessageDS{}
-	key := MessageKey(id, ts, user)
-	err := store.Client().Get(ctx, key, &msg)
-
-	if err == nil {
-		msg.Updated = util.Timestamp()
-	} else {
-		if len(message.Attachements) > 0 {
-			attachments = true
-		}
-
-		msg = types.MessageDS{
-			ChannelID:       id,
-			TeamID:          team,
-			User:            user,
-			TS:              slack.TimestampNano(ts),
-			Text:            message.Text,
-			HasAttachements: attachments,
-			Created:         util.Timestamp(),
-			Updated:         util.Timestamp(),
-		}
+	if len(message.Attachements) > 0 {
+		attachments = true
 	}
 
-	_, err = store.Client().Put(ctx, key, &msg)
+	if len(message.Reactions) > 0 {
+		reactions = true
+	}
+
+	msg := types.MessageDS{
+		ChannelID:    id,
+		TeamID:       team,
+		User:         user,
+		TS:           slack.TimestampNano(ts),
+		Text:         message.Text,
+		Attachements: attachments,
+		Reactions:    reactions,
+		Created:      now,
+		Updated:      now,
+	}
+
+	_, err := store.Client().Put(ctx, MessageKey(id, ts, user), &msg)
 
 	// store the attachments if there are any
 	if attachments {
@@ -78,52 +75,54 @@ func StoreSlackMessage(ctx context.Context, id, team string, message *slack.Chan
 		}
 	}
 
+	if reactions {
+		msgID := MessageKeyString(id, ts, user)
+		for i := range message.Reactions {
+			StoreReaction(ctx, id, team, msgID, i, message.Reactions[i].Name, message.Reactions[i].Count, &message.Reactions[i].Users)
+		}
+	}
+
 	return err
 }
 
 // StoreAttachement stores an attachment based on simple params
 func StoreAttachement(ctx context.Context, channelID, teamID, msgID string, id int, text, fallback string) error {
-	var att = types.AttachmentDS{}
-	key := AttachmentKey(msgID, id)
-	err := store.Client().Get(ctx, key, &att)
+	now := util.Timestamp()
 
-	if err == nil {
-		att.Updated = util.Timestamp()
-	} else {
-		att = types.AttachmentDS{
-			MessageID: msgID,
-			ChannelID: channelID,
-			TeamID:    teamID,
-			ID:        id,
-			Text:      text,
-			Fallback:  fallback,
-			Created:   util.Timestamp(),
-			Updated:   util.Timestamp(),
-		}
+	att := types.AttachmentDS{
+		MessageID: msgID,
+		ChannelID: channelID,
+		TeamID:    teamID,
+		ID:        id,
+		Text:      text,
+		Fallback:  fallback,
+		Created:   now,
+		Updated:   now,
 	}
 
-	_, err = store.Client().Put(ctx, key, &att)
+	_, err := store.Client().Put(ctx, AttachmentKey(msgID, id), &att)
 	return err
 }
 
-// GetAttachment gets and caches an attachment
-func GetAttachment(ctx context.Context, msgID string, id int) (*types.AttachmentDS, error) {
-	var att = types.AttachmentDS{}
-	key := AttachmentKeyString(msgID, id)
-	_, err := memcache.Gob.Get(ctx, key, &att)
+// StoreReaction stores a reaction
+func StoreReaction(ctx context.Context, channelID, teamID, msgID string, id int, reaction string, count int, users *[]string) error {
+	now := util.Timestamp()
 
-	if err != nil {
-		err := store.Client().Get(ctx, AttachmentKey(msgID, id), &att)
-		if err == nil {
-			cache := memcache.Item{}
-			cache.Key = key
-			cache.Object = att
-			cache.Expiration, _ = time.ParseDuration(DefaultCacheDuration)
-			memcache.Gob.Set(ctx, &cache)
-		} else {
-			return nil, err
-		}
+	re := types.ReactionDS{
+		MessageID: msgID,
+		ChannelID: channelID,
+		TeamID:    teamID,
+		Reaction:  reaction,
+		Count:     count,
+		Users:     *users,
+		Created:   now,
+		Updated:   now,
 	}
 
-	return &att, nil
+	_, err := store.Client().Put(ctx, ReactionKey(msgID, id), &re)
+	if err != nil {
+		// FIXME remove after test
+		errorreporting.Report(err)
+	}
+	return err
 }

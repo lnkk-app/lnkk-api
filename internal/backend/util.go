@@ -45,3 +45,13 @@ func AttachmentKey(msg string, id int) *datastore.Key {
 func AttachmentKeyString(msg string, id int) string {
 	return fmt.Sprintf("%s.%d", msg, id)
 }
+
+// ReactionKey creates a datastore key for attachements based on the message id and attachement id
+func ReactionKey(msg string, id int) *datastore.Key {
+	return datastore.NameKey(DatastoreAttachments, ReactionKeyString(msg, id), nil)
+}
+
+// ReactionKeyString returns the string used to generate the attachment key
+func ReactionKeyString(msg string, id int) string {
+	return fmt.Sprintf("%s.%d", msg, id)
+}

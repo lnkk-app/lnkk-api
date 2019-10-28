@@ -19,6 +19,8 @@ const (
 	DatastoreMessages string = "MESSAGES"
 	// DatastoreAttachments collection of message attachments
 	DatastoreAttachments string = "ATTACHMENTS"
+	// DatastoreReactions collection of message attachments
+	DatastoreReactions string = "REACTIONS"
 
 	// BackgroundWorkQueue is the default background job queue
 	BackgroundWorkQueue string = "background-work"

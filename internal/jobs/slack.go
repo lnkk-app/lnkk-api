@@ -130,7 +130,7 @@ func CollectMessagesJob(c *gin.Context) {
 	for i := range msgs.Messages {
 
 		if slack.Timestamp(msgs.Messages[i].TS) > oldest {
-			backend.StoreSlackMessage(ctx, channel, id, &msgs.Messages[i])
+			backend.StoreMessage(ctx, channel, id, &msgs.Messages[i])
 			n++
 		} else {
 			// we have reached the last known message
