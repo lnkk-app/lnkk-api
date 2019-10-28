@@ -42,6 +42,7 @@ func StoreMessage(ctx context.Context, id, team string, message *slack.ChannelMe
 	now := util.Timestamp()
 	user := message.User
 	ts := message.TS
+	tsSeconds := slack.Timestamp(ts)
 	attachments := false
 	reactions := false
 
@@ -61,8 +62,8 @@ func StoreMessage(ctx context.Context, id, team string, message *slack.ChannelMe
 		Text:         message.Text,
 		Attachements: attachments,
 		Reactions:    reactions,
-		Day:          util.TimestampToWeekday(now),
-		Hour:         util.TimestampToHour(now),
+		Day:          util.TimestampToWeekday(tsSeconds),
+		Hour:         util.TimestampToHour(tsSeconds),
 		Created:      now,
 		Updated:      now,
 	}
