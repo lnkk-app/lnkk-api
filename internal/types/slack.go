@@ -10,7 +10,7 @@ type (
 		Scope           string
 		AuthorizingUser string
 		InstallerUser   string
-		// Internal
+		// internal
 		Created int64
 		Updated int64
 	}
@@ -20,27 +20,27 @@ type (
 		ID   string `json:"id"`
 		Name string `json:"name"`
 		// Scheduler
-		Next           int64 `json:"-"` // scheduled time of the next crawl
-		UpdateSchedule int   `json:"-"` // interval, in seconds
-		// Internal
+		Next     int64 `json:"-"` // scheduled time of the next crawl
+		Schedule int   `json:"-"` // interval, in seconds
+		// internal
 		Created int64 `json:"-"`
 		Updated int64 `json:"-"`
 	}
 
 	// UserDS data
 	UserDS struct {
-		ID        string
-		TeamID    string
-		Name      string
-		RealName  string
-		FirstName string
-		LastName  string
-		EMail     string
-		IsDeleted bool
-		IsBot     bool
-		// Internal
-		Created int64
-		Updated int64
+		ID        string `json:"id"`
+		TeamID    string `json:"team_id"`
+		Name      string `json:"name"`
+		RealName  string `json:"real_name"`
+		FirstName string `json:"first_name"`
+		LastName  string `json:"last_name"`
+		EMail     string `json:"email"`
+		IsDeleted bool   `json:"deleted"`
+		IsBot     bool   `json:"bot"`
+		// internal
+		Created int64 `json:"-"`
+		Updated int64 `json:"-"`
 	}
 
 	// `datastore:",noindex" json:"feature"`
@@ -55,55 +55,57 @@ type (
 		IsArchived bool   `json:"archived"`
 		IsPrivate  bool   `json:"private"`
 		IsDeleted  bool   `json:"deleted"`
-		// Scheduler
-		Latest          int64 `json:"-"` // ts of the last message crawl
-		Next            int64 `json:"-"` // scheduled time of the next crawl
-		CrawlerSchedule int   `json:"-"` // interval, in seconds
-		// Internal
+		// scheduler
+		Latest   int64 `json:"-"` // ts of the last message crawl
+		Next     int64 `json:"-"` // scheduled time of the next crawl
+		Schedule int   `json:"-"` // interval, in seconds
+		// internal
 		Created int64 `json:"-"` // ts this record was created
 		Updated int64 `json:"-"` // ts this record was last updated
 	}
 
 	// MessageDS holds slack messages
 	MessageDS struct {
-		ChannelID string
-		TeamID    string
-		User      string
-		TS        int64  // ts the message was created, according to the Slack API
-		Text      string `datastore:",noindex"`
+		ChannelID string `json:"id"`
+		TeamID    string `json:"team_id"`
+		User      string `json:"user"`
+		Text      string `datastore:",noindex" json:"text"`
+		Timestamp int64  `json:"ts"` // ts the message was created, according to the Slack API
 		// supporting analytics
-		Attachements bool
-		Reactions    bool
-		Day          int // day of the week (Sun = 0)
-		Hour         int // hour of the day (0..23)
-		// Internal
-		Created int64 // ts this record was created
-		Updated int64 // ts this record was last updated
+		Type         string `json:"type"`
+		Subtype      string `json:"subtype"`
+		Attachements bool   `json:"attachements"`
+		Reactions    bool   `json:"reactions"`
+		Day          int    `json:"day_of_week"` // day of the week (Sun = 0)
+		Hour         int    `json:"hour_of_day"` // hour of the day (0..23)
+		// internal
+		Created int64 `json:"-"` // ts this record was created
+		Updated int64 `json:"-"` // ts this record was last updated
 	}
 
 	// AttachmentDS related to messages
 	AttachmentDS struct {
-		MessageID string
-		ChannelID string
-		TeamID    string
-		ID        int
-		Text      string `datastore:",noindex"`
-		Fallback  string `datastore:",noindex"`
-		// Internal
-		Created int64 // ts this record was created
-		Updated int64 // ts this record was last updated
+		MessageID   string `json:"message_id"` // it's parent record
+		ChannelID   string `json:"channel_id"`
+		TeamID      string `json:"team_id"`
+		Index       int    `json:"index"`
+		Text        string `datastore:",noindex" json:"text"`
+		Alternative string `datastore:",noindex" json:"alt_text"`
+		// internal
+		Created int64 `json:"-"` // ts this record was created
+		Updated int64 `json:"-"` // ts this record was last updated
 	}
 
 	// ReactionDS related to messages
 	ReactionDS struct {
-		MessageID string
-		ChannelID string
-		TeamID    string
-		Reaction  string
-		Count     int
-		Users     []string
-		// Internal
-		Created int64 // ts this record was created
-		Updated int64 // ts this record was last updated
+		MessageID string   `json:"message_id"` // it's parent record
+		ChannelID string   `json:"channel_id"`
+		TeamID    string   `json:"team_id"`
+		Reaction  string   `json:"reaction"`
+		Count     int      `json:"count"`
+		Users     []string `datastore:",noindex" json:"users"`
+		// internal
+		Created int64 `json:"-"` // ts this record was created
+		Updated int64 `json:"-"` // ts this record was last updated
 	}
 )

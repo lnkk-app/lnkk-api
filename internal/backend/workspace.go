@@ -16,16 +16,16 @@ func UpdateWorkspace(ctx context.Context, id, name string) error {
 	err := store.Client().Get(ctx, key, &ws)
 
 	if err == nil {
-		ws.Next = now + (int64)(ws.UpdateSchedule)
+		ws.Next = now + (int64)(ws.Schedule)
 		ws.Updated = now
 	} else {
 		ws = types.WorkspaceDS{
-			ID:             id,
-			Name:           name,
-			Next:           0,
-			UpdateSchedule: DefaultUpdateSchedule,
-			Created:        now,
-			Updated:        now,
+			ID:       id,
+			Name:     name,
+			Next:     0,
+			Schedule: DefaultUpdateSchedule,
+			Created:  now,
+			Updated:  now,
 		}
 	}
 
@@ -41,7 +41,7 @@ func MarkWorkspaceUpdated(ctx context.Context, id string) {
 
 	err := store.Client().Get(ctx, key, &ws)
 	if err == nil {
-		ws.Next = now + (int64)(ws.UpdateSchedule)
+		ws.Next = now + (int64)(ws.Schedule)
 		ws.Updated = now
 		_, err = store.Client().Put(ctx, key, &ws)
 	}
@@ -64,19 +64,19 @@ func UpdateChannel(ctx context.Context, id, team, name, topic, purpose string, a
 		channel.Updated = now
 	} else {
 		channel = types.ChannelDS{
-			ID:              id,
-			TeamID:          team,
-			Name:            name,
-			Topic:           topic,
-			Purpose:         purpose,
-			IsArchived:      archived,
-			IsPrivate:       private,
-			IsDeleted:       deleted,
-			Latest:          0,
-			Next:            now + (int64)(util.Random(DefaultCrawlerSchedule)),
-			CrawlerSchedule: DefaultCrawlerSchedule,
-			Created:         now,
-			Updated:         now,
+			ID:         id,
+			TeamID:     team,
+			Name:       name,
+			Topic:      topic,
+			Purpose:    purpose,
+			IsArchived: archived,
+			IsPrivate:  private,
+			IsDeleted:  deleted,
+			Latest:     0,
+			Next:       now + (int64)(util.Random(DefaultCrawlerSchedule)),
+			Schedule:   DefaultCrawlerSchedule,
+			Created:    now,
+			Updated:    now,
 		}
 	}
 

@@ -10,33 +10,6 @@ import (
 	"github.com/majordomusio/platform/pkg/store"
 )
 
-// MarkChannelCrawled updates the craler data on a channel
-func MarkChannelCrawled(ctx context.Context, id, team string, latest int64) {
-	var channel = types.ChannelDS{}
-	key := ChannelKey(id, team)
-	err := store.Client().Get(ctx, key, &channel)
-
-	if err == nil {
-		channel.Latest = latest
-		channel.Next = util.Timestamp() + (int64)(channel.CrawlerSchedule)
-		channel.Updated = util.Timestamp()
-		_, err = store.Client().Put(ctx, key, &channel)
-	}
-}
-
-// GetChannelLatestCrawled returns the ts of the latest message
-func GetChannelLatestCrawled(ctx context.Context, id, team string) int64 {
-	var channel = types.ChannelDS{}
-	key := ChannelKey(id, team)
-	err := store.Client().Get(ctx, key, &channel)
-
-	if err != nil {
-		return -1
-	}
-
-	return channel.Latest
-}
-
 // StoreMessage stores a slack message
 func StoreMessage(ctx context.Context, id, team string, message *slack.ChannelMessage) error {
 	now := util.Timestamp()
@@ -45,6 +18,7 @@ func StoreMessage(ctx context.Context, id, team string, message *slack.ChannelMe
 	tsSeconds := slack.Timestamp(ts)
 	attachments := false
 	reactions := false
+	msgID := MessageKeyString(id, ts, user)
 
 	if len(message.Attachements) > 0 {
 		attachments = true
@@ -58,8 +32,10 @@ func StoreMessage(ctx context.Context, id, team string, message *slack.ChannelMe
 		ChannelID:    id,
 		TeamID:       team,
 		User:         user,
-		TS:           slack.TimestampNano(ts),
 		Text:         message.Text,
+		Timestamp:    slack.TimestampNano(ts),
+		Type:         message.Type,
+		Subtype:      message.Subtype,
 		Attachements: attachments,
 		Reactions:    reactions,
 		Day:          util.TimestampToWeekday(tsSeconds),
@@ -72,14 +48,12 @@ func StoreMessage(ctx context.Context, id, team string, message *slack.ChannelMe
 
 	// store the attachments if there are any
 	if attachments {
-		msgID := MessageKeyString(id, ts, user)
 		for i := range message.Attachements {
 			StoreAttachement(ctx, id, team, msgID, message.Attachements[i].ID, message.Attachements[i].Text, message.Attachements[i].Fallback)
 		}
 	}
 
 	if reactions {
-		msgID := MessageKeyString(id, ts, user)
 		for i := range message.Reactions {
 			StoreReaction(ctx, id, team, msgID, i, message.Reactions[i].Name, message.Reactions[i].Count, &message.Reactions[i].Users)
 		}
@@ -93,14 +67,14 @@ func StoreAttachement(ctx context.Context, channelID, teamID, msgID string, id i
 	now := util.Timestamp()
 
 	att := types.AttachmentDS{
-		MessageID: msgID,
-		ChannelID: channelID,
-		TeamID:    teamID,
-		ID:        id,
-		Text:      text,
-		Fallback:  fallback,
-		Created:   now,
-		Updated:   now,
+		MessageID:   msgID,
+		ChannelID:   channelID,
+		TeamID:      teamID,
+		Index:       id,
+		Text:        text,
+		Alternative: fallback,
+		Created:     now,
+		Updated:     now,
 	}
 
 	_, err := store.Client().Put(ctx, AttachmentKey(msgID, id), &att)
@@ -128,4 +102,31 @@ func StoreReaction(ctx context.Context, channelID, teamID, msgID string, id int,
 		errorreporting.Report(err)
 	}
 	return err
+}
+
+// MarkChannelCrawled updates the craler data on a channel
+func MarkChannelCrawled(ctx context.Context, id, team string, latest int64) {
+	var channel = types.ChannelDS{}
+	key := ChannelKey(id, team)
+	err := store.Client().Get(ctx, key, &channel)
+
+	if err == nil {
+		channel.Latest = latest
+		channel.Next = util.Timestamp() + (int64)(channel.Schedule)
+		channel.Updated = util.Timestamp()
+		_, err = store.Client().Put(ctx, key, &channel)
+	}
+}
+
+// GetChannelLatestCrawled returns the ts of the latest message
+func GetChannelLatestCrawled(ctx context.Context, id, team string) int64 {
+	var channel = types.ChannelDS{}
+	key := ChannelKey(id, team)
+	err := store.Client().Get(ctx, key, &channel)
+
+	if err != nil {
+		return -1
+	}
+
+	return channel.Latest
 }

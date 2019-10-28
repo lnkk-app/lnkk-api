@@ -4,7 +4,7 @@ cron:
   schedule: every 120 minutes
   target: default
 
-- description: "Periodically schedule message crawling"
-  url: /_i/1/scheduler/messages
-  schedule: every 120 minutes
-  target: default
+#- description: "Periodically schedule message crawling"
+#  url: /_i/1/scheduler/messages
+#  schedule: every 120 minutes
+#  target: default
