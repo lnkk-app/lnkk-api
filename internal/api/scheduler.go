@@ -11,7 +11,6 @@ import (
 
 	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/majordomusio/platform/pkg/errorreporting"
-	"github.com/majordomusio/platform/pkg/logger"
 	"github.com/majordomusio/platform/pkg/store"
 	"github.com/majordomusio/platform/pkg/tasks"
 
@@ -21,7 +20,6 @@ import (
 
 // UpdateWorkspaces schedules all workspaces that need updating
 func UpdateWorkspaces(c *gin.Context) {
-	topic := "scheduler.update.workspace"
 	ctx := appengine.NewContext(c.Request)
 
 	now := util.Timestamp()
@@ -37,17 +35,14 @@ func UpdateWorkspaces(c *gin.Context) {
 			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/channels?id="+workspaces[i].ID)
 
 			backend.MarkWorkspaceUpdated(ctx, workspaces[i].ID)
-			logger.Info(topic, "workspace=%s", workspaces[i].ID)
 		}
 	} else {
 		errorreporting.Report(err)
-		logger.Critical(topic, err.Error())
 	}
 }
 
 // CollectMessages schedules the collection of messages in a given team & channel
 func CollectMessages(c *gin.Context) {
-	topic := "scheduler.collect.messages"
 	ctx := appengine.NewContext(c.Request)
 
 	now := util.Timestamp()
@@ -62,11 +57,8 @@ func CollectMessages(c *gin.Context) {
 			id := channels[i].TeamID
 			channel := channels[i].ID
 			tasks.Schedule(ctx, backend.BackgroundWorkQueue, fmt.Sprintf("%s%s/messages?id=%s&c=%s", env.Getenv("BASE_URL", ""), api.JobsBaseURL, id, channel))
-
-			logger.Info(topic, "workspace=%s, channel=%s", id, channel)
 		}
 	} else {
 		errorreporting.Report(err)
-		logger.Critical(topic, err.Error())
 	}
 }

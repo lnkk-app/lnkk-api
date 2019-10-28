@@ -9,7 +9,6 @@ import (
 	"github.com/lnkk-ai/lnkk/pkg/slack"
 	"github.com/majordomusio/commons/pkg/env"
 	"github.com/majordomusio/platform/pkg/errorreporting"
-	"github.com/majordomusio/platform/pkg/logger"
 	"github.com/majordomusio/platform/pkg/tasks"
 	"google.golang.org/appengine"
 )
@@ -18,20 +17,14 @@ import (
 // and exchanges it with the real auth token.
 // See https://api.slack.com/docs/oauth
 func AuthEndpoint(c *gin.Context) {
-	topic := "api.oauth"
 	ctx := appengine.NewContext(c.Request)
 
 	// extract parameters
 	code := c.Query("code")
 	redirectURI := c.Query("redirect_uri")
-	state := c.Query("state")
+	// FIXME state := c.Query("state")
 
-	logger.Info(topic, "code=%s, state=%s", code, state)
-
-	if code == "" {
-		// OAuth was cancelled, shoud check for error=access_denied
-		logger.Warn(topic, c.Query("error"))
-	} else {
+	if code != "" {
 		// exchange the temporary code with a real auth token
 		resp, err := slack.OAuthAccess(ctx, code)
 
@@ -48,7 +41,6 @@ func AuthEndpoint(c *gin.Context) {
 			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/channels?id="+resp.TeamID)
 
 			backend.MarkWorkspaceUpdated(ctx, resp.TeamID)
-			logger.Info(topic, "workspace=%s", resp.TeamID)
 		}
 	}
 

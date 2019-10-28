@@ -10,7 +10,6 @@ import (
 	"github.com/majordomusio/commons/pkg/env"
 	"github.com/majordomusio/commons/pkg/util"
 	"github.com/majordomusio/platform/pkg/errorreporting"
-	"github.com/majordomusio/platform/pkg/logger"
 	"github.com/majordomusio/platform/pkg/tasks"
 
 	"github.com/lnkk-ai/lnkk/internal/backend"
@@ -21,7 +20,6 @@ import (
 
 // UpdateUsersJob updates the list of users of a workspace
 func UpdateUsersJob(c *gin.Context) {
-	topic := "jobs.slack.update.users"
 	ctx := appengine.NewContext(c.Request)
 
 	id := c.Query("id")
@@ -32,8 +30,6 @@ func UpdateUsersJob(c *gin.Context) {
 		errorreporting.Report(err)
 		return
 	}
-
-	logger.Info(topic, "workspace=%s", id)
 
 	// update the list of users
 	users, err := slack.UsersList(ctx, auth, cursor)
@@ -42,7 +38,6 @@ func UpdateUsersJob(c *gin.Context) {
 		return
 	}
 
-	logger.Info(topic, "users=%d", len(users.Members))
 	metrics.Count(ctx, "jobs.slack.users.count", id, len(users.Members))
 
 	for i := range users.Members {
@@ -50,8 +45,6 @@ func UpdateUsersJob(c *gin.Context) {
 
 		if err != nil {
 			errorreporting.Report(err)
-		} else {
-			logger.Info(topic, "user=%s", users.Members[i].ID)
 		}
 	}
 
@@ -59,13 +52,11 @@ func UpdateUsersJob(c *gin.Context) {
 	if nextCursor != "" {
 		// there is more data, schedule its retrieval
 		tasks.Schedule(ctx, backend.BackgroundWorkQueue, fmt.Sprintf(api.JobsBaseURL+"/users?id=%v&cursor=%v", id, nextCursor))
-		logger.Info(topic, "next=%s", nextCursor)
 	}
 }
 
 // UpdateChannelsJob updates the workspace metadata periodically
 func UpdateChannelsJob(c *gin.Context) {
-	topic := "jobs.slack.update.channels"
 	ctx := appengine.NewContext(c.Request)
 
 	id := c.Query("id")
@@ -77,8 +68,6 @@ func UpdateChannelsJob(c *gin.Context) {
 		return
 	}
 
-	logger.Info(topic, "workspace=%s", id)
-
 	// update the list of channels
 	channels, err := slack.ChannelsList(ctx, auth, cursor)
 	if err != nil {
@@ -86,7 +75,6 @@ func UpdateChannelsJob(c *gin.Context) {
 		return
 	}
 
-	logger.Info(topic, "channels=%d", len(channels.Channels))
 	metrics.Count(ctx, "jobs.slack.channels.count", id, len(channels.Channels))
 
 	for i := range channels.Channels {
@@ -94,8 +82,6 @@ func UpdateChannelsJob(c *gin.Context) {
 
 		if err != nil {
 			errorreporting.Report(err)
-		} else {
-			logger.Info(topic, "channel=%s", channels.Channels[i].ID)
 		}
 	}
 
@@ -103,7 +89,6 @@ func UpdateChannelsJob(c *gin.Context) {
 	if nextCursor != "" {
 		// there is more data, schedule its retrieval
 		tasks.Schedule(ctx, backend.BackgroundWorkQueue, fmt.Sprintf(api.JobsBaseURL+"/channels?id=%v&cursor=%v", id, nextCursor))
-		logger.Info(topic, "next=%s", nextCursor)
 	}
 
 }
@@ -111,7 +96,6 @@ func UpdateChannelsJob(c *gin.Context) {
 // CollectMessagesJob collects all new messages in a team & channel
 // /_i/1/jobs/msgs?id=..&c=..&latest=..
 func CollectMessagesJob(c *gin.Context) {
-	topic := "jobs.slack.collect.messages"
 	ctx := appengine.NewContext(c.Request)
 
 	id := c.Query("id")
@@ -124,8 +108,6 @@ func CollectMessagesJob(c *gin.Context) {
 		errorreporting.Report(err)
 		return
 	}
-
-	logger.Info(topic, "workspace=%s, channel=%s", id, channel)
 
 	// setup the markers
 	now := util.Timestamp()
@@ -153,8 +135,6 @@ func CollectMessagesJob(c *gin.Context) {
 		} else {
 			// we have reached the last known message
 			backend.MarkChannelCrawled(ctx, channel, id, now)
-			// final auditing
-			logger.Info(topic, "new=%d", n)
 			metrics.Count(ctx, "jobs.slack.messages.count", channel, n)
 			return
 		}
@@ -169,7 +149,6 @@ func CollectMessagesJob(c *gin.Context) {
 	}
 
 	// final auditing
-	logger.Info(topic, "new=%d", n)
 	metrics.Count(ctx, "jobs.slack.messages.count", channel, n)
 
 }

@@ -51,7 +51,7 @@ func main() {
 	router.POST(api.JobsBaseURL+"/users", jobs.UpdateUsersJob)
 	router.POST(api.JobsBaseURL+"/messages", jobs.CollectMessagesJob)
 
-	// start the router on port 8080, unless ENV PORT is set to something else
+	// start the router on port 8080, unless $PORT is set to something else
 	router.Run()
 }
 
