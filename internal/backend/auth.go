@@ -48,7 +48,7 @@ func GetAuthToken(ctx context.Context, id string) (string, error) {
 
 // UpdateAuthorization updates the authorization, or creates a new one.
 func UpdateAuthorization(ctx context.Context, id, name, token, scope, authorizingUser, installerUser string) error {
-
+	now := util.Timestamp()
 	var auth = types.AuthorizationDS{}
 	key := AuthorizationKey(id)
 	err := store.Client().Get(ctx, key, &auth)
@@ -56,7 +56,7 @@ func UpdateAuthorization(ctx context.Context, id, name, token, scope, authorizin
 	if err == nil {
 		auth.AccessToken = token
 		auth.Scope = scope
-		auth.Updated = util.Timestamp()
+		auth.Updated = now
 	} else {
 		auth = types.AuthorizationDS{
 			ID:              id,
@@ -65,8 +65,8 @@ func UpdateAuthorization(ctx context.Context, id, name, token, scope, authorizin
 			Scope:           scope,
 			AuthorizingUser: authorizingUser,
 			InstallerUser:   installerUser,
-			Created:         util.Timestamp(),
-			Updated:         util.Timestamp(),
+			Created:         now,
+			Updated:         now,
 		}
 	}
 

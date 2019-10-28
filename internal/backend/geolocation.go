@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/lnkk-ai/lnkk/internal/types"
+	"github.com/majordomusio/commons/pkg/util"
 	"golang.org/x/net/html/charset"
 )
 
@@ -77,6 +78,7 @@ func (r *LocationType) AsInternal() *types.GeoLocationDS {
 		CountryName: r.Countryname,
 		Latitude:    r.Latitude,
 		Longitude:   r.Longitude,
+		Created:     util.Timestamp(),
 	}
 	return &location
 }

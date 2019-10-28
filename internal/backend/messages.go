@@ -39,11 +39,11 @@ func GetChannelLatestCrawled(ctx context.Context, id, team string) int64 {
 
 // StoreMessage stores a slack message
 func StoreMessage(ctx context.Context, id, team string, message *slack.ChannelMessage) error {
+	now := util.Timestamp()
 	user := message.User
 	ts := message.TS
 	attachments := false
 	reactions := false
-	now := util.Timestamp()
 
 	if len(message.Attachements) > 0 {
 		attachments = true
@@ -61,6 +61,8 @@ func StoreMessage(ctx context.Context, id, team string, message *slack.ChannelMe
 		Text:         message.Text,
 		Attachements: attachments,
 		Reactions:    reactions,
+		Day:          util.TimestampToWeekday(now),
+		Hour:         util.TimestampToHour(now),
 		Created:      now,
 		Updated:      now,
 	}

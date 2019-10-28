@@ -31,13 +31,16 @@ func RedirectEndpoint(c *gin.Context) {
 	}
 
 	// audit, i.e. extract some user data
+	now := util.Timestamp()
 	m := types.MeasurementDS{
 		URI:            uri,
 		User:           "anonymous",
 		IP:             c.ClientIP(),
 		UserAgent:      strings.ToLower(c.GetHeader("User-Agent")),
 		AcceptLanguage: strings.ToLower(c.GetHeader("Accept-Language")),
-		Created:        util.Timestamp(),
+		Day:            util.TimestampToWeekday(now),
+		Hour:           util.TimestampToHour(now),
+		Created:        now,
 	}
 	backend.CreateMeasurement(ctx, &m)
 

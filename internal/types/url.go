@@ -24,6 +24,9 @@ type (
 		IP             string `json:"ip,omitempty"`
 		UserAgent      string `json:"user_agent,omitempty"`
 		AcceptLanguage string `json:"accept_language,omitempty"`
+		// supporting analytics
+		Day  int // day of the week (Sun = 0)
+		Hour int // hour of the day (0..23)
 		// internal metadata
 		Created int64 `json:"-"`
 	}
@@ -38,5 +41,7 @@ type (
 		CountryName string `json:"country_name"`
 		Latitude    string `json:"latitude"`
 		Longitude   string `json:"longitude"`
+		// internal metadata
+		Created int64 `json:"-"`
 	}
 )

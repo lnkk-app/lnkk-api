@@ -10,22 +10,22 @@ import (
 
 // UpdateWorkspace updates the workspace metadata
 func UpdateWorkspace(ctx context.Context, id, name string) error {
-
+	now := util.Timestamp()
 	var ws = types.WorkspaceDS{}
 	key := WorkspaceKey(id)
 	err := store.Client().Get(ctx, key, &ws)
 
 	if err == nil {
-		ws.Next = util.Timestamp() + (int64)(ws.UpdateSchedule)
-		ws.Updated = util.Timestamp()
+		ws.Next = now + (int64)(ws.UpdateSchedule)
+		ws.Updated = now
 	} else {
 		ws = types.WorkspaceDS{
 			ID:             id,
 			Name:           name,
 			Next:           0,
 			UpdateSchedule: DefaultUpdateSchedule,
-			Created:        util.Timestamp(),
-			Updated:        util.Timestamp(),
+			Created:        now,
+			Updated:        now,
 		}
 	}
 
@@ -35,20 +35,21 @@ func UpdateWorkspace(ctx context.Context, id, name string) error {
 
 // MarkWorkspaceUpdated marks the auth record as updated
 func MarkWorkspaceUpdated(ctx context.Context, id string) {
+	now := util.Timestamp()
 	var ws = types.WorkspaceDS{}
 	key := WorkspaceKey(id)
 
 	err := store.Client().Get(ctx, key, &ws)
 	if err == nil {
-		ws.Next = util.Timestamp() + (int64)(ws.UpdateSchedule)
-		ws.Updated = util.Timestamp()
+		ws.Next = now + (int64)(ws.UpdateSchedule)
+		ws.Updated = now
 		_, err = store.Client().Put(ctx, key, &ws)
 	}
 }
 
 // UpdateChannel updates the channel metadata
 func UpdateChannel(ctx context.Context, id, team, name, topic, purpose string, archived, private, deleted bool) error {
-
+	now := util.Timestamp()
 	var channel = types.ChannelDS{}
 	key := ChannelKey(id, team)
 	err := store.Client().Get(ctx, key, &channel)
@@ -60,7 +61,7 @@ func UpdateChannel(ctx context.Context, id, team, name, topic, purpose string, a
 		channel.IsArchived = archived
 		channel.IsPrivate = private
 		channel.IsDeleted = deleted
-		channel.Updated = util.Timestamp()
+		channel.Updated = now
 	} else {
 		channel = types.ChannelDS{
 			ID:              id,
@@ -72,10 +73,10 @@ func UpdateChannel(ctx context.Context, id, team, name, topic, purpose string, a
 			IsPrivate:       private,
 			IsDeleted:       deleted,
 			Latest:          0,
-			Next:            util.Timestamp() + (int64)(util.Random(DefaultCrawlerSchedule)),
+			Next:            now + (int64)(util.Random(DefaultCrawlerSchedule)),
 			CrawlerSchedule: DefaultCrawlerSchedule,
-			Created:         util.Timestamp(),
-			Updated:         util.Timestamp(),
+			Created:         now,
+			Updated:         now,
 		}
 	}
 

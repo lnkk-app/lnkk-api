@@ -66,13 +66,16 @@ type (
 
 	// MessageDS holds slack messages
 	MessageDS struct {
-		ChannelID    string
-		TeamID       string
-		User         string
-		TS           int64  // ts the message was created, according to the Slack API
-		Text         string `datastore:",noindex"`
+		ChannelID string
+		TeamID    string
+		User      string
+		TS        int64  // ts the message was created, according to the Slack API
+		Text      string `datastore:",noindex"`
+		// supporting analytics
 		Attachements bool
 		Reactions    bool
+		Day          int // day of the week (Sun = 0)
+		Hour         int // hour of the day (0..23)
 		// Internal
 		Created int64 // ts this record was created
 		Updated int64 // ts this record was last updated
