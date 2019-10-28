@@ -48,7 +48,7 @@ func AttachmentKeyString(msg string, id int) string {
 
 // ReactionKey creates a datastore key for attachements based on the message id and attachement id
 func ReactionKey(msg string, id int) *datastore.Key {
-	return datastore.NameKey(DatastoreAttachments, ReactionKeyString(msg, id), nil)
+	return datastore.NameKey(DatastoreReactions, ReactionKeyString(msg, id), nil)
 }
 
 // ReactionKeyString returns the string used to generate the attachment key
