@@ -3,8 +3,10 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/majordomusio/commons/pkg/env"
 	"github.com/majordomusio/commons/pkg/util"
 	"google.golang.org/appengine"
 
@@ -23,7 +25,16 @@ func CmdShortenEndpoint(c *gin.Context) {
 	secret, _ := util.ShortUUID()
 	source, _ := params["team_id"]
 	owner, _ := params["user_id"]
-	url, _ := params["text"]
+
+	// parse the text into the url and tags if there are any
+	// example: https://foo.bar.com foo bar
+	text, _ := params["text"]
+	parts := strings.Split(text, " ")
+	url := parts[0]
+	tags := ""
+	if len(parts) > 1 {
+		tags = strings.Join(parts[1:], ",")
+	}
 
 	asset := types.AssetDS{
 		URI:       uri,
@@ -33,7 +44,7 @@ func CmdShortenEndpoint(c *gin.Context) {
 		Source:    source,
 		Cohort:    "slack",
 		Affiliate: "",
-		Tags:      "",
+		Tags:      tags,
 	}
 
 	err := backend.CreateAsset(ctx, &asset)
@@ -41,7 +52,7 @@ func CmdShortenEndpoint(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "msg": err.Error()})
 	}
 
-	shortened := fmt.Sprintf("https://lnkk.host/r/%s", uri)
+	shortened := fmt.Sprintf("%s/r/%s", env.Getenv("BASE_URL", "/"), uri)
 	c.JSON(http.StatusOK, shortened)
 }
 
