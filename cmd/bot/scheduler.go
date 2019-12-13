@@ -1,4 +1,4 @@
-package api
+package main
 
 import (
 	"fmt"
@@ -18,8 +18,8 @@ import (
 	"github.com/lnkk-ai/lnkk/internal/types"
 )
 
-// UpdateWorkspaces schedules all workspaces that need updating
-func UpdateWorkspaces(c *gin.Context) {
+// updateWorkspaces schedules all workspaces that need updating
+func updateWorkspaces(c *gin.Context) {
 	ctx := appengine.NewContext(c.Request)
 
 	now := util.Timestamp()
@@ -41,8 +41,8 @@ func UpdateWorkspaces(c *gin.Context) {
 	}
 }
 
-// CollectMessages schedules the collection of messages in a given team & channel
-func CollectMessages(c *gin.Context) {
+// collectMessages schedules the collection of messages in a given team & channel
+func collectMessages(c *gin.Context) {
 	ctx := appengine.NewContext(c.Request)
 
 	now := util.Timestamp()
@@ -61,4 +61,8 @@ func CollectMessages(c *gin.Context) {
 	} else {
 		errorreporting.Report(err)
 	}
+}
+
+// updateStats schedules all workspaces that need updating
+func updateStats(c *gin.Context) {
 }

@@ -1,4 +1,4 @@
-package jobs
+package main
 
 import (
 	"fmt"
@@ -18,8 +18,8 @@ import (
 	"github.com/lnkk-ai/lnkk/pkg/slack"
 )
 
-// UpdateUsersJob updates the list of users of a workspace
-func UpdateUsersJob(c *gin.Context) {
+// updateUsersJob updates the list of users of a workspace
+func updateUsersJob(c *gin.Context) {
 	ctx := appengine.NewContext(c.Request)
 
 	id := c.Query("id")
@@ -55,8 +55,8 @@ func UpdateUsersJob(c *gin.Context) {
 	}
 }
 
-// UpdateChannelsJob updates the workspace metadata periodically
-func UpdateChannelsJob(c *gin.Context) {
+// updateChannelsJob updates the workspace metadata periodically
+func updateChannelsJob(c *gin.Context) {
 	ctx := appengine.NewContext(c.Request)
 
 	id := c.Query("id")
@@ -93,9 +93,9 @@ func UpdateChannelsJob(c *gin.Context) {
 
 }
 
-// CollectMessagesJob collects all new messages in a team & channel
+// collectMessagesJob collects all new messages in a team & channel
 // /_i/1/jobs/msgs?id=..&c=..&latest=..
-func CollectMessagesJob(c *gin.Context) {
+func collectMessagesJob(c *gin.Context) {
 	ctx := appengine.NewContext(c.Request)
 
 	id := c.Query("id")

@@ -8,3 +8,8 @@ cron:
   url: /_i/1/scheduler/messages
   schedule: every 120 minutes
   target: default
+
+- description: "Periodically update statistics"
+  url: /_i/1/scheduler/stats
+  schedule: every 120 minutes
+  target: default

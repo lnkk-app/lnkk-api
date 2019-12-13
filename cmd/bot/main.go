@@ -10,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 
 	a "github.com/lnkk-ai/lnkk/internal/api"
-	"github.com/lnkk-ai/lnkk/internal/jobs"
 
 	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/majordomusio/platform/pkg/errorreporting"
@@ -43,13 +42,14 @@ func main() {
 	router.GET("/auth", a.AuthEndpoint)
 
 	// scheduler endpoints
-	router.GET(api.SchedulerBaseURL+"/workspace", a.UpdateWorkspaces)
-	router.GET(api.SchedulerBaseURL+"/messages", a.CollectMessages)
+	router.GET(api.SchedulerBaseURL+"/workspace", updateWorkspaces)
+	router.GET(api.SchedulerBaseURL+"/messages", collectMessages)
+	router.GET(api.SchedulerBaseURL+"/stats", updateStats)
 
 	// jobs endpoints, used by the taskqueue
-	router.POST(api.JobsBaseURL+"/channels", jobs.UpdateChannelsJob)
-	router.POST(api.JobsBaseURL+"/users", jobs.UpdateUsersJob)
-	router.POST(api.JobsBaseURL+"/messages", jobs.CollectMessagesJob)
+	router.POST(api.JobsBaseURL+"/channels", updateChannelsJob)
+	router.POST(api.JobsBaseURL+"/users", updateUsersJob)
+	router.POST(api.JobsBaseURL+"/messages", collectMessagesJob)
 
 	// start the router on port 8080, unless $PORT is set to something else
 	router.Run()
