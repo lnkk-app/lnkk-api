@@ -9,9 +9,9 @@ import (
 
 	"github.com/lnkk-ai/lnkk/internal/types"
 	"github.com/lnkk-ai/lnkk/pkg/api"
-	"github.com/majordomusio/platform/pkg/errorreporting"
-	s "github.com/majordomusio/platform/pkg/store"
 	"github.com/majordomusio/commons/pkg/util"
+	"github.com/majordomusio/platform/pkg/errorreporting"
+	"github.com/majordomusio/platform/pkg/store"
 )
 
 // AssetKey creates the datastore key for an asset
@@ -29,7 +29,7 @@ func CreateAsset(ctx context.Context, as *types.AssetDS) error {
 	as.Created = util.Timestamp()
 
 	k := AssetKey(as.URI)
-	if _, err := s.Client().Put(ctx, k, as); err != nil {
+	if _, err := store.Client().Put(ctx, k, as); err != nil {
 		errorreporting.Report(err)
 		return err
 	}
@@ -42,7 +42,7 @@ func GetAsset(ctx context.Context, uri string) (*api.Asset, error) {
 	var as types.AssetDS
 	k := AssetKey(uri)
 
-	if err := s.Client().Get(ctx, k, &as); err != nil {
+	if err := store.Client().Get(ctx, k, &as); err != nil {
 		return nil, err
 	}
 
@@ -59,7 +59,7 @@ func CreateMeasurement(ctx context.Context, m *types.MeasurementDS) error {
 	CreateGeoLocation(ctx, m.IP)
 
 	k := datastore.IncompleteKey(DatastoreMeasurements, nil)
-	if _, err := s.Client().Put(ctx, k, m); err != nil {
+	if _, err := store.Client().Put(ctx, k, m); err != nil {
 		errorreporting.Report(err)
 		return err
 	}
@@ -73,7 +73,7 @@ func CreateGeoLocation(ctx context.Context, ip string) error {
 	var loc types.GeoLocationDS
 	k := GeoLocationKey(ip)
 
-	if err := s.Client().Get(ctx, k, &loc); err != nil {
+	if err := store.Client().Get(ctx, k, &loc); err != nil {
 		// assuming the location is unknown
 		l, err := lookupGeoLocation(ip)
 		if err != nil {
@@ -81,7 +81,7 @@ func CreateGeoLocation(ctx context.Context, ip string) error {
 			return err
 		}
 
-		if _, err := s.Client().Put(ctx, k, l.AsInternal()); err != nil {
+		if _, err := store.Client().Put(ctx, k, l.AsInternal()); err != nil {
 			errorreporting.Report(err)
 			return err
 		}

@@ -8,7 +8,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	a "github.com/lnkk-ai/lnkk/internal/api"
 	"github.com/majordomusio/platform/pkg/errorreporting"
 	"github.com/majordomusio/platform/pkg/store"
 )
@@ -25,17 +24,14 @@ func main() {
 
 	// basic config
 	gin.DisableConsoleColor()
-	// a new router
 	router := gin.New()
-	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	router.Use(gin.Recovery())
 
-	router.POST("/sl/s", a.CmdShortenEndpoint)
+	// endpoints
+	router.POST("/cmd/s", slashCmdShortenEndpoint)
+	router.GET("/r/:uri", redirectEndpoint)
 
-	// default endpoints that are not part of the API namespace
-	router.GET("/r/:uri", a.RedirectEndpoint)
-
-	// start the router on port 8080, unless ENV PORT is set to something else
+	// start the router on port 8080, unless ENV[PORT] is set to something else
 	router.Run()
 }
 
