@@ -9,6 +9,7 @@ import (
 
 	"github.com/majordomusio/commons/pkg/env"
 	"github.com/majordomusio/commons/pkg/util"
+
 	"github.com/majordomusio/platform/pkg/errorreporting"
 	"github.com/majordomusio/platform/pkg/tasks"
 

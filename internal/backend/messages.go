@@ -3,11 +3,13 @@ package backend
 import (
 	"context"
 
-	"github.com/lnkk-ai/lnkk/internal/types"
-	"github.com/lnkk-ai/lnkk/pkg/slack"
 	"github.com/majordomusio/commons/pkg/util"
+
 	"github.com/majordomusio/platform/pkg/errorreporting"
 	"github.com/majordomusio/platform/pkg/store"
+
+	"github.com/lnkk-ai/lnkk/internal/types"
+	"github.com/lnkk-ai/lnkk/pkg/slack"
 )
 
 // StoreMessage stores a slack message

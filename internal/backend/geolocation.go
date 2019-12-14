@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/lnkk-ai/lnkk/internal/types"
-	"github.com/majordomusio/commons/pkg/util"
 	"golang.org/x/net/html/charset"
+
+	"github.com/majordomusio/commons/pkg/util"
+
+	"github.com/lnkk-ai/lnkk/internal/types"
 )
 
 type (

@@ -5,13 +5,17 @@ import (
 	"net/http"
 	"strings"
 
+	"google.golang.org/appengine"
+
 	"github.com/gin-gonic/gin"
-	"github.com/lnkk-ai/lnkk/internal/backend"
-	"github.com/lnkk-ai/lnkk/internal/types"
-	"github.com/lnkk-ai/lnkk/pkg/slack"
+
 	"github.com/majordomusio/commons/pkg/env"
 	"github.com/majordomusio/commons/pkg/util"
-	"google.golang.org/appengine"
+
+	"github.com/lnkk-ai/lnkk/internal/backend"
+	"github.com/lnkk-ai/lnkk/internal/types"
+
+	"github.com/lnkk-ai/lnkk/pkg/slack"
 )
 
 // redirectEndpoint receives a URI to be shortened
@@ -94,3 +98,20 @@ func slashCmdShortenEndpoint(c *gin.Context) {
 	shortened := fmt.Sprintf("%s/r/%s", env.Getenv("BASE_URL", "/"), uri)
 	c.JSON(http.StatusOK, shortened)
 }
+
+/*
+
+// AsExternal create an external representation of the asset
+func (t *AssetDS) AsExternal() *api.Asset {
+	asset := api.Asset{
+		URI:       t.URI,
+		URL:       t.URL,
+		SecretID:  t.SecretID,
+		Cohort:    t.Cohort,
+		Affiliate: t.Affiliate,
+		Tags:      t.Tags,
+	}
+	return &asset
+}
+
+*/

@@ -1,11 +1,13 @@
 package metrics
 
 import (
-	"cloud.google.com/go/datastore"
 	"golang.org/x/net/context"
+
+	"cloud.google.com/go/datastore"
 
 	"github.com/majordomusio/platform/pkg/errorreporting"
 	"github.com/majordomusio/platform/pkg/store"
+
 	"github.com/majordomusio/commons/pkg/util"
 )
 

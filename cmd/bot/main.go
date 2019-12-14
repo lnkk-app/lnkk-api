@@ -2,19 +2,19 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/gin-gonic/gin"
 
-	a "github.com/lnkk-ai/lnkk/internal/api"
+	a "github.com/majordomusio/commons/pkg/api"
 
-	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/majordomusio/platform/pkg/errorreporting"
 	"github.com/majordomusio/platform/pkg/store"
 	"github.com/majordomusio/platform/pkg/tasks"
+
+	"github.com/lnkk-ai/lnkk/pkg/api"
 )
 
 func main() {
@@ -35,11 +35,11 @@ func main() {
 	router.Use(gin.Recovery())
 
 	// default endpoints that are not part of the API namespace
-	router.GET("/", defaultEndpoint)
+	//router.GET("/", a.DefaultEndpoint)
 	router.GET("/robots.txt", a.RobotsEndpoint)
 
 	// authenticate the app
-	router.GET("/auth", a.AuthEndpoint)
+	router.GET("/auth", api.AuthEndpoint)
 
 	// scheduler endpoints
 	router.GET(api.SchedulerBaseURL+"/workspace", updateWorkspaces)
@@ -53,12 +53,6 @@ func main() {
 
 	// start the router on port 8080, unless $PORT is set to something else
 	router.Run()
-}
-
-// defaultEndpoint maps to GET /*
-func defaultEndpoint(c *gin.Context) {
-	// TODO: real implementation, logging & auditing
-	c.JSON(http.StatusOK, gin.H{"app": "bot", "vesion": api.Version, "status": "ok"})
 }
 
 func shutdown() {

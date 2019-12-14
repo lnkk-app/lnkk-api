@@ -3,9 +3,11 @@ package backend
 import (
 	"context"
 
-	"github.com/lnkk-ai/lnkk/internal/types"
 	"github.com/majordomusio/commons/pkg/util"
+
 	"github.com/majordomusio/platform/pkg/store"
+
+	"github.com/lnkk-ai/lnkk/internal/types"
 )
 
 // UpdateWorkspace updates the workspace metadata

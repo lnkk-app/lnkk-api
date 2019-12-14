@@ -3,14 +3,16 @@ package api
 import (
 	"net/http"
 
+	"google.golang.org/appengine"
+
 	"github.com/gin-gonic/gin"
-	"github.com/lnkk-ai/lnkk/internal/backend"
-	"github.com/lnkk-ai/lnkk/pkg/api"
-	"github.com/lnkk-ai/lnkk/pkg/slack"
+
 	"github.com/majordomusio/commons/pkg/env"
 	"github.com/majordomusio/platform/pkg/errorreporting"
 	"github.com/majordomusio/platform/pkg/tasks"
-	"google.golang.org/appengine"
+
+	"github.com/lnkk-ai/lnkk/internal/backend"
+	"github.com/lnkk-ai/lnkk/pkg/slack"
 )
 
 // AuthEndpoint handles the callback from Slack with the temporary access code
@@ -37,8 +39,8 @@ func AuthEndpoint(c *gin.Context) {
 			backend.UpdateWorkspace(ctx, resp.TeamID, resp.TeamName)
 
 			// schedule the first update of the new workspace
-			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/users?id="+resp.TeamID)
-			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/channels?id="+resp.TeamID)
+			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+JobsBaseURL+"/users?id="+resp.TeamID)
+			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+JobsBaseURL+"/channels?id="+resp.TeamID)
 
 			backend.MarkWorkspaceUpdated(ctx, resp.TeamID)
 		}

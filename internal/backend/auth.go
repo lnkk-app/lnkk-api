@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/lnkk-ai/lnkk/internal/types"
+	"google.golang.org/appengine/memcache"
+
 	"github.com/majordomusio/commons/pkg/errors"
 	"github.com/majordomusio/commons/pkg/util"
+
 	"github.com/majordomusio/platform/pkg/store"
-	"google.golang.org/appengine/memcache"
+
+	"github.com/lnkk-ai/lnkk/internal/types"
 )
 
 // GetAuthorization returns the authorization granted for a workspace

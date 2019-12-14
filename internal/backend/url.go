@@ -7,11 +7,12 @@ import (
 
 	"cloud.google.com/go/datastore"
 
-	"github.com/lnkk-ai/lnkk/internal/types"
-	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/majordomusio/commons/pkg/util"
+
 	"github.com/majordomusio/platform/pkg/errorreporting"
 	"github.com/majordomusio/platform/pkg/store"
+
+	"github.com/lnkk-ai/lnkk/internal/types"
 )
 
 // AssetKey creates the datastore key for an asset
@@ -38,7 +39,7 @@ func CreateAsset(ctx context.Context, as *types.AssetDS) error {
 }
 
 // GetAsset retrieves the asset
-func GetAsset(ctx context.Context, uri string) (*api.Asset, error) {
+func GetAsset(ctx context.Context, uri string) (*types.AssetDS, error) {
 	var as types.AssetDS
 	k := AssetKey(uri)
 
@@ -46,7 +47,7 @@ func GetAsset(ctx context.Context, uri string) (*api.Asset, error) {
 		return nil, err
 	}
 
-	return as.AsExternal(), nil
+	return &as, nil
 }
 
 // CreateMeasurement records a link activation
