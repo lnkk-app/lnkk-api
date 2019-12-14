@@ -22,6 +22,7 @@ func redirectEndpoint(c *gin.Context) {
 	uri := c.Param("uri")
 	if uri == "" {
 		// TODO log this event
+		// FIXME redirect to a valid page
 		c.String(http.StatusOK, "42")
 		return
 	}
@@ -29,6 +30,7 @@ func redirectEndpoint(c *gin.Context) {
 	a, err := backend.GetAsset(ctx, uri)
 	if err != nil {
 		// TODO log this event
+		// FIXME redirect to a valid page
 		c.String(http.StatusOK, "42")
 		return
 	}

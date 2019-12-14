@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/lnkk-ai/lnkk/internal/types"
+	"github.com/majordomusio/commons/pkg/errors"
 	"github.com/majordomusio/commons/pkg/util"
-	"github.com/majordomusio/platform/pkg/errorreporting"
 	"github.com/majordomusio/platform/pkg/store"
 	"google.golang.org/appengine/memcache"
 )
@@ -41,7 +41,7 @@ func GetAuthToken(ctx context.Context, id string) (string, error) {
 		return "", err
 	}
 	if auth == nil {
-		return "", errorreporting.New(fmt.Sprintf("No authorization token for workspace '%s'", id))
+		return "", errors.New(fmt.Sprintf("No authorization token for workspace '%s'", id))
 	}
 	return auth.AccessToken, nil
 }
