@@ -8,11 +8,6 @@ import (
 	"golang.org/x/net/context"
 )
 
-// PostRequest is used to invoke a Slack Web API method by posting a JSON payload
-func PostRequest(ctx context.Context, token, apiMethod string, request interface{}) (*StandardResponse, error) {
-	return post(ctx, token, SlackEndpoint+apiMethod, request)
-}
-
 // GetRequest is used to query the Slack Web API
 func GetRequest(ctx context.Context, token, apiMethod, query string, response interface{}) error {
 	url := SlackEndpoint + apiMethod + "?" + query
@@ -39,6 +34,11 @@ func GetRequest(ctx context.Context, token, apiMethod, query string, response in
 
 }
 
+// PostRequest is used to invoke a Slack Web API method by posting a JSON payload
+func PostRequest(ctx context.Context, token, apiMethod string, request interface{}) (*StandardResponse, error) {
+	return post(ctx, token, SlackEndpoint+apiMethod, request)
+}
+
 // post allows to post data to Slack as specified in the Web API documentation.
 // See https://api.slack.com/web
 func post(ctx context.Context, token, url string, body interface{}) (*StandardResponse, error) {
@@ -53,7 +53,7 @@ func post(ctx context.Context, token, url string, body interface{}) (*StandardRe
 		return nil, err
 	}
 
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	req.Header.Set("Authorization", "Bearer "+token)
 
 	// post the request to Slack

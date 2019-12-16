@@ -19,6 +19,12 @@ const (
 
 type (
 
+	// SimpleMessage is a simple structure
+	SimpleMessage struct {
+		Channel string `json:"channel"`
+		Text    string `json:"text"`
+	}
+
 	// Notification is a short message sent to a channel via a webhook
 	Notification struct {
 		Username string `json:"username,omitempty"`

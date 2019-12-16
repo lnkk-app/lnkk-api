@@ -19,8 +19,8 @@ import (
 	"github.com/lnkk-ai/lnkk/pkg/slack"
 )
 
-// updateUsersJob updates the list of users of a workspace
-func updateUsersJob(c *gin.Context) {
+// taskUpdateUsers updates the list of users of a workspace
+func taskUpdateUsers(c *gin.Context) {
 	ctx := appengine.NewContext(c.Request)
 
 	id := c.Query("id")
@@ -56,8 +56,8 @@ func updateUsersJob(c *gin.Context) {
 	}
 }
 
-// updateChannelsJob updates the workspace metadata periodically
-func updateChannelsJob(c *gin.Context) {
+// taskUpdateChannels updates the workspace metadata periodically
+func taskUpdateChannels(c *gin.Context) {
 	ctx := appengine.NewContext(c.Request)
 
 	id := c.Query("id")
@@ -94,9 +94,9 @@ func updateChannelsJob(c *gin.Context) {
 
 }
 
-// collectMessagesJob collects all new messages in a team & channel
+// taskCollectMessages collects all new messages in a team & channel
 // /_i/1/jobs/msgs?id=..&c=..&latest=..
-func collectMessagesJob(c *gin.Context) {
+func taskCollectMessages(c *gin.Context) {
 	ctx := appengine.NewContext(c.Request)
 
 	id := c.Query("id")
@@ -152,4 +152,36 @@ func collectMessagesJob(c *gin.Context) {
 	// final auditing
 	metrics.Count(ctx, "jobs.slack.messages.count", channel, n)
 
+}
+
+// taskHourly updates the list of users of a workspace
+func taskHourly(c *gin.Context) {
+	ctx := appengine.NewContext(c.Request)
+
+	id := c.Query("id")
+
+	auth, err := backend.GetAuthToken(ctx, id)
+	if err != nil {
+		errorreporting.Report(err)
+		return
+	}
+
+	// FIXME this is just a placeholder!
+	slack.PostSimpleMessage(ctx, auth, "z_admin", "Hourly tasks")
+}
+
+// taskDaily updates the list of users of a workspace
+func taskDaily(c *gin.Context) {
+	ctx := appengine.NewContext(c.Request)
+
+	id := c.Query("id")
+
+	auth, err := backend.GetAuthToken(ctx, id)
+	if err != nil {
+		errorreporting.Report(err)
+		return
+	}
+
+	// FIXME this is just a placeholder!
+	slack.PostSimpleMessage(ctx, auth, "z_admin", "Daily tasks")
 }

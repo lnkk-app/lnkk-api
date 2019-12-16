@@ -42,25 +42,27 @@ func main() {
 	router.GET("/auth", api.AuthEndpoint)
 
 	// scheduler endpoints
-	router.GET(api.SchedulerBaseURL+"/workspace", updateWorkspaces)
-	router.GET(api.SchedulerBaseURL+"/messages", collectMessages)
-	router.GET(api.SchedulerBaseURL+"/stats", updateStats)
+	router.GET(api.SchedulerBaseURL+"/workspace", scheduleUpdateWorkspaces)
+	router.GET(api.SchedulerBaseURL+"/messages", scheduleCollectMessages)
+	// statistics etc
+	router.GET(api.SchedulerBaseURL+"/hourly", scheduleHourlyTasks)
+	router.GET(api.SchedulerBaseURL+"/daily", scheduleDailyTasks)
 
 	// jobs endpoints, used by the taskqueue
-	router.POST(api.JobsBaseURL+"/channels", updateChannelsJob)
-	router.POST(api.JobsBaseURL+"/users", updateUsersJob)
-	router.POST(api.JobsBaseURL+"/messages", collectMessagesJob)
+	router.POST(api.JobsBaseURL+"/j/channels", taskUpdateChannels)
+	router.POST(api.JobsBaseURL+"/j/users", taskUpdateUsers)
+	router.POST(api.JobsBaseURL+"/j/messages", taskCollectMessages)
+	router.POST(api.JobsBaseURL+"/j/hourly", taskHourly)
+	router.POST(api.JobsBaseURL+"/j/daily", taskDaily)
 
 	// start the router on port 8080, unless $PORT is set to something else
 	router.Run()
 }
 
 func shutdown() {
-	log.Printf("Shutting down ...")
-
 	store.Close()
 	errorreporting.Close()
 	tasks.Close()
 
-	log.Printf("... done")
+	log.Printf("Exiting ...")
 }

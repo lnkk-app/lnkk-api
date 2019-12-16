@@ -21,8 +21,8 @@ import (
 	"github.com/lnkk-ai/lnkk/internal/types"
 )
 
-// updateWorkspaces schedules all workspaces that need updating
-func updateWorkspaces(c *gin.Context) {
+// scheduleUpdateWorkspaces schedules all workspaces that need updating
+func scheduleUpdateWorkspaces(c *gin.Context) {
 	ctx := appengine.NewContext(c.Request)
 
 	now := util.Timestamp()
@@ -34,8 +34,8 @@ func updateWorkspaces(c *gin.Context) {
 	if err == nil {
 		for i := range workspaces {
 
-			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/users?id="+workspaces[i].ID)
-			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/channels?id="+workspaces[i].ID)
+			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/j/users?id="+workspaces[i].ID)
+			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/j/channels?id="+workspaces[i].ID)
 
 			backend.MarkWorkspaceUpdated(ctx, workspaces[i].ID)
 		}
@@ -44,8 +44,8 @@ func updateWorkspaces(c *gin.Context) {
 	}
 }
 
-// collectMessages schedules the collection of messages in a given team & channel
-func collectMessages(c *gin.Context) {
+// scheduleCollectMessages schedules the collection of messages in a given team & channel
+func scheduleCollectMessages(c *gin.Context) {
 	ctx := appengine.NewContext(c.Request)
 
 	now := util.Timestamp()
@@ -59,13 +59,51 @@ func collectMessages(c *gin.Context) {
 
 			id := channels[i].TeamID
 			channel := channels[i].ID
-			tasks.Schedule(ctx, backend.BackgroundWorkQueue, fmt.Sprintf("%s%s/messages?id=%s&c=%s", env.Getenv("BASE_URL", ""), api.JobsBaseURL, id, channel))
+			tasks.Schedule(ctx, backend.BackgroundWorkQueue, fmt.Sprintf("%s%s/j/messages?id=%s&c=%s", env.Getenv("BASE_URL", ""), api.JobsBaseURL, id, channel))
 		}
 	} else {
 		errorreporting.Report(err)
 	}
 }
 
-// updateStats schedules all workspaces that need updating
-func updateStats(c *gin.Context) {
+// scheduleHourlyTasks schedules all workspaces that need updating
+func scheduleHourlyTasks(c *gin.Context) {
+	ctx := appengine.NewContext(c.Request)
+
+	now := util.Timestamp()
+	var workspaces []types.WorkspaceDS
+
+	q := datastore.NewQuery(backend.DatastoreWorkspaces).Filter("Next <", now)
+	_, err := store.Client().GetAll(ctx, q, &workspaces)
+
+	if err == nil {
+		for i := range workspaces {
+
+			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/j/hourly?id="+workspaces[i].ID)
+
+		}
+	} else {
+		errorreporting.Report(err)
+	}
+}
+
+// scheduleDailyTasks schedules all workspaces that need updating
+func scheduleDailyTasks(c *gin.Context) {
+	ctx := appengine.NewContext(c.Request)
+
+	now := util.Timestamp()
+	var workspaces []types.WorkspaceDS
+
+	q := datastore.NewQuery(backend.DatastoreWorkspaces).Filter("Next <", now)
+	_, err := store.Client().GetAll(ctx, q, &workspaces)
+
+	if err == nil {
+		for i := range workspaces {
+
+			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/j/hourly?id="+workspaces[i].ID)
+
+		}
+	} else {
+		errorreporting.Report(err)
+	}
 }

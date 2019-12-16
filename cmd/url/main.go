@@ -36,10 +36,8 @@ func main() {
 }
 
 func shutdown() {
-	log.Printf("Shutting down ...")
-
 	store.Close()
 	errorreporting.Close()
 
-	log.Printf("... done")
+	log.Printf("Exiting ...")
 }
