@@ -11,7 +11,7 @@ cron:
 
 - description: "Hourly tasks, e.g. statistics, reports etc"
   url: /_i/1/scheduler/hourly
-  schedule: every 60 minutes
+  schedule: every 60 minutes synchronized
   target: default
 
 - description: "Daily tasks"

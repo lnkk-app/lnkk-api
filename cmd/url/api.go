@@ -47,6 +47,7 @@ func redirectEndpoint(c *gin.Context) {
 		IP:             c.ClientIP(),
 		UserAgent:      strings.ToLower(c.GetHeader("User-Agent")),
 		AcceptLanguage: strings.ToLower(c.GetHeader("Accept-Language")),
+		Source:         a.Source,
 		Day:            util.TimestampToWeekday(now),
 		Hour:           util.TimestampToHour(now),
 		Created:        now,

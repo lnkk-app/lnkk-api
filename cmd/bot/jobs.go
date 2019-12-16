@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"time"
 
+	"cloud.google.com/go/datastore"
 	"google.golang.org/appengine"
 
 	"github.com/gin-gonic/gin"
@@ -11,6 +13,7 @@ import (
 	"github.com/majordomusio/commons/pkg/util"
 
 	"github.com/majordomusio/platform/pkg/errorreporting"
+	"github.com/majordomusio/platform/pkg/store"
 	"github.com/majordomusio/platform/pkg/tasks"
 
 	"github.com/lnkk-ai/lnkk/internal/backend"
@@ -154,8 +157,8 @@ func taskCollectMessages(c *gin.Context) {
 
 }
 
-// taskHourly updates the list of users of a workspace
-func taskHourly(c *gin.Context) {
+// taskLinkActivations reports the number of link activations in the last hour
+func taskLinkActivations(c *gin.Context) {
 	ctx := appengine.NewContext(c.Request)
 
 	id := c.Query("id")
@@ -167,7 +170,15 @@ func taskHourly(c *gin.Context) {
 	}
 
 	// FIXME this is just a placeholder!
-	slack.PostSimpleMessage(ctx, auth, "z_admin", "Hourly tasks")
+
+	// query Measurements in the last hour
+	ts := util.Timestamp() - 3600
+	q := datastore.NewQuery(backend.DatastoreMeasurements).Filter("Created >", ts)
+	num, err := store.Client().Count(ctx, q)
+
+	if num > 0 {
+		slack.PostSimpleMessage(ctx, auth, "z_admin", fmt.Sprintf("Link activations since %s: %d", time.Unix(ts, 0).String(), num))
+	}
 }
 
 // taskDaily updates the list of users of a workspace

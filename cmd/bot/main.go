@@ -52,7 +52,8 @@ func main() {
 	router.POST(api.JobsBaseURL+"/j/channels", taskUpdateChannels)
 	router.POST(api.JobsBaseURL+"/j/users", taskUpdateUsers)
 	router.POST(api.JobsBaseURL+"/j/messages", taskCollectMessages)
-	router.POST(api.JobsBaseURL+"/j/hourly", taskHourly)
+	// hourly, periodic tasks
+	router.POST(api.JobsBaseURL+"/j/activations", taskLinkActivations)
 	router.POST(api.JobsBaseURL+"/j/daily", taskDaily)
 
 	// start the router on port 8080, unless $PORT is set to something else

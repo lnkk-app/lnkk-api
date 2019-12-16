@@ -77,7 +77,7 @@ func scheduleHourlyTasks(c *gin.Context) {
 
 	if err == nil {
 		for i := range workspaces {
-			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/j/hourly?id="+workspaces[i].ID)
+			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/j/activations?id="+workspaces[i].ID)
 		}
 	} else {
 		errorreporting.Report(err)
