@@ -70,17 +70,14 @@ func scheduleCollectMessages(c *gin.Context) {
 func scheduleHourlyTasks(c *gin.Context) {
 	ctx := appengine.NewContext(c.Request)
 
-	now := util.Timestamp()
 	var workspaces []types.WorkspaceDS
 
-	q := datastore.NewQuery(backend.DatastoreWorkspaces).Filter("Next <", now)
+	q := datastore.NewQuery(backend.DatastoreWorkspaces)
 	_, err := store.Client().GetAll(ctx, q, &workspaces)
 
 	if err == nil {
 		for i := range workspaces {
-
 			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/j/hourly?id="+workspaces[i].ID)
-
 		}
 	} else {
 		errorreporting.Report(err)
@@ -91,17 +88,14 @@ func scheduleHourlyTasks(c *gin.Context) {
 func scheduleDailyTasks(c *gin.Context) {
 	ctx := appengine.NewContext(c.Request)
 
-	now := util.Timestamp()
 	var workspaces []types.WorkspaceDS
 
-	q := datastore.NewQuery(backend.DatastoreWorkspaces).Filter("Next <", now)
+	q := datastore.NewQuery(backend.DatastoreWorkspaces)
 	_, err := store.Client().GetAll(ctx, q, &workspaces)
 
 	if err == nil {
 		for i := range workspaces {
-
-			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/j/hourly?id="+workspaces[i].ID)
-
+			tasks.Schedule(ctx, backend.BackgroundWorkQueue, env.Getenv("BASE_URL", "")+api.JobsBaseURL+"/j/daily?id="+workspaces[i].ID)
 		}
 	} else {
 		errorreporting.Report(err)
