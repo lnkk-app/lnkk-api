@@ -8,7 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	a "github.com/majordomusio/commons/pkg/api"
+	"github.com/majordomusio/commons/pkg/services"
 
 	"github.com/majordomusio/platform/pkg/errorreporting"
 	"github.com/majordomusio/platform/pkg/store"
@@ -36,10 +36,10 @@ func main() {
 
 	// default endpoints that are not part of the API namespace
 	//router.GET("/", a.DefaultEndpoint)
-	router.GET("/robots.txt", a.RobotsEndpoint)
+	router.GET("/robots.txt", services.RobotsEndpoint)
 
 	// authenticate the app
-	router.GET("/auth", api.AuthEndpoint)
+	router.GET("/auth", authEndpoint)
 
 	// scheduler endpoints
 	router.GET(api.SchedulerBaseURL+"/workspace", scheduleUpdateWorkspaces)
