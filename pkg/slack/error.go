@@ -11,7 +11,7 @@ func (e *errorString) Error() string {
 	return e.s
 }
 
-// newError returns an error that formats as the given text.
-func newError(cmd, text string) error {
+// newSlackError returns an error that formats as the given text.
+func newSlackError(cmd, text string) error {
 	return &errorString{fmt.Sprintf("api='%s',err='%s'", cmd, text)}
 }

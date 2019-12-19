@@ -22,7 +22,7 @@ func UsersList(ctx context.Context, token, cursor string) (*UsersListResponse, e
 	}
 
 	if !resp.OK {
-		return nil, newError(cmd, resp.Error)
+		return nil, newSlackError(cmd, resp.Error)
 	}
 
 	return &resp, nil
@@ -42,7 +42,7 @@ func UsersInfo(ctx context.Context, token, userID string) (*UsersInfoResponse, e
 	}
 
 	if !resp.OK {
-		return nil, newError(cmd, resp.Error)
+		return nil, newSlackError(cmd, resp.Error)
 	}
 
 	return &resp, nil

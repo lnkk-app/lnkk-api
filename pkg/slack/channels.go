@@ -24,7 +24,7 @@ func ChannelsList(ctx context.Context, token, cursor string) (*ChannelsListRespo
 	}
 
 	if !resp.OK {
-		return nil, newError(cmd, resp.Error)
+		return nil, newSlackError(cmd, resp.Error)
 	}
 
 	return &resp, nil
@@ -44,7 +44,7 @@ func ChannelsInfo(ctx context.Context, token, channelID string) (*ChannelsInfoRe
 	}
 
 	if !resp.OK {
-		return nil, newError(cmd, resp.Error)
+		return nil, newSlackError(cmd, resp.Error)
 	}
 
 	return &resp, nil
@@ -75,7 +75,7 @@ func ChannelsHistory(ctx context.Context, token, channelID string, count int, t 
 	}
 
 	if !resp.OK {
-		return nil, newError(cmd, resp.Error)
+		return nil, newSlackError(cmd, resp.Error)
 	}
 
 	return &resp, nil

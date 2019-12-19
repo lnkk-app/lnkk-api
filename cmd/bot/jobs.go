@@ -13,12 +13,12 @@ import (
 	"github.com/majordomusio/commons/pkg/util"
 
 	"github.com/majordomusio/platform/pkg/errorreporting"
+	"github.com/majordomusio/platform/pkg/metrics"
 	"github.com/majordomusio/platform/pkg/store"
 	"github.com/majordomusio/platform/pkg/tasks"
 
 	"github.com/lnkk-ai/lnkk/internal/backend"
 	"github.com/lnkk-ai/lnkk/pkg/api"
-	"github.com/lnkk-ai/lnkk/pkg/metrics"
 	"github.com/lnkk-ai/lnkk/pkg/slack"
 )
 
