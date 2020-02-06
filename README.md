@@ -8,4 +8,3 @@ https://lnkk.host/* -> url-shortener
 ### Webhooks
 
 /sl/s -> Slack /shorten
-
