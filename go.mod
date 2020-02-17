@@ -6,6 +6,7 @@ require (
 	cloud.google.com/go v0.53.0 // indirect
 	cloud.google.com/go/datastore v1.1.0
 	github.com/franela/goreq v0.0.0-20171204163338-bcd34c9993f8 // indirect
+	github.com/gin-gonic/contrib v0.0.0-20191209060500-d6e26eeaa607 // indirect
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/json-iterator/go v1.1.9 // indirect
