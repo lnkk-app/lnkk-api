@@ -2,7 +2,6 @@ service: default
 
 runtime: go112
 instance_class: F1
-main: github.com/lnkk-ai/lnk/cmd/bot
 
 handlers:
 - url: /.*
@@ -11,9 +10,10 @@ handlers:
 
 env_variables:
   PROJECT_ID: 'project_id'
-  LOCATION_ID: 'location_id'
+  LOCATION_ID: 'europe-west3'
   BASE_URL: 'https://...'
   SLACK_APP_ID: 'xoxo'
   SLACK_CLIENT_ID: 'xoxo'
   SLACK_CLIENT_SECRET: 'xoxo'
+  SLACK_SIGNING_SECRET: 'xoxo'
   GIN_MODE: 'release'

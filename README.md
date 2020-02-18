@@ -9,3 +9,7 @@ https://lnkk.host/* -> url-shortener
 
 /sl/s -> Slack /shorten
 
+### References
+
+* https://awesomeopensource.com/project/FlowerWrong/awesome-gin
+

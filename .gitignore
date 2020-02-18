@@ -14,6 +14,7 @@
 # other
 stuff.md
 hack/
+*.txt
 # possible binaries
 cmd/bot/bot
 cmd/url/url

@@ -1,5 +1,0 @@
-dispatch:
-  - url: "lnkk.host/*"
-    service: url-shortener
-  #- url: "*/r/*"
-  #  service: url-shortener
