@@ -41,32 +41,31 @@ func init() {
 // Close the platform related clients
 func Close() {
 	// error reporting
-	if errorClient == nil {
-		return
+	if errorClient != nil {
+		errorClient.Flush()
+		errorClient.Close()
+		errorClient = nil
 	}
-	errorClient.Flush()
-	errorClient.Close()
-	errorClient = nil
 
 	// datastore
-	if dsClient == nil {
-		return
+	if dsClient != nil {
+		dsClient.Close()
+		dsClient = nil
 	}
-	dsClient.Close()
-	dsClient = nil
 }
 
-// Report reports the error, what else?
+// Report reports an error, what else?
 func Report(err error) {
 	errorClient.Report(errorreporting.Entry{Error: err})
 }
 
-// DataStore return a reference to the datastore client
+// DataStore returns a reference to the datastore
 func DataStore() *datastore.Client {
 	return dsClient
 }
 
 // FIXME just stubs for now !
+
 // PrintError prints an error message to stderr
 func PrintError(msg string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, msg, args...)
