@@ -1,57 +1,26 @@
 package backend
 
 import (
-	"fmt"
+	"log"
+	"net/url"
 
-	"cloud.google.com/go/datastore"
+	"github.com/gin-gonic/gin"
+	"github.com/lnkk-ai/lnkk/pkg/platform"
 )
 
-// AuthorizationKey creates a datastore key for a workspace authorization based on the team_id.
-func AuthorizationKey(id string) *datastore.Key {
-	return datastore.NameKey(DatastoreAuthorizations, id, nil)
-}
+// DumpPayload just prints the entire request body to STDOUT
+func DumpPayload(c *gin.Context) {
 
-// WorkspaceKey creates a datastore key for a workspace based on the team_id.
-func WorkspaceKey(id string) *datastore.Key {
-	return datastore.NameKey(DatastoreWorkspaces, id, nil)
-}
+	buf, err := c.Copy().GetRawData()
+	if err != nil {
+		platform.Report(err)
+	}
 
-// UserKey creates a datastore key for users based on the id and team_id.
-func UserKey(id, team string) *datastore.Key {
-	return datastore.NameKey(DatastoreUsers, team+"."+id, nil)
-}
+	body, err := url.QueryUnescape(string(buf))
+	if err != nil {
+		platform.Report(err)
+	}
 
-// ChannelKey creates a datastore key for channels based on the id and team_id.
-func ChannelKey(id, team string) *datastore.Key {
-	return datastore.NameKey(DatastoreChannels, team+"."+id, nil)
-}
+	log.Printf("%v", body)
 
-// MessageKey creates a datastore key for messages based on the id, timestamp and user.
-func MessageKey(id, ts, user string) *datastore.Key {
-	return datastore.NameKey(DatastoreMessages, MessageKeyString(id, ts, user), nil)
-}
-
-// MessageKeyString returns the string used to generate the message key
-func MessageKeyString(id, ts, user string) string {
-	return ts + "." + id + "." + user
-}
-
-// AttachmentKey creates a datastore key for attachements based on the message id and attachement id
-func AttachmentKey(msg string, id int) *datastore.Key {
-	return datastore.NameKey(DatastoreAttachments, AttachmentKeyString(msg, id), nil)
-}
-
-// AttachmentKeyString returns the string used to generate the attachment key
-func AttachmentKeyString(msg string, id int) string {
-	return fmt.Sprintf("%s.%d", msg, id)
-}
-
-// ReactionKey creates a datastore key for attachements based on the message id and attachement id
-func ReactionKey(msg string, id int) *datastore.Key {
-	return datastore.NameKey(DatastoreReactions, ReactionKeyString(msg, id), nil)
-}
-
-// ReactionKeyString returns the string used to generate the attachment key
-func ReactionKeyString(msg string, id int) string {
-	return fmt.Sprintf("%s.%d", msg, id)
 }
