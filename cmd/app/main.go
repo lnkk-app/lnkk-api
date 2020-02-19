@@ -46,6 +46,9 @@ func main() {
 	// authenticate the app
 	router.GET("/a/auth", api.AuthEndpoint)
 
+	// endpoints and callbacks
+	router.POST("/a/actions", api.ActionsEndpoint)
+
 	// start the router on port 8080, unless $PORT is set to something else
 	router.Run()
 }

@@ -41,7 +41,7 @@ func AuthEndpoint(c *gin.Context) {
 
 	// back to the sign-up process on the main website
 	if redirectURI == "" {
-		c.Redirect(http.StatusTemporaryRedirect, "/start")
+		c.Redirect(http.StatusTemporaryRedirect, "/")
 	} else {
 		c.Redirect(http.StatusTemporaryRedirect, redirectURI)
 	}
