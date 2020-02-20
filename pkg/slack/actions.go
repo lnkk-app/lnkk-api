@@ -2,20 +2,31 @@ package slack
 
 type (
 
+	// message_action -> ActionRequest
+	// view_submission -> ViewSubmission
+
+	// AppRequestPeek is used to determin the type of request
+	AppRequestPeek struct {
+		Type string `json:"type,omitempty"`
+	}
+
+	// See https://api.slack.com/reference/interaction-payloads/actions
+
 	// ActionRequest is the payload received from Slack when the user triggers a custom message action
+	// type == message_action
 	ActionRequest struct {
-		Type             string               `json:"type,omitempty"`
-		Token            string               `json:"token,omitempty"`
-		ActionTimestamp  string               `json:"action_ts,omitempty"`
-		Team             MessageActionTeam    `json:"team,omitempty"`
-		User             MessageActionUser    `json:"user,omitempty"`
-		Channel          MessageActionChannel `json:"channel,omitempty"`
-		CallbackID       string               `json:"callback_id,omitempty"`
-		TriggerID        string               `json:"trigger_id,omitempty"`
-		MessageTimestamp string               `json:"message_ts,omitempty"`
-		Message          ActionRequestMessage `json:"message,omitempty"`
-		ResponseURL      string               `json:"response_url,omitempty"`
-		Submission       map[string]string    `json:"submission,omitempty"`
+		Type             string                `json:"type,omitempty"`
+		Token            string                `json:"token,omitempty"`
+		ActionTimestamp  string                `json:"action_ts,omitempty"`
+		Team             *MessageActionTeam    `json:"team,omitempty"`
+		User             *MessageActionUser    `json:"user,omitempty"`
+		Channel          *MessageActionChannel `json:"channel,omitempty"`
+		CallbackID       string                `json:"callback_id,omitempty"`
+		TriggerID        string                `json:"trigger_id,omitempty"`
+		MessageTimestamp string                `json:"message_ts,omitempty"`
+		Message          *ActionRequestMessage `json:"message,omitempty"`
+		ResponseURL      string                `json:"response_url,omitempty"`
+		Submission       map[string]string     `json:"submission,omitempty"`
 	}
 
 	// ActionRequestMessage is the message's main content
@@ -60,5 +71,16 @@ type (
 	MessageActionChannel struct {
 		ID   string `json:"id,omitempty"`
 		Name string `json:"name,omitempty"`
+	}
+
+	// ViewSubmission see https://api.slack.com/reference/interaction-payloads/views#view_submission
+	// type == view_submission
+	ViewSubmission struct {
+		Type      string             `json:"type,omitempty"`
+		Team      *MessageActionTeam `json:"team,omitempty"`
+		User      *MessageActionUser `json:"user,omitempty"`
+		Token     string             `json:"token,omitempty"`
+		TriggerID string             `json:"trigger_id,omitempty"`
+		View      *ViewElement       `json:"view,omitempty"`
 	}
 )

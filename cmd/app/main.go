@@ -59,14 +59,12 @@ func shutdown() {
 }
 
 func staticIndexEndpoint(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"scope":     "commands",
-		"client_id": env.Getenv("SLACK_CLIENT_ID", ""),
-	})
+	c.HTML(http.StatusOK, "index.tmpl", gin.H{})
 }
 
 func staticStartEndpoint(c *gin.Context) {
 	c.HTML(http.StatusOK, "start.tmpl", gin.H{
+		"scope":     "commands",
 		"client_id": env.Getenv("SLACK_CLIENT_ID", ""),
 	})
 }
