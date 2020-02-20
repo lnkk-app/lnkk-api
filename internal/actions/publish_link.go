@@ -1,11 +1,55 @@
-package modal
+package actions
 
 import (
+	"log"
+
+	"github.com/gin-gonic/gin"
+	"google.golang.org/appengine"
+
+	"github.com/majordomusio/commons/pkg/util"
+
+	"github.com/lnkk-ai/lnkk/internal/backend"
 	"github.com/lnkk-ai/lnkk/pkg/slack"
 )
 
-// CreatePublishLinkModal creates the modal struct to publish a link
-func CreatePublishLinkModal(a *slack.ActionRequest) *slack.ModalRequest {
+// StartPublishLinkAction initiates the interaction
+func StartPublishLinkAction(c *gin.Context, a *slack.ActionRequest) error {
+	ctx := appengine.NewContext(c.Request)
+
+	token, err := backend.GetAuthToken(ctx, a.Team.ID)
+	if err != nil {
+		return err
+	}
+
+	// build the modal view
+	m := newPublishLinkModal(a)
+	// LOG log.Printf("modal: %v\n\n", util.PrintJSON(m))
+
+	var resp slack.ModalResponse
+	err = slack.CustomPost(c, token, "views.open", &m, &resp)
+	if err != nil {
+		return err
+	}
+
+	if resp.OK != true {
+		return slack.NewSimpleError("views.open", resp.Error)
+	}
+	// FIXME remove this
+	// LOG log.Printf("response: %v\n\n", util.PrintJSON(resp))
+
+	return nil
+}
+
+// CompletePublishLinkAction completes the interaction
+func CompletePublishLinkAction(c *gin.Context, s *slack.ViewSubmission) error {
+	// FIXME remove this
+	log.Printf("submission: %v\n\n", util.PrintJSON(s))
+
+	return nil
+}
+
+// newPublishLinkModal creates the modal struct
+func newPublishLinkModal(a *slack.ActionRequest) *slack.ModalRequest {
 
 	blocks := make([]interface{}, 4)
 

@@ -2,19 +2,14 @@ package api
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"google.golang.org/appengine"
-
-	"github.com/majordomusio/commons/pkg/util"
 
 	"github.com/lnkk-ai/lnkk/pkg/platform"
 	"github.com/lnkk-ai/lnkk/pkg/slack"
 
-	"github.com/lnkk-ai/lnkk/internal/backend"
-	"github.com/lnkk-ai/lnkk/internal/modal"
+	"github.com/lnkk-ai/lnkk/internal/actions"
 )
 
 // ActionRequestEndpoint receives callbacks from Slack
@@ -41,7 +36,7 @@ func ActionRequestEndpoint(c *gin.Context) {
 		//LOG log.Printf("action: %v\n\n", util.PrintJSON(action))
 
 		// FIXME switch actions
-		err = publishLinkAction(c, &action)
+		err = actions.StartPublishLinkAction(c, &action)
 		if err != nil {
 			platform.Report(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "msg": err.Error()})
@@ -57,36 +52,8 @@ func ActionRequestEndpoint(c *gin.Context) {
 			return
 		}
 
-		// FIXME remove this
-		log.Printf("submission: %v\n\n", util.PrintJSON(submission))
+		actions.CompletePublishLinkAction(c, &submission)
 	} else {
 		// FIXME should not happen !
 	}
-}
-
-func publishLinkAction(c *gin.Context, a *slack.ActionRequest) error {
-	ctx := appengine.NewContext(c.Request)
-
-	token, err := backend.GetAuthToken(ctx, a.Team.ID)
-	if err != nil {
-		return err
-	}
-
-	// build the modal view
-	m := modal.CreatePublishLinkModal(a)
-	// LOG log.Printf("modal: %v\n\n", util.PrintJSON(m))
-
-	var resp slack.ModalResponse
-	err = slack.CustomPost(c, token, "views.open", &m, &resp)
-	if err != nil {
-		return err
-	}
-
-	if resp.OK != true {
-		return slack.NewSimpleError("views.open", resp.Error)
-	}
-	// FIXME remove this
-	// LOG log.Printf("response: %v\n\n", util.PrintJSON(resp))
-
-	return nil
 }
