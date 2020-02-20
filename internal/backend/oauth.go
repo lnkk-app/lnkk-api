@@ -7,9 +7,8 @@ import (
 
 	"google.golang.org/appengine/memcache"
 
-	"github.com/majordomusio/commons/pkg/errors"
-
 	"github.com/lnkk-ai/lnkk/internal/types"
+	"github.com/lnkk-ai/lnkk/pkg/errors"
 	"github.com/lnkk-ai/lnkk/pkg/platform"
 )
 

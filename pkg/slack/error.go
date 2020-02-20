@@ -1,17 +1,31 @@
 package slack
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
-// errorString is a trivial implementation of error.
-type errorString struct {
-	s string
+// slackError is a trivial implementation of error.
+type slackError struct {
+	api string
+	err error
+	msg string
 }
 
-func (e *errorString) Error() string {
-	return e.s
+func (e *slackError) Error() string {
+	return fmt.Sprintf("api='%s',err='%s'", e.api, e.msg)
 }
 
-// newSlackError returns an error that formats as the given text.
-func newSlackError(cmd, text string) error {
-	return &errorString{fmt.Sprintf("api='%s',err='%s'", cmd, text)}
+func (e *slackError) Unwrap() error {
+	return e.err
+}
+
+// NewError returns an error that formats as the given text.
+func NewError(api string, e error) error {
+	return &slackError{api: api, err: e, msg: e.Error()}
+}
+
+// NewSimpleError returns an error that formats as the given text.
+func NewSimpleError(api, text string) error {
+	return &slackError{api: api, err: errors.New(text), msg: text}
 }

@@ -82,6 +82,9 @@ func publishLinkAction(c *gin.Context, a *slack.ActionRequest) error {
 		return err
 	}
 
+	if resp.OK != true {
+		return slack.NewSimpleError("views.open", resp.Error)
+	}
 	// FIXME remove this
 	// LOG log.Printf("response: %v\n\n", util.PrintJSON(resp))
 
