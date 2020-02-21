@@ -1,17 +1,13 @@
 package api
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
 	"github.com/lnkk-ai/lnkk/internal/backend"
-	"github.com/lnkk-ai/lnkk/internal/types"
 	"github.com/lnkk-ai/lnkk/pkg/platform"
 	"github.com/lnkk-ai/lnkk/pkg/slack"
-
-	"github.com/majordomusio/commons/pkg/util"
 
 	"google.golang.org/appengine"
 )
@@ -53,7 +49,7 @@ func OAuthEndpoint(c *gin.Context) {
 			return
 		}
 
-		err = updateAuthorization(ctx, teamInfo.Team.ID, teamInfo.Team.Name, resp.AccessToken, resp.TokenType, resp.Scope, resp.AppID, resp.BotUserID)
+		err = backend.UpdateAuthorization(ctx, teamInfo.Team.ID, teamInfo.Team.Name, resp.AccessToken, resp.TokenType, resp.Scope, resp.AppID, resp.BotUserID)
 		if err != nil {
 			platform.Report(err)
 			c.Redirect(http.StatusTemporaryRedirect, "/error")
@@ -67,33 +63,4 @@ func OAuthEndpoint(c *gin.Context) {
 	} else {
 		c.Redirect(http.StatusTemporaryRedirect, redirectURI)
 	}
-}
-
-// UpdateAuthorization updates the authorization, or creates a new one.
-func updateAuthorization(ctx context.Context, id, name, token, tokenType, scope, appID, botID string) error {
-	now := util.Timestamp()
-	var auth = types.AuthorizationDS{}
-	key := backend.AuthorizationKey(id)
-	err := platform.DataStore().Get(ctx, key, &auth)
-
-	if err == nil {
-		auth.AccessToken = token
-		auth.Scope = scope
-		auth.Updated = now
-	} else {
-		auth = types.AuthorizationDS{
-			ID:          id,
-			Name:        name,
-			AccessToken: token,
-			TokenType:   tokenType,
-			Scope:       scope,
-			AppID:       appID,
-			BotUserID:   botID,
-			Created:     now,
-			Updated:     now,
-		}
-	}
-
-	_, err = platform.DataStore().Put(ctx, key, &auth)
-	return err
 }

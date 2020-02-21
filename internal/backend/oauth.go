@@ -7,14 +7,14 @@ import (
 
 	"google.golang.org/appengine/memcache"
 
-	"github.com/lnkk-ai/lnkk/internal/types"
 	"github.com/lnkk-ai/lnkk/pkg/errors"
 	"github.com/lnkk-ai/lnkk/pkg/platform"
+	"github.com/majordomusio/commons/pkg/util"
 )
 
 // GetAuthorization returns the authorization granted to an app
-func GetAuthorization(ctx context.Context, id string) (*types.AuthorizationDS, error) {
-	var auth = types.AuthorizationDS{}
+func GetAuthorization(ctx context.Context, id string) (*AuthorizationDS, error) {
+	var auth = AuthorizationDS{}
 	key := "workspace.auth" + id
 	_, err := memcache.Gob.Get(ctx, key, &auth)
 
@@ -44,4 +44,33 @@ func GetAuthToken(ctx context.Context, id string) (string, error) {
 		return "", errors.New(fmt.Sprintf("No authorization token for workspace '%s'", id))
 	}
 	return auth.AccessToken, nil
+}
+
+// UpdateAuthorization updates the authorization, or creates a new one.
+func UpdateAuthorization(ctx context.Context, id, name, token, tokenType, scope, appID, botID string) error {
+	now := util.Timestamp()
+	var auth = AuthorizationDS{}
+	key := AuthorizationKey(id)
+	err := platform.DataStore().Get(ctx, key, &auth)
+
+	if err == nil {
+		auth.AccessToken = token
+		auth.Scope = scope
+		auth.Updated = now
+	} else {
+		auth = AuthorizationDS{
+			ID:          id,
+			Name:        name,
+			AccessToken: token,
+			TokenType:   tokenType,
+			Scope:       scope,
+			AppID:       appID,
+			BotUserID:   botID,
+			Created:     now,
+			Updated:     now,
+		}
+	}
+
+	_, err = platform.DataStore().Put(ctx, key, &auth)
+	return err
 }
