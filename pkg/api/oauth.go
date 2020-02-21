@@ -30,12 +30,35 @@ func AuthEndpoint(c *gin.Context) {
 		// exchange the temporary code with a real auth token
 		resp, err := slack.OAuthAccess(ctx, code)
 
+		// FIXME remove this
+		// LOG log.Printf("oauth: %v\n\n", util.PrintJSON(resp))
+
 		if err != nil {
 			platform.Report(err)
-		} else {
-			// FIXME error handling ?
-			updateAuthorization(ctx, resp.TeamID, resp.TeamName, resp.AccessToken, resp.Scope, resp.AuthorizingUser.UserID, resp.InstallerUser.UserID)
-			//backend.UpdateWorkspace(ctx, resp.TeamID, resp.TeamName)
+			c.Redirect(http.StatusTemporaryRedirect, "/error")
+			return
+		}
+
+		// get team info
+		var teamInfo slack.TeamInfo
+		err = slack.Get(ctx, resp.AccessToken, "team.info", "", &teamInfo)
+		if err != nil {
+			platform.Report(err)
+			c.Redirect(http.StatusTemporaryRedirect, "/error")
+			return
+		}
+
+		if teamInfo.OK == false {
+			platform.Report(slack.NewSimpleError("team.info", teamInfo.Error))
+			c.Redirect(http.StatusTemporaryRedirect, "/error")
+			return
+		}
+
+		err = updateAuthorization(ctx, teamInfo.Team.ID, teamInfo.Team.Name, resp.AccessToken, resp.TokenType, resp.Scope, resp.AppID, resp.BotUserID)
+		if err != nil {
+			platform.Report(err)
+			c.Redirect(http.StatusTemporaryRedirect, "/error")
+			return
 		}
 	}
 
@@ -48,7 +71,7 @@ func AuthEndpoint(c *gin.Context) {
 }
 
 // UpdateAuthorization updates the authorization, or creates a new one.
-func updateAuthorization(ctx context.Context, id, name, token, scope, authorizingUser, installerUser string) error {
+func updateAuthorization(ctx context.Context, id, name, token, tokenType, scope, appID, botID string) error {
 	now := util.Timestamp()
 	var auth = types.AuthorizationDS{}
 	key := backend.AuthorizationKey(id)
@@ -60,14 +83,15 @@ func updateAuthorization(ctx context.Context, id, name, token, scope, authorizin
 		auth.Updated = now
 	} else {
 		auth = types.AuthorizationDS{
-			ID:              id,
-			Name:            name,
-			AccessToken:     token,
-			Scope:           scope,
-			AuthorizingUser: authorizingUser,
-			InstallerUser:   installerUser,
-			Created:         now,
-			Updated:         now,
+			ID:          id,
+			Name:        name,
+			AccessToken: token,
+			TokenType:   tokenType,
+			Scope:       scope,
+			AppID:       appID,
+			BotUserID:   botID,
+			Created:     now,
+			Updated:     now,
 		}
 	}
 

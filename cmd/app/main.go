@@ -38,7 +38,8 @@ func main() {
 	router.Use(static.Serve("/css", static.LocalFile("./static/css", true)))
 	router.LoadHTMLGlob("static/templates/*")
 	router.GET("/", staticIndexEndpoint)
-	router.GET("/start", staticStartEndpoint)
+	router.GET("/error", staticErrorEndpoint)
+	router.GET("/addtoslack", staticAddAppEndpoint)
 
 	// default endpoints that are not part of the API namespace
 	router.GET("/robots.txt", services.RobotsEndpoint)
@@ -62,9 +63,13 @@ func staticIndexEndpoint(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{})
 }
 
-func staticStartEndpoint(c *gin.Context) {
-	c.HTML(http.StatusOK, "start.tmpl", gin.H{
-		"scope":     "commands",
+func staticErrorEndpoint(c *gin.Context) {
+	c.HTML(http.StatusOK, "error.tmpl", gin.H{})
+}
+
+func staticAddAppEndpoint(c *gin.Context) {
+	c.HTML(http.StatusOK, "add.tmpl", gin.H{
+		"scope":     env.Getenv("SLACK_OAUTH_SCOPE", "commands,incoming-webhook,team:read"),
 		"client_id": env.Getenv("SLACK_CLIENT_ID", ""),
 	})
 }
