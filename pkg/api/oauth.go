@@ -1,11 +1,13 @@
 package api
 
 import (
+	e "errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
 	"github.com/lnkk-ai/lnkk/internal/backend"
+	"github.com/lnkk-ai/lnkk/pkg/errors"
 	"github.com/lnkk-ai/lnkk/pkg/platform"
 	"github.com/lnkk-ai/lnkk/pkg/slack"
 
@@ -44,7 +46,7 @@ func OAuthEndpoint(c *gin.Context) {
 		}
 
 		if teamInfo.OK == false {
-			platform.Report(slack.NewSimpleError("team.info", teamInfo.Error))
+			platform.Report(errors.NewOperationError("team.info", e.New(teamInfo.Error)))
 			c.Redirect(http.StatusTemporaryRedirect, "/error")
 			return
 		}

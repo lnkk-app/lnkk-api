@@ -1,6 +1,7 @@
 package actions
 
 import (
+	e "errors"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -9,6 +10,7 @@ import (
 	"github.com/majordomusio/commons/pkg/util"
 
 	"github.com/lnkk-ai/lnkk/internal/backend"
+	"github.com/lnkk-ai/lnkk/pkg/errors"
 	"github.com/lnkk-ai/lnkk/pkg/slack"
 )
 
@@ -31,7 +33,7 @@ func StartPublishLinkAction(c *gin.Context, a *slack.ActionRequest) error {
 	}
 
 	if resp.OK != true {
-		return slack.NewSimpleError("views.open", resp.Error)
+		return errors.NewOperationError("views.open", e.New(resp.Error))
 	}
 
 	return nil
