@@ -9,11 +9,15 @@ handlers:
   secure: always
 
 env_variables:
-  PROJECT_ID: 'project_id'
+  # google
+  PROJECT_ID: 'xoxo'
   LOCATION_ID: 'europe-west3'
-  BASE_URL: 'https://...'
+  # slack
   SLACK_APP_ID: 'xoxo'
   SLACK_CLIENT_ID: 'xoxo'
   SLACK_CLIENT_SECRET: 'xoxo'
   SLACK_SIGNING_SECRET: 'xoxo'
+  SLACK_OAUTH_SCOPE: 'commands,incoming-webhook,team:read'
+  # app settings
+  BASE_URL: 'https://lnkk.app'
   GIN_MODE: 'release'
