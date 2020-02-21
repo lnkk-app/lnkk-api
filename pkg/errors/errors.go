@@ -1,5 +1,10 @@
 package errors
 
+//
+// This is a copy of majordomusio/commons/pkg/error, with improvements.
+// Will be eventually backported.
+//
+
 import (
 	"errors"
 	"fmt"
@@ -7,19 +12,14 @@ import (
 	"strings"
 )
 
-//
-// NOTE
-//
-// This is a copy of majordomusio/commons/pkg/error, with improvements.
-// Will be eventually backported.
-//
-
-type basicError struct {
-	err error
-	msg string
-	pkg string
-	fn  string
-}
+type (
+	basicError struct {
+		err error
+		msg string
+		pkg string
+		fn  string
+	}
+)
 
 func (e *basicError) Error() string {
 	return e.msg
