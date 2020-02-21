@@ -24,14 +24,13 @@ func AuthEndpoint(c *gin.Context) {
 	// extract parameters
 	code := c.Query("code")
 	redirectURI := c.Query("redirect_uri")
-	// FIXME state := c.Query("state")
+
+	// FIXME secure the request by using a state
+	// state := c.Query("state")
 
 	if code != "" {
 		// exchange the temporary code with a real auth token
 		resp, err := slack.OAuthAccess(ctx, code)
-
-		// FIXME remove this
-		// LOG log.Printf("oauth: %v\n\n", util.PrintJSON(resp))
 
 		if err != nil {
 			platform.Report(err)

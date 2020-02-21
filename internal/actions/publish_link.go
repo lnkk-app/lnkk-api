@@ -23,7 +23,6 @@ func StartPublishLinkAction(c *gin.Context, a *slack.ActionRequest) error {
 
 	// build the modal view
 	m := newPublishLinkModal(a)
-	// LOG log.Printf("modal: %v\n\n", util.PrintJSON(m))
 
 	var resp slack.ModalResponse
 	err = slack.CustomPost(c, token, "views.open", &m, &resp)
@@ -34,8 +33,6 @@ func StartPublishLinkAction(c *gin.Context, a *slack.ActionRequest) error {
 	if resp.OK != true {
 		return slack.NewSimpleError("views.open", resp.Error)
 	}
-	// FIXME remove this
-	// LOG log.Printf("response: %v\n\n", util.PrintJSON(resp))
 
 	return nil
 }

@@ -2,10 +2,12 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/lnkk-ai/lnkk/pkg/errors"
 	"github.com/lnkk-ai/lnkk/pkg/platform"
 	"github.com/lnkk-ai/lnkk/pkg/slack"
 
@@ -54,6 +56,6 @@ func ActionRequestEndpoint(c *gin.Context) {
 
 		actions.CompletePublishLinkAction(c, &submission)
 	} else {
-		// FIXME should not happen !
+		platform.Report(errors.New(fmt.Sprint("Unknown action request: '%s", peek.Type)))
 	}
 }
