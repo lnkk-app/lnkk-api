@@ -12,6 +12,8 @@ import (
 	"github.com/majordomusio/commons/pkg/util"
 )
 
+// FIXME change to platform cache
+
 // GetAuthorization returns the authorization granted to an app
 func GetAuthorization(ctx context.Context, id string) (*AuthorizationDS, error) {
 	var auth = AuthorizationDS{}

@@ -20,7 +20,6 @@ func ActionRequestEndpoint(c *gin.Context) {
 
 	err := json.Unmarshal([]byte(c.Request.FormValue("payload")), &peek)
 	if err != nil {
-		// report the error and abort
 		platform.Report(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "msg": err.Error()})
 		return
@@ -35,10 +34,7 @@ func ActionRequestEndpoint(c *gin.Context) {
 			return
 		}
 
-		//LOG log.Printf("action: %v\n\n", util.PrintJSON(action))
-
-		// FIXME switch actions
-		err = actions.StartPublishLinkAction(c, &action)
+		err = actions.StartAction(c, &action)
 		if err != nil {
 			platform.Report(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "msg": err.Error()})
@@ -54,7 +50,12 @@ func ActionRequestEndpoint(c *gin.Context) {
 			return
 		}
 
-		actions.CompletePublishLinkAction(c, &submission)
+		err = actions.CompleteAction(c, &submission)
+		if err != nil {
+			platform.Report(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "msg": err.Error()})
+			return
+		}
 	} else {
 		platform.Report(errors.New(fmt.Sprint("Unknown action request: '%s", peek.Type)))
 	}
