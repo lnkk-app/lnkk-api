@@ -1,15 +1,12 @@
-# lnkk
+# lnkk.app
 
-### Service mapping
+A bot to help managing social interactions in a Slack community.
 
-https://lnkk.social -> default
-https://lnkk.host/* -> url-shortener
+### Designing a great app experience
+* https://api.slack.com/start/designing
 
-### Webhooks
+### Reference guides for app features
+* https://api.slack.com/reference
 
-/sl/s -> Slack /shorten
-
-### References
-
-* https://awesomeopensource.com/project/FlowerWrong/awesome-gin
-
+### Installing with OAuth
+* https://api.slack.com/authentication/oauth-v2

@@ -11,7 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/majordomusio/commons/pkg/env"
-	"github.com/majordomusio/commons/pkg/services"
 
 	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/lnkk-ai/lnkk/pkg/platform"
@@ -42,10 +41,10 @@ func main() {
 	router.GET("/addtoslack", staticAddAppEndpoint)
 
 	// default endpoints that are not part of the API namespace
-	router.GET("/robots.txt", services.RobotsEndpoint)
+	router.GET("/robots.txt", robotsEndpoint)
 
 	// authenticate the app
-	router.GET("/a/auth", api.AuthEndpoint)
+	router.GET("/a/auth", api.OAuthEndpoint)
 
 	// endpoints and callbacks
 	router.POST("/a/actions", api.ActionRequestEndpoint)
@@ -72,4 +71,14 @@ func staticAddAppEndpoint(c *gin.Context) {
 		"scope":     env.Getenv("SLACK_OAUTH_SCOPE", "commands,incoming-webhook,team:read"),
 		"client_id": env.Getenv("SLACK_CLIENT_ID", ""),
 	})
+}
+
+// robotsEndpoint maps to GET /robots.txt
+func robotsEndpoint(c *gin.Context) {
+	// simply write text back ...
+	c.Header("Content-Type", "text/plain")
+
+	// a simple robots.txt file, disallow the API
+	c.Writer.Write([]byte("User-agent: *\n\n"))
+	c.Writer.Write([]byte("Disallow: /a/\n"))
 }

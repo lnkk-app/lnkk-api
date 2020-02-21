@@ -16,7 +16,7 @@ import (
 
 // ActionRequestEndpoint receives callbacks from Slack
 func ActionRequestEndpoint(c *gin.Context) {
-	var peek slack.AppRequestPeek
+	var peek slack.ActionRequestPeek
 
 	err := json.Unmarshal([]byte(c.Request.FormValue("payload")), &peek)
 	if err != nil {

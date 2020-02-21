@@ -5,8 +5,8 @@ type (
 	// message_action -> ActionRequest
 	// view_submission -> ViewSubmission
 
-	// AppRequestPeek is used to determin the type of request
-	AppRequestPeek struct {
+	// ActionRequestPeek is used to determin the type of request
+	ActionRequestPeek struct {
 		Type string `json:"type,omitempty"`
 	}
 
