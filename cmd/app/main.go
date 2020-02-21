@@ -33,17 +33,15 @@ func main() {
 	// load static assets and templates
 	router.Use(static.Serve("/css", static.LocalFile("./static/css", true)))
 	router.LoadHTMLGlob("static/templates/*")
+	// static routes
 	router.GET("/", staticIndexEndpoint)
 	router.GET("/error", staticErrorEndpoint)
 	router.GET("/addtoslack", staticAddAppEndpoint)
-
-	// default endpoints that are not part of the API namespace
+	// other static endpoints
 	router.GET("/robots.txt", robotsEndpoint)
-
 	// authenticate the app
 	router.GET("/a/auth", api.OAuthEndpoint)
-
-	// endpoints and callbacks
+	// API endpoints and callbacks
 	router.POST("/a/actions", api.ActionRequestEndpoint)
 
 	// start the router on port 8080, unless $PORT is set to something else
