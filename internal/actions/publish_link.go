@@ -1,51 +1,8 @@
 package actions
 
 import (
-	e "errors"
-	"log"
-
-	"github.com/gin-gonic/gin"
-	"google.golang.org/appengine"
-
-	"github.com/majordomusio/commons/pkg/util"
-
-	"github.com/lnkk-ai/lnkk/internal/backend"
-	"github.com/lnkk-ai/lnkk/pkg/errors"
 	"github.com/lnkk-ai/lnkk/pkg/slack"
 )
-
-// StartPublishLinkAction initiates the interaction
-func StartPublishLinkAction(c *gin.Context, a *slack.ActionRequest) error {
-	ctx := appengine.NewContext(c.Request)
-
-	token, err := backend.GetAuthToken(ctx, a.Team.ID)
-	if err != nil {
-		return err
-	}
-
-	// build the modal view
-	m := newPublishLinkModal(a)
-
-	var resp slack.ModalResponse
-	err = slack.CustomPost(c, token, "views.open", &m, &resp)
-	if err != nil {
-		return err
-	}
-
-	if resp.OK != true {
-		return errors.NewOperationError("views.open", e.New(resp.Error))
-	}
-
-	return nil
-}
-
-// CompletePublishLinkAction completes the interaction
-func CompletePublishLinkAction(c *gin.Context, s *slack.ViewSubmission) error {
-	// FIXME remove this
-	log.Printf("submission: %v\n\n", util.PrintJSON(s))
-
-	return nil
-}
 
 // newPublishLinkModal creates the modal struct
 func newPublishLinkModal(a *slack.ActionRequest) *slack.ModalRequest {

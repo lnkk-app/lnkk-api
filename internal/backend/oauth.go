@@ -9,6 +9,7 @@ import (
 
 	"github.com/lnkk-ai/lnkk/pkg/errors"
 	"github.com/lnkk-ai/lnkk/pkg/platform"
+	"github.com/majordomusio/commons/pkg/env"
 	"github.com/majordomusio/commons/pkg/util"
 )
 
@@ -38,6 +39,11 @@ func GetAuthorization(ctx context.Context, id string) (*AuthorizationDS, error) 
 
 // GetAuthToken returns the oauth token of the workspace integration
 func GetAuthToken(ctx context.Context, id string) (string, error) {
+	token := env.Getenv("SLACK_AUTH_TOKEN", "")
+	if token != "" {
+		return token, nil
+	}
+
 	auth, err := GetAuthorization(ctx, id)
 	if err != nil {
 		return "", err

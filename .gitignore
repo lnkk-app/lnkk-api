@@ -22,3 +22,4 @@ cmd/app/app
 
 # MAY CONTAIN SECRETS
 app.yaml
+gcloud.json
