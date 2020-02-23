@@ -65,3 +65,10 @@ func Get(ctx context.Context, k string) (string, error) {
 
 	return "", err
 }
+
+// Invalidate removes an entry from the cache
+func Invalidate(ctx context.Context, k string) {
+	key := datastore.NameKey(DatastoreKV, k, nil)
+	cache.Remove(&key)
+	DataStore().Delete(ctx, key)
+}

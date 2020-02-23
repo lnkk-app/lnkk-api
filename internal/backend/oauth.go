@@ -3,35 +3,20 @@ package backend
 import (
 	"context"
 	"fmt"
-	"time"
 
-	"google.golang.org/appengine/memcache"
-
-	"github.com/lnkk-ai/lnkk/pkg/errors"
 	"github.com/lnkk-ai/lnkk/pkg/platform"
 	"github.com/majordomusio/commons/pkg/env"
 	"github.com/majordomusio/commons/pkg/util"
 )
 
-// FIXME change to platform cache
-
 // GetAuthorization returns the authorization granted to an app
 func GetAuthorization(ctx context.Context, id string) (*AuthorizationDS, error) {
 	var auth = AuthorizationDS{}
-	key := "workspace.auth" + id
-	_, err := memcache.Gob.Get(ctx, key, &auth)
 
+	// just load it, let caching be handled elsewhere ...
+	err := platform.DataStore().Get(ctx, AuthorizationKey(id), &auth)
 	if err != nil {
-		err = platform.DataStore().Get(ctx, AuthorizationKey(id), &auth)
-		if err == nil {
-			cache := memcache.Item{}
-			cache.Key = key
-			cache.Object = auth
-			cache.Expiration, _ = time.ParseDuration(DefaultCacheDuration)
-			memcache.Gob.Set(ctx, &cache)
-		} else {
-			return nil, err
-		}
+		return nil, err
 	}
 
 	return &auth, nil
@@ -39,7 +24,15 @@ func GetAuthorization(ctx context.Context, id string) (*AuthorizationDS, error) 
 
 // GetAuthToken returns the oauth token of the workspace integration
 func GetAuthToken(ctx context.Context, id string) (string, error) {
+	// ENV always overrides anything stored...
 	token := env.Getenv("SLACK_AUTH_TOKEN", "")
+	if token != "" {
+		return token, nil
+	}
+
+	// check the in-memory cache
+	key := cacheKey(id)
+	token, err := platform.Get(ctx, key)
 	if token != "" {
 		return token, nil
 	}
@@ -49,8 +42,12 @@ func GetAuthToken(ctx context.Context, id string) (string, error) {
 		return "", err
 	}
 	if auth == nil {
-		return "", errors.New(fmt.Sprintf("No authorization token for workspace '%s'", id))
+		return "", fmt.Errorf("No authorization token for workspace '%s'", id)
 	}
+
+	// add the token to the cache
+	platform.Set(ctx, key, auth.AccessToken, 1800)
+
 	return auth.AccessToken, nil
 }
 
@@ -79,6 +76,13 @@ func UpdateAuthorization(ctx context.Context, id, name, token, tokenType, scope,
 		}
 	}
 
+	// remove the entry from the cache if it is already there ...
+	platform.Invalidate(ctx, cacheKey(id))
+
 	_, err = platform.DataStore().Put(ctx, key, &auth)
 	return err
+}
+
+func cacheKey(id string) string {
+	return "workspace.oauth." + id
 }
