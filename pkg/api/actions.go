@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	e "errors"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -99,7 +98,6 @@ func completeAction(c *gin.Context, s *slack.ViewSubmission) error {
 	ctx := appengine.NewContext(c.Request)
 
 	action := actions.LookupActionCorrelation(ctx, s.View.ID, s.Team.ID)
-	log.Printf("action -> %s\n\n", action)
 	if action == "" {
 		return nil
 	}
