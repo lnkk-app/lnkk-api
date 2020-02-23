@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/majordomusio/commons/pkg/util"
 	"google.golang.org/appengine"
 
 	"github.com/lnkk-ai/lnkk/pkg/errors"
@@ -92,8 +91,6 @@ func startAction(c *gin.Context, a *slack.ActionRequest) error {
 		return errors.NewOperationError(action, e.New(fmt.Sprintf("No handler for action request '%s'", action)))
 	}
 
-	// FIXME remove this
-	log.Printf("start -> %v, %s", handler, action)
 	return handler(c, a)
 }
 
@@ -101,9 +98,8 @@ func startAction(c *gin.Context, a *slack.ActionRequest) error {
 func completeAction(c *gin.Context, s *slack.ViewSubmission) error {
 	ctx := appengine.NewContext(c.Request)
 
-	log.Printf("s-> %v\n\n", util.PrintJSON(s))
-
 	action := actions.LookupActionCorrelation(ctx, s.View.ID, s.Team.ID)
+	log.Printf("action -> %s\n\n", action)
 	if action == "" {
 		return nil
 	}
@@ -113,7 +109,5 @@ func completeAction(c *gin.Context, s *slack.ViewSubmission) error {
 		return errors.NewOperationError(action, e.New(fmt.Sprintf("No handler for action response '%s'", action)))
 	}
 
-	// FIXME remove this
-	log.Printf("complete -> %v, %s", handler, action)
 	return handler(c, s)
 }
