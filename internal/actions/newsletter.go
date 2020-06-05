@@ -27,6 +27,10 @@ func StartAddToNewsletter(c *gin.Context, a *slack.ActionRequest) error {
 		return err
 	}
 
+	// FIXME remove this
+	//log.Printf("request -> %v\n\n", util.PrintJSON(a))
+	dump(c)
+
 	// build the modal view
 	m := addToNewsletterModal(a)
 
@@ -47,7 +51,7 @@ func StartAddToNewsletter(c *gin.Context, a *slack.ActionRequest) error {
 // CompleteAddToNewsletter completes the newsletter action
 func CompleteAddToNewsletter(c *gin.Context, s *slack.ViewSubmission) error {
 	// FIXME remove this
-	log.Printf("s-> %v\n\n", util.PrintJSON(s))
+	log.Printf("submission -> %v\n\n", util.PrintJSON(s))
 
 	return nil
 }
@@ -86,4 +90,13 @@ func addToNewsletterModal(a *slack.ActionRequest) *slack.ModalRequest {
 	}
 
 	return &m
+}
+
+// FIXME remove this later
+func dump(c *gin.Context) {
+	cc := c.Copy()
+	cc.Request.ParseForm()
+	for key, value := range cc.Request.PostForm {
+		log.Printf("k/v: %v -> %v", key, value)
+	}
 }
