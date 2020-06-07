@@ -31,16 +31,20 @@ func main() {
 	router.Use(gin.Recovery())
 
 	// load static assets and templates
-	router.Use(static.Serve("/css", static.LocalFile("./static/css", true)))
-	router.LoadHTMLGlob("static/templates/*")
+	router.Use(static.Serve("/assets/css", static.LocalFile("./public/assets/css", true)))
+	router.Use(static.Serve("/assets/javascript", static.LocalFile("./public/assets/javascript", true)))
+	router.LoadHTMLGlob("public/templates/*")
+	// other static endpoints
+	router.GET("/robots.txt", robotsEndpoint)
+
 	// static routes
 	router.GET("/", staticIndexEndpoint)
 	router.GET("/error", staticErrorEndpoint)
 	router.GET("/addtoslack", staticAddAppEndpoint)
-	// other static endpoints
-	router.GET("/robots.txt", robotsEndpoint)
+
 	// authenticate the app
 	router.GET("/a/auth", api.OAuthEndpoint)
+
 	// API endpoints and callbacks
 	router.POST("/a/actions", api.ActionRequestEndpoint)
 
