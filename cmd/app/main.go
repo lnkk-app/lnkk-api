@@ -47,6 +47,7 @@ func main() {
 
 	// API endpoints and callbacks
 	router.POST("/a/actions", api.ActionRequestEndpoint)
+	router.POST("a/cmd/lnk", api.CmdLnkkEndpoint)
 
 	// start the router on port 8080, unless $PORT is set to something else
 	router.Run()

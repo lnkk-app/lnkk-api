@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-
-	"github.com/gin-gonic/gin"
 )
 
 // Timestamp returns the seconds part of a Slack timestamp
@@ -30,24 +28,4 @@ func TimestampNanoString(ts int64) string {
 	_p1 := ts / 1000000
 	_p2 := ts % 1000000
 	return fmt.Sprintf("%d.%06d", _p1, _p2)
-}
-
-// SlashCommandPayload extracts the payload from a POST received by a slash command
-func SlashCommandPayload(c *gin.Context) map[string]string {
-	p := make(map[string]string)
-
-	p["team_id"] = c.PostForm("team_id")
-	p["team_domain"] = c.PostForm("team_domain")
-	p["enterprise_id"] = c.PostForm("enterprise_id")
-	p["enterprise_name"] = c.PostForm("enterprise_name")
-	p["channel_id"] = c.PostForm("channel_id")
-	p["channel_name"] = c.PostForm("channel_name")
-	p["user_id"] = c.PostForm("user_id")
-	p["user_name"] = c.PostForm("user_name")
-	p["command"] = c.PostForm("command")
-	p["text"] = c.PostForm("text")
-	p["response_url"] = c.PostForm("response_url")
-	p["trigger_id"] = c.PostForm("trigger_id")
-
-	return p
 }

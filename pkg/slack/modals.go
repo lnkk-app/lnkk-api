@@ -52,6 +52,11 @@ type (
 		Accessory interface{}  `json:"accessory,omitempty"`
 	}
 
+	// SectionBlocks is an array of SectionBlocks
+	SectionBlocks struct {
+		Blocks []SectionBlock `json:"blocks"`
+	}
+
 	// DividerBlock see https://api.slack.com/reference/block-kit/blocks#divider
 	// type == divider
 	DividerBlock struct {

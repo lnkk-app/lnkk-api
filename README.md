@@ -10,3 +10,11 @@ A bot to help managing social interactions in a Slack community.
 
 ### Installing with OAuth
 * https://api.slack.com/authentication/oauth-v2
+
+### Slack Setup
+
+#### Start here
+
+* https://api.slack.com/apps
+
+

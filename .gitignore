@@ -16,8 +16,6 @@ stuff.md
 hack/
 *.txt
 # possible binaries
-cmd/bot/bot
-cmd/url/url
 cmd/app/app
 
 # MAY CONTAIN SECRETS
