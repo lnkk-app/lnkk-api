@@ -30,24 +30,27 @@ func main() {
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	router.Use(gin.Recovery())
 
-	// load static assets and templates
+	// routes to load static assets and templates
 	router.Use(static.Serve("/assets/css", static.LocalFile("./public/assets/css", true)))
 	router.Use(static.Serve("/assets/javascript", static.LocalFile("./public/assets/javascript", true)))
 	router.LoadHTMLGlob("public/templates/*")
-	// other static endpoints
-	router.GET("/robots.txt", robotsEndpoint)
+
+	// default static endpoints
+	router.GET("/robots.txt", api.RobotsEndpoint)
+	router.GET("/ads.txt", api.NullEndpoint)    // FIXME change to the real handler
+	router.GET("/humans.txt", api.NullEndpoint) // FIXME change to the real handler
 
 	// static routes
 	router.GET("/", staticIndexEndpoint)
 	router.GET("/error", staticErrorEndpoint)
 	router.GET("/addtoslack", staticAddAppEndpoint)
 
-	// authenticate the app
-	router.GET("/a/auth", api.OAuthEndpoint)
-
 	// API endpoints and callbacks
 	router.POST("/a/actions", api.ActionRequestEndpoint)
 	router.POST("a/cmd/lnk", api.CmdLnkkEndpoint)
+
+	// authenticate the app
+	router.GET("/a/auth", api.OAuthEndpoint)
 
 	// start the router on port 8080, unless $PORT is set to something else
 	router.Run()
