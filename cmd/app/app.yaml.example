@@ -20,4 +20,5 @@ env_variables:
   SLACK_OAUTH_SCOPE: 'commands,incoming-webhook,team:read'
   # app settings
   BASE_URL: 'https://lnkk.app'
+  SHORT_URL: 'https://lnkk.app'
   GIN_MODE: 'release'

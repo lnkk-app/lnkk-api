@@ -2,12 +2,15 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
+
+	"github.com/majordomusio/commons/pkg/env"
 
 	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/lnkk-ai/lnkk/pkg/platform"
@@ -46,14 +49,33 @@ func main() {
 	router.GET("/addtoslack", staticAddAppEndpoint)
 
 	// API endpoints and callbacks
-	router.POST("/a/actions", api.ActionRequestEndpoint)
-	router.POST("a/cmd/lnk", api.CmdLnkkEndpoint)
 
-	// authenticate the app
-	router.GET("/a/auth", api.OAuthEndpoint)
+	// Slack integration
+	router.POST("/a/actions", api.ActionRequestEndpoint)
+	router.POST("/a/cmd/lnk", api.CmdLnkkEndpoint)
+	router.GET("/a/auth", api.SlackOAuthEndpoint)
+
+	// generic API
+	router.POST("/a/short", api.ShortenEndpoint)
+	router.GET("/r/:uri", api.RedirectEndpoint)
 
 	// start the router on port 8080, unless $PORT is set to something else
 	router.Run()
+}
+
+func staticIndexEndpoint(c *gin.Context) {
+	c.HTML(http.StatusOK, "index.tmpl", gin.H{})
+}
+
+func staticErrorEndpoint(c *gin.Context) {
+	c.HTML(http.StatusOK, "error.tmpl", gin.H{})
+}
+
+func staticAddAppEndpoint(c *gin.Context) {
+	c.HTML(http.StatusOK, "add.tmpl", gin.H{
+		"scope":     env.Getenv("SLACK_OAUTH_SCOPE", "commands,incoming-webhook,team:read"),
+		"client_id": env.Getenv("SLACK_CLIENT_ID", ""),
+	})
 }
 
 func shutdown() {

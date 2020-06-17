@@ -14,9 +14,9 @@ import (
 	"google.golang.org/appengine"
 )
 
-// OAuthEndpoint handles the callback from Slack with the temporary access code
+// SlackOAuthEndpoint handles the callback from Slack with the temporary access code
 // and exchanges it with the real auth token. See https://api.slack.com/docs/oauth
-func OAuthEndpoint(c *gin.Context) {
+func SlackOAuthEndpoint(c *gin.Context) {
 	ctx := appengine.NewContext(c.Request)
 
 	// extract parameters
