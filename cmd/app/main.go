@@ -14,6 +14,7 @@ import (
 
 	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/lnkk-ai/lnkk/pkg/platform"
+	"github.com/lnkk-ai/lnkk/pkg/slack"
 )
 
 func main() {
@@ -52,8 +53,8 @@ func main() {
 
 	// Slack integration
 	router.POST("/a/actions", api.ActionRequestEndpoint)
-	router.POST("/a/cmd/lnk", api.CmdLnkkEndpoint)
-	router.GET("/a/auth", api.SlackOAuthEndpoint)
+	router.POST("/a/cmd/lnk", api.SlashCmdEndpoint)
+	router.GET("/a/auth", slack.OAuthEndpoint)
 
 	// generic API
 	router.POST("/a/short", api.ShortenEndpoint)

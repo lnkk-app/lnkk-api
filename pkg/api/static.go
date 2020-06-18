@@ -7,6 +7,7 @@ import (
 )
 
 // RobotsEndpoint maps to GET /robots.txt
+// FIXME remove this
 func RobotsEndpoint(c *gin.Context) {
 	// simply write text back ...
 	c.Header("Content-Type", "text/plain")
@@ -37,6 +38,7 @@ func HumansEndpoint(c *gin.Context) {
 }
 
 // NullEndpoint just respondes with an empty 200
+// FIXME remove this
 func NullEndpoint(c *gin.Context) {
 	c.Status(http.StatusAccepted)
 }

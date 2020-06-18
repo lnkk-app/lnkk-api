@@ -13,7 +13,7 @@ import (
 )
 
 type (
-	basicError struct {
+	errorWrapper struct {
 		err  error
 		msg  string
 		oper string
@@ -22,34 +22,34 @@ type (
 	}
 )
 
-func (e *basicError) Error() string {
+func (e *errorWrapper) Error() string {
 	return e.msg
 }
 
-func (e *basicError) Unwrap() error {
+func (e *errorWrapper) Unwrap() error {
 	return e.err
 }
 
-func (e *basicError) FullError() string {
+func (e *errorWrapper) FullError() string {
 	return fmt.Sprintf("%s. Operation=%s, package='%s',f='%s'", e.msg, e.oper, e.pkg, e.fn)
 }
 
 // New returns an error that formats as the given text
 func New(text string) error {
 	p, f := packageAndFunc()
-	return &basicError{err: errors.New(text), msg: text, oper: "undefined", pkg: p, fn: f}
+	return &errorWrapper{err: errors.New(text), msg: text, oper: "undefined", pkg: p, fn: f}
 }
 
 // NewError wraps an error with additional metadata
 func NewError(e error) error {
 	p, f := packageAndFunc()
-	return &basicError{err: e, msg: e.Error(), oper: "undefined", pkg: p, fn: f}
+	return &errorWrapper{err: e, msg: e.Error(), oper: "undefined", pkg: p, fn: f}
 }
 
 // NewOperationError wraps an error with additional metadata
 func NewOperationError(operation string, e error) error {
 	p, f := packageAndFunc()
-	return &basicError{err: e, msg: e.Error(), oper: operation, pkg: p, fn: f}
+	return &errorWrapper{err: e, msg: e.Error(), oper: operation, pkg: p, fn: f}
 }
 
 // see https://stackoverflow.com/questions/25262754/how-to-get-name-of-current-package-in-go

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"net/http"
-	"os"
 
 	"golang.org/x/net/context"
 )
@@ -94,33 +93,4 @@ func CustomPost(ctx context.Context, token, apiMethod string, request, response 
 	err = json.NewDecoder(resp.Body).Decode(&response)
 
 	return err
-}
-
-// GetOAuthToken exchanges a temporary OAuth verifier code for an access token
-func GetOAuthToken(ctx context.Context, code string) (*OAuthResponse, error) {
-
-	url := SlackEndpoint + "oauth.v2.access?code=" + code
-
-	req, err := http.NewRequest("POST", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.SetBasicAuth(os.Getenv(SlackClientID), os.Getenv(SlackClientSecret))
-
-	// post the request to Slack
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	// unmarshal the response
-	var response OAuthResponse
-	err = json.NewDecoder(resp.Body).Decode(&response)
-
-	return &response, err
 }

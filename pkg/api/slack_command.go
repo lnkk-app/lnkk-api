@@ -10,8 +10,8 @@ import (
 	"github.com/lnkk-ai/lnkk/pkg/slack"
 )
 
-// CmdLnkkEndpoint receives callbacks from Slack command /lnkk
-func CmdLnkkEndpoint(c *gin.Context) {
+// SlashCmdEndpoint receives callbacks from Slack command /lnkk
+func SlashCmdEndpoint(c *gin.Context) {
 
 	status := http.StatusOK
 
@@ -40,6 +40,7 @@ func CmdLnkkEndpoint(c *gin.Context) {
 	c.JSON(status, resp)
 }
 
+// FIXME make this a handler function similar to the ActionRequests
 func handleCmdLnkk(c *gin.Context, cmd *slack.SlashCommand) (*slack.SectionBlocks, error) {
 	if len(cmd.Txt) == 0 {
 		return command.ShortHelpMessage(), nil
