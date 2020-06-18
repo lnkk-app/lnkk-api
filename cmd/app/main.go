@@ -66,12 +66,12 @@ func setupRoutes() *gin.Engine {
 	// API endpoints and callbacks
 
 	// Slack integration
-	r.POST("/a/actions", slack.ActionRequestEndpoint)
-	r.POST("/a/cmd/lnk", slack.SlashCmdEndpoint)
-	r.GET("/a/auth", slack.OAuthEndpoint)
+	r.POST("/s/1/actions", slack.ActionRequestEndpoint)
+	r.POST("/s/1/cmd/lnk", slack.SlashCmdEndpoint)
+	r.GET("/s/1/auth", slack.OAuthEndpoint)
 
 	// generic API
-	r.POST("/a/short", api.ShortenEndpoint)
+	r.POST("/a/1/short", api.ShortenEndpoint)
 	r.GET("/r/:uri", api.RedirectEndpoint)
 
 	return r
