@@ -8,6 +8,8 @@ import (
 	"golang.org/x/net/context"
 )
 
+// See https://api.slack.com/web
+
 // Get is used to query the Slack Web API
 func Get(ctx context.Context, token, apiMethod, query string, response interface{}) error {
 	url := SlackEndpoint + apiMethod + "?" + query
@@ -32,7 +34,7 @@ func Get(ctx context.Context, token, apiMethod, query string, response interface
 	return json.NewDecoder(resp.Body).Decode(&response)
 }
 
-// Post is used to invoke a Slack Web API method by posting a JSON payload. See https://api.slack.com/web
+// Post is used to invoke a Slack Web API method by posting a JSON payload.
 func Post(ctx context.Context, token, apiMethod string, request interface{}) (*StandardResponse, error) {
 	url := SlackEndpoint + apiMethod
 

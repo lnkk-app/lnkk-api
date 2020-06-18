@@ -11,7 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/majordomusio/commons/pkg/env"
+	"github.com/majordomusio/commons/pkg/services"
 
+	s "github.com/lnkk-ai/lnkk/internal/slack"
 	"github.com/lnkk-ai/lnkk/pkg/api"
 	"github.com/lnkk-ai/lnkk/pkg/platform"
 	"github.com/lnkk-ai/lnkk/pkg/slack"
@@ -27,41 +29,52 @@ func main() {
 		os.Exit(1)
 	}()
 
-	// basic config
+	// setup slack handlers & callbacks
+	slack.RegisterSlashCmdHandler("/lnkk", s.CmdLnkkHandler)
+	slack.RegisterStartAction("add_newsletter", s.StartAddToNewsletter)
+	slack.RegisterCompleteAction("add_newsletter", s.CompleteAddToNewsletter)
+
+	// basic http stack config
 	gin.DisableConsoleColor()
+	// create the routes
+	router := setupRoutes()
+	// start the router on port 8080, unless $PORT is set to something else
+	router.Run()
+}
+
+func setupRoutes() *gin.Engine {
 	// a new router
-	router := gin.New()
+	r := gin.New()
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
-	router.Use(gin.Recovery())
+	r.Use(gin.Recovery())
 
 	// routes to load static assets and templates
-	router.Use(static.Serve("/assets/css", static.LocalFile("./public/assets/css", true)))
-	router.Use(static.Serve("/assets/javascript", static.LocalFile("./public/assets/javascript", true)))
-	router.LoadHTMLGlob("public/templates/*")
+	r.Use(static.Serve("/assets/css", static.LocalFile("./public/assets/css", true)))
+	r.Use(static.Serve("/assets/javascript", static.LocalFile("./public/assets/javascript", true)))
+	r.LoadHTMLGlob("public/templates/*")
 
 	// default static endpoints
-	router.GET("/robots.txt", api.RobotsEndpoint)
-	router.GET("/ads.txt", api.NullEndpoint)    // FIXME change to the real handler
-	router.GET("/humans.txt", api.NullEndpoint) // FIXME change to the real handler
+	r.GET("/robots.txt", services.RobotsEndpoint)
+	r.GET("/ads.txt", services.NullEndpoint)    // FIXME change to the real handler
+	r.GET("/humans.txt", services.NullEndpoint) // FIXME change to the real handler
 
 	// static routes
-	router.GET("/", staticIndexEndpoint)
-	router.GET("/error", staticErrorEndpoint)
-	router.GET("/addtoslack", staticAddAppEndpoint)
+	r.GET("/", staticIndexEndpoint)
+	r.GET("/error", staticErrorEndpoint)
+	r.GET("/addtoslack", staticAddAppEndpoint)
 
 	// API endpoints and callbacks
 
 	// Slack integration
-	router.POST("/a/actions", api.ActionRequestEndpoint)
-	router.POST("/a/cmd/lnk", api.SlashCmdEndpoint)
-	router.GET("/a/auth", slack.OAuthEndpoint)
+	r.POST("/a/actions", slack.ActionRequestEndpoint)
+	r.POST("/a/cmd/lnk", slack.SlashCmdEndpoint)
+	r.GET("/a/auth", slack.OAuthEndpoint)
 
 	// generic API
-	router.POST("/a/short", api.ShortenEndpoint)
-	router.GET("/r/:uri", api.RedirectEndpoint)
+	r.POST("/a/short", api.ShortenEndpoint)
+	r.GET("/r/:uri", api.RedirectEndpoint)
 
-	// start the router on port 8080, unless $PORT is set to something else
-	router.Run()
+	return r
 }
 
 func staticIndexEndpoint(c *gin.Context) {

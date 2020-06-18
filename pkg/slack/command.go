@@ -1,7 +1,13 @@
 package slack
 
 import (
+	e "errors"
+	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
+	"github.com/lnkk-ai/lnkk/pkg/platform"
+	"github.com/majordomusio/commons/pkg/errors"
 )
 
 // see https://api.slack.com/interactivity/slash-commands
@@ -42,4 +48,56 @@ func GetSlashCommand(c *gin.Context) *SlashCommand {
 		TriggerID:      c.PostForm("trigger_id"),
 		Token:          c.PostForm("token"), // DEPRECATED
 	}
+}
+
+// SlashCmdEndpoint receives callbacks from Slack command /lnkk
+func SlashCmdEndpoint(c *gin.Context) {
+	status := http.StatusOK
+
+	// extract the cmd and react on it
+	cmd := GetSlashCommand(c)
+
+	// dispatch to a handler
+	handler := slashCommandLookup[cmd.Command]
+	if handler == nil {
+		e := errors.NewOperationError(cmd.Command, e.New(fmt.Sprintf("No handler for slash command '%s'", cmd.Command)))
+		platform.Report(e)
+		handler = defaultSlashCommandHandler
+	}
+
+	resp, err := handler(c, cmd)
+
+	if err != nil {
+		status = http.StatusBadRequest
+		if resp == nil {
+			response := SectionBlocks{
+				Blocks: []SectionBlock{
+					{
+						Type: "section",
+						Text: TextObject{
+							Type: "mrkdwn",
+							Text: fmt.Sprintf("Something went wrong: '%s': %s", cmd.Command, err.Error()),
+						},
+					},
+				},
+			}
+			resp = &response
+		}
+	}
+
+	c.JSON(status, resp)
+}
+
+func errorSlashCmdHandler(c *gin.Context, cmd *SlashCommand) (*SectionBlocks, error) {
+	return &SectionBlocks{
+		Blocks: []SectionBlock{
+			{
+				Type: "section",
+				Text: TextObject{
+					Type: "mrkdwn",
+					Text: fmt.Sprintf("Sorry, but I can't do this: '%s'", cmd.Command),
+				},
+			},
+		},
+	}, nil
 }

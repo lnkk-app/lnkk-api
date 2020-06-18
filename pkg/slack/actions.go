@@ -1,4 +1,4 @@
-package api
+package slack
 
 import (
 	"encoding/json"
@@ -7,38 +7,17 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/net/context"
 	"google.golang.org/appengine"
 
 	"github.com/majordomusio/commons/pkg/errors"
 
 	"github.com/lnkk-ai/lnkk/pkg/platform"
-	"github.com/lnkk-ai/lnkk/pkg/slack"
-
-	"github.com/lnkk-ai/lnkk/internal/actions"
 )
-
-// StartActionFunc is a callback for starting a action
-type StartActionFunc func(*gin.Context, *slack.ActionRequest) error
-
-// CompleteActionFunc is a callback for completing an action
-type CompleteActionFunc func(*gin.Context, *slack.ViewSubmission) error
-
-var startActionLookup map[string]StartActionFunc
-var completeActionLookup map[string]CompleteActionFunc
-
-func init() {
-	// initialize the start action lookup table
-	startActionLookup = make(map[string]StartActionFunc, 1)
-	startActionLookup["add_newsletter"] = actions.StartAddToNewsletter
-
-	// initialize the complete action lookup table
-	completeActionLookup = make(map[string]CompleteActionFunc, 1)
-	completeActionLookup["add_newsletter"] = actions.CompleteAddToNewsletter
-}
 
 // ActionRequestEndpoint receives callbacks from Slack
 func ActionRequestEndpoint(c *gin.Context) {
-	var peek slack.ActionRequestPeek
+	var peek ActionRequestPeek
 
 	err := json.Unmarshal([]byte(c.Request.FormValue("payload")), &peek)
 	if err != nil {
@@ -48,7 +27,7 @@ func ActionRequestEndpoint(c *gin.Context) {
 	}
 
 	if peek.Type == "message_action" {
-		var action slack.ActionRequest
+		var action ActionRequest
 		err := json.Unmarshal([]byte(c.Request.FormValue("payload")), &action)
 		if err != nil {
 			platform.Report(err)
@@ -64,7 +43,7 @@ func ActionRequestEndpoint(c *gin.Context) {
 		}
 
 	} else if peek.Type == "view_submission" {
-		var submission slack.ViewSubmission
+		var submission ViewSubmission
 		err := json.Unmarshal([]byte(c.Request.FormValue("payload")), &submission)
 		if err != nil {
 			platform.Report(err)
@@ -84,7 +63,7 @@ func ActionRequestEndpoint(c *gin.Context) {
 }
 
 // startAction initiates a dialog with the user
-func startAction(c *gin.Context, a *slack.ActionRequest) error {
+func startAction(c *gin.Context, a *ActionRequest) error {
 	action := a.CallbackID
 	handler := startActionLookup[action]
 	if handler == nil {
@@ -95,10 +74,10 @@ func startAction(c *gin.Context, a *slack.ActionRequest) error {
 }
 
 // completeAction starts the processing of the action's result
-func completeAction(c *gin.Context, s *slack.ViewSubmission) error {
+func completeAction(c *gin.Context, s *ViewSubmission) error {
 	ctx := appengine.NewContext(c.Request)
 
-	action := actions.LookupActionCorrelation(ctx, s.View.ID, s.Team.ID)
+	action := LookupActionCorrelation(ctx, s.View.ID, s.Team.ID)
 	if action == "" {
 		return nil
 	}
@@ -109,4 +88,27 @@ func completeAction(c *gin.Context, s *slack.ViewSubmission) error {
 	}
 
 	return handler(c, s)
+}
+
+// StoreActionCorrelation is a helper to mange correlation keys
+func StoreActionCorrelation(ctx context.Context, action, viewID, teamID string) error {
+	err := platform.Set(ctx, correlationKey(viewID, teamID), action, 1800)
+	if err != nil {
+		platform.Report(err)
+	}
+	return err
+}
+
+// LookupActionCorrelation is a helper to mange correlation keys
+func LookupActionCorrelation(ctx context.Context, viewID, teamID string) string {
+	v, err := platform.Get(ctx, correlationKey(viewID, teamID))
+	if err != nil {
+		platform.Report(err)
+		return ""
+	}
+	return v
+}
+
+func correlationKey(viewID, teamID string) string {
+	return viewID + "." + teamID
 }

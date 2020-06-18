@@ -1,4 +1,4 @@
-package actions
+package slack
 
 import (
 	e "errors"
@@ -11,7 +11,7 @@ import (
 	"github.com/majordomusio/commons/pkg/util"
 
 	"github.com/lnkk-ai/lnkk/internal/backend"
-	"github.com/lnkk-ai/lnkk/pkg/slack"
+	s "github.com/lnkk-ai/lnkk/pkg/slack"
 )
 
 // 1) extract callback_id from request
@@ -20,7 +20,7 @@ import (
 // 4) use view ID to lookup callback_id in order to know how to process the view submission callback
 
 // StartAddToNewsletter starts the add to newsletter action
-func StartAddToNewsletter(c *gin.Context, a *slack.ActionRequest) error {
+func StartAddToNewsletter(c *gin.Context, a *s.ActionRequest) error {
 	ctx := appengine.NewContext(c.Request)
 
 	token, err := backend.GetAuthToken(ctx, a.Team.ID)
@@ -35,8 +35,8 @@ func StartAddToNewsletter(c *gin.Context, a *slack.ActionRequest) error {
 	// build the modal view
 	m := addToNewsletterModal(a)
 
-	var resp slack.ModalResponse
-	err = slack.CustomPost(ctx, token, "views.open", &m, &resp)
+	var resp s.ModalResponse
+	err = s.CustomPost(ctx, token, "views.open", &m, &resp)
 	if err != nil {
 		return err
 	}
@@ -46,43 +46,43 @@ func StartAddToNewsletter(c *gin.Context, a *slack.ActionRequest) error {
 	}
 
 	// store the correlation ID
-	return StoreActionCorrelation(ctx, a.CallbackID, resp.View.ID, resp.View.TeamID)
+	return s.StoreActionCorrelation(ctx, a.CallbackID, resp.View.ID, resp.View.TeamID)
 }
 
 // CompleteAddToNewsletter completes the newsletter action
-func CompleteAddToNewsletter(c *gin.Context, s *slack.ViewSubmission) error {
+func CompleteAddToNewsletter(c *gin.Context, s *s.ViewSubmission) error {
 	// FIXME remove this
 	log.Printf("submission -> %v\n\n", util.PrintJSON(s))
 
 	return nil
 }
 
-func addToNewsletterModal(a *slack.ActionRequest) *slack.ModalRequest {
+func addToNewsletterModal(a *s.ActionRequest) *s.ModalRequest {
 
 	blocks := make([]interface{}, 1)
 
-	blocks[0] = slack.SectionBlock{
+	blocks[0] = s.SectionBlock{
 		Type:    "section",
 		BlockID: "block1",
-		Text: slack.TextObject{
+		Text: s.TextObject{
 			Type: "plain_text",
 			Text: a.Message.Text,
 		},
 	}
 
-	m := slack.ModalRequest{
+	m := s.ModalRequest{
 		TriggerID: a.TriggerID,
-		View: slack.ViewElement{
+		View: s.ViewElement{
 			Type: "modal",
-			Title: slack.DefaultViewElement{
+			Title: s.DefaultViewElement{
 				Type: "plain_text",
 				Text: "Save to newsletter",
 			},
-			Submit: &slack.DefaultViewElement{
+			Submit: &s.DefaultViewElement{
 				Type: "plain_text",
 				Text: "Save",
 			},
-			Close: &slack.DefaultViewElement{
+			Close: &s.DefaultViewElement{
 				Type: "plain_text",
 				Text: "Cancel",
 			},
