@@ -9,7 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"google.golang.org/appengine"
 
-	"github.com/lnkk-ai/lnkk/pkg/errors"
+	"github.com/majordomusio/commons/pkg/errors"
+
 	"github.com/lnkk-ai/lnkk/pkg/platform"
 	"github.com/lnkk-ai/lnkk/pkg/slack"
 

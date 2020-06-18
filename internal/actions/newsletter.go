@@ -5,11 +5,12 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/majordomusio/commons/pkg/util"
 	"google.golang.org/appengine"
 
+	"github.com/majordomusio/commons/pkg/errors"
+	"github.com/majordomusio/commons/pkg/util"
+
 	"github.com/lnkk-ai/lnkk/internal/backend"
-	"github.com/lnkk-ai/lnkk/pkg/errors"
 	"github.com/lnkk-ai/lnkk/pkg/slack"
 )
 

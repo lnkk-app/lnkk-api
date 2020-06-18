@@ -11,8 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"google.golang.org/appengine"
 
+	"github.com/majordomusio/commons/pkg/errors"
+
 	"github.com/lnkk-ai/lnkk/internal/backend"
-	"github.com/lnkk-ai/lnkk/pkg/errors"
 	"github.com/lnkk-ai/lnkk/pkg/platform"
 )
 
