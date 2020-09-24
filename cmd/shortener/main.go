@@ -8,7 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/lnkk-ai/lnkk/pkg/platform"
+	"github.com/txsvc/platform/pkg/platform"
 )
 
 func main() {

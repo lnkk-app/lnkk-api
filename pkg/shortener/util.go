@@ -1,6 +1,6 @@
 package shortener
 
-import "github.com/lnkk-ai/lnkk/pkg/types"
+import "github.com/lnkk-app/lnkk-api/pkg/types"
 
 // AsExternal create an external representation of the asset
 func (t *AssetDS) AsExternal() *types.Asset {

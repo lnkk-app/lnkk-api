@@ -1,15 +1,15 @@
-module github.com/lnkk-ai/lnkk
+module github.com/lnkk-app/lnkk-api
 
 go 1.14
 
 require (
-	cloud.google.com/go v0.66.0
-	cloud.google.com/go/datastore v1.2.0
-	github.com/gin-gonic/contrib v0.0.0-20191209060500-d6e26eeaa607
+	cloud.google.com/go v0.66.0 // indirect
+	cloud.google.com/go/datastore v1.3.0
 	github.com/gin-gonic/gin v1.6.3
-	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e
-	github.com/majordomusio/commons v1.1.0
-	github.com/mmcdole/gofeed v1.0.0
-	golang.org/x/net v0.0.0-20200904194848-62affa334b73
+	github.com/mmcdole/gofeed v1.1.0
+	github.com/txsvc/commons v1.0.2
+	github.com/txsvc/platform v0.0.3
+	github.com/txsvc/service v0.0.3
+	golang.org/x/net v0.0.0-20200923182212-328152dc79b1
 	google.golang.org/appengine v1.6.6
 )

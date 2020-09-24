@@ -11,10 +11,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"google.golang.org/appengine"
 
-	"github.com/majordomusio/commons/pkg/errors"
+	"github.com/txsvc/commons/pkg/errors"
 
-	"github.com/lnkk-ai/lnkk/internal/backend"
-	"github.com/lnkk-ai/lnkk/pkg/platform"
+	"github.com/lnkk-app/lnkk-api/internal/backend"
+	"github.com/txsvc/platform/pkg/platform"
 )
 
 // OAuthEndpoint handles the callback from Slack with the temporary access code

@@ -7,11 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"google.golang.org/appengine"
 
-	"github.com/majordomusio/commons/pkg/services"
-	"github.com/majordomusio/commons/pkg/util"
+	"github.com/txsvc/commons/pkg/util"
+	"github.com/txsvc/service/pkg/svc"
 
-	"github.com/lnkk-ai/lnkk/pkg/shortener"
-	"github.com/lnkk-ai/lnkk/pkg/types"
+	"github.com/lnkk-app/lnkk-api/pkg/shortener"
+	"github.com/lnkk-app/lnkk-api/pkg/types"
 )
 
 // ShortenEndpoint receives a URI to be shortened
@@ -28,7 +28,7 @@ func ShortenEndpoint(c *gin.Context) {
 		asset.URI = uri
 	}
 
-	services.StandardJSONResponse(c, asset, err)
+	svc.StandardJSONResponse(c, asset, err)
 }
 
 // RedirectEndpoint receives a URI to be shortened

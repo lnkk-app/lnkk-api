@@ -10,9 +10,9 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
 
-	"github.com/majordomusio/commons/pkg/errors"
+	"github.com/txsvc/commons/pkg/errors"
 
-	"github.com/lnkk-ai/lnkk/pkg/platform"
+	"github.com/txsvc/platform/pkg/platform"
 )
 
 // ActionRequestEndpoint receives callbacks from Slack

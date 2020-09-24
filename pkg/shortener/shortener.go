@@ -6,10 +6,10 @@ import (
 	"strings"
 
 	"cloud.google.com/go/datastore"
-	"github.com/majordomusio/commons/pkg/util"
+	"github.com/txsvc/commons/pkg/util"
 
-	"github.com/lnkk-ai/lnkk/pkg/platform"
-	"github.com/lnkk-ai/lnkk/pkg/types"
+	"github.com/lnkk-app/lnkk-api/pkg/types"
+	"github.com/txsvc/platform/pkg/platform"
 )
 
 // CreateAsset stores an asset in the Datastore

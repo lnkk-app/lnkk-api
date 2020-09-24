@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lnkk-ai/lnkk/pkg/platform"
-	"github.com/majordomusio/commons/pkg/errors"
+	"github.com/txsvc/commons/pkg/errors"
+	"github.com/txsvc/platform/pkg/platform"
 )
 
 // see https://api.slack.com/interactivity/slash-commands

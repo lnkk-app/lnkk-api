@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/lnkk-ai/lnkk/pkg/platform"
-	"github.com/majordomusio/commons/pkg/env"
-	"github.com/majordomusio/commons/pkg/util"
+	"github.com/txsvc/commons/pkg/env"
+	"github.com/txsvc/commons/pkg/util"
+	"github.com/txsvc/platform/pkg/platform"
 )
 
 // GetAuthorization returns the authorization granted to an app

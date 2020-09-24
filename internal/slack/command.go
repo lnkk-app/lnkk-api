@@ -5,13 +5,13 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/majordomusio/commons/pkg/env"
+	"github.com/txsvc/commons/pkg/env"
 	"google.golang.org/appengine"
 
-	"github.com/lnkk-ai/lnkk/pkg/shortener"
-	"github.com/lnkk-ai/lnkk/pkg/slack"
-	s "github.com/lnkk-ai/lnkk/pkg/slack"
-	"github.com/lnkk-ai/lnkk/pkg/types"
+	"github.com/lnkk-app/lnkk-api/pkg/shortener"
+	"github.com/lnkk-app/lnkk-api/pkg/slack"
+	s "github.com/lnkk-app/lnkk-api/pkg/slack"
+	"github.com/lnkk-app/lnkk-api/pkg/types"
 )
 
 // CmdLnkkHandler dispatches /lnkk commands

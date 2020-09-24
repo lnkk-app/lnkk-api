@@ -5,7 +5,7 @@ import (
 	"net/url"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lnkk-ai/lnkk/pkg/platform"
+	"github.com/txsvc/platform/pkg/platform"
 )
 
 // DumpPayload just prints the entire request body to STDOUT
