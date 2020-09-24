@@ -8,9 +8,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/txsvc/platform/pkg/platform"
 	"github.com/txsvc/service/pkg/svc"
 
-	"github.com/txsvc/platform/pkg/platform"
+	"github.com/lnkk-app/lnkk-api/pkg/api"
 )
 
 func main() {
@@ -40,7 +41,7 @@ func setupRoutes() *gin.Engine {
 	// static routes
 
 	// API endpoints and callbacks
-	api := r.Group("/a")
+	api := r.Group(api.APIPrefix)
 	api.GET("/foo", staticIndexEndpoint)
 
 	return r
