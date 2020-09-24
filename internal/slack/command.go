@@ -9,9 +9,8 @@ import (
 	"google.golang.org/appengine"
 
 	"github.com/lnkk-app/lnkk-api/pkg/shortener"
-	"github.com/lnkk-app/lnkk-api/pkg/slack"
-	s "github.com/lnkk-app/lnkk-api/pkg/slack"
 	"github.com/lnkk-app/lnkk-api/pkg/types"
+	"github.com/txsvc/slack/pkg/slack"
 )
 
 // CmdLnkkHandler dispatches /lnkk commands
@@ -39,14 +38,14 @@ func CmdLnkkHandler(c *gin.Context, cmd *slack.SlashCommand) (*slack.SectionBloc
 	return shortHelpMessage(), nil
 }
 
-func handleShorten(c *gin.Context, cmd *s.SlashCommand) (*s.SectionBlocks, error) {
+func handleShorten(c *gin.Context, cmd *slack.SlashCommand) (*slack.SectionBlocks, error) {
 	parts := strings.Split(cmd.Txt, " ")
 	if len(parts) < 2 {
-		return &s.SectionBlocks{
-			Blocks: []s.SectionBlock{
+		return &slack.SectionBlocks{
+			Blocks: []slack.SectionBlock{
 				{
 					Type: "section",
-					Text: s.TextObject{
+					Text: slack.TextObject{
 						Type: "mrkdwn",
 						Text: "Usage: /lnkk shorten *URL*",
 					},
@@ -79,11 +78,11 @@ func handleShorten(c *gin.Context, cmd *s.SlashCommand) (*s.SectionBlocks, error
 		msg = fmt.Sprintf("%s/r/%s", url, uri)
 	}
 
-	return &s.SectionBlocks{
-		Blocks: []s.SectionBlock{
+	return &slack.SectionBlocks{
+		Blocks: []slack.SectionBlock{
 			{
 				Type: "section",
-				Text: s.TextObject{
+				Text: slack.TextObject{
 					Type: "mrkdwn",
 					Text: msg,
 				},
@@ -92,12 +91,12 @@ func handleShorten(c *gin.Context, cmd *s.SlashCommand) (*s.SectionBlocks, error
 	}, nil
 }
 
-func handleStats(c *gin.Context, cmd *s.SlashCommand) (*s.SectionBlocks, error) {
-	return &s.SectionBlocks{
-		Blocks: []s.SectionBlock{
+func handleStats(c *gin.Context, cmd *slack.SlashCommand) (*slack.SectionBlocks, error) {
+	return &slack.SectionBlocks{
+		Blocks: []slack.SectionBlock{
 			{
 				Type: "section",
-				Text: s.TextObject{
+				Text: slack.TextObject{
 					Type: "mrkdwn",
 					Text: "/lnkk stats",
 				},
@@ -106,12 +105,12 @@ func handleStats(c *gin.Context, cmd *s.SlashCommand) (*s.SectionBlocks, error) 
 	}, nil
 }
 
-func handleSubscribe(c *gin.Context, cmd *s.SlashCommand) (*s.SectionBlocks, error) {
-	return &s.SectionBlocks{
-		Blocks: []s.SectionBlock{
+func handleSubscribe(c *gin.Context, cmd *slack.SlashCommand) (*slack.SectionBlocks, error) {
+	return &slack.SectionBlocks{
+		Blocks: []slack.SectionBlock{
 			{
 				Type: "section",
-				Text: s.TextObject{
+				Text: slack.TextObject{
 					Type: "mrkdwn",
 					Text: "/lnkk subscribe",
 				},
@@ -120,12 +119,12 @@ func handleSubscribe(c *gin.Context, cmd *s.SlashCommand) (*s.SectionBlocks, err
 	}, nil
 }
 
-func handleFeed(c *gin.Context, cmd *s.SlashCommand) (*s.SectionBlocks, error) {
-	return &s.SectionBlocks{
-		Blocks: []s.SectionBlock{
+func handleFeed(c *gin.Context, cmd *slack.SlashCommand) (*slack.SectionBlocks, error) {
+	return &slack.SectionBlocks{
+		Blocks: []slack.SectionBlock{
 			{
 				Type: "section",
-				Text: s.TextObject{
+				Text: slack.TextObject{
 					Type: "mrkdwn",
 					Text: "/lnkk feed",
 				},
@@ -134,47 +133,47 @@ func handleFeed(c *gin.Context, cmd *s.SlashCommand) (*s.SectionBlocks, error) {
 	}, nil
 }
 
-func helpMessage() *s.SectionBlocks {
-	response := s.SectionBlocks{
-		Blocks: []s.SectionBlock{
+func helpMessage() *slack.SectionBlocks {
+	response := slack.SectionBlocks{
+		Blocks: []slack.SectionBlock{
 			{
 				Type: "section",
-				Text: s.TextObject{
+				Text: slack.TextObject{
 					Type: "mrkdwn",
 					Text: "/lnkk shorten URL\nRetunrs a shortened version of the url",
 				},
 			},
 			{
 				Type: "section",
-				Text: s.TextObject{
+				Text: slack.TextObject{
 					Type: "mrkdwn",
 					Text: "/lnkk stats [ID]\nReturns stats for a url. If ID is omitted, returns stats for all urls in the past 24h",
 				},
 			},
 			{
 				Type: "section",
-				Text: s.TextObject{
+				Text: slack.TextObject{
 					Type: "mrkdwn",
 					Text: "/lnkk subscribe URL\nSubscribes to a RSS feed",
 				},
 			},
 			{
 				Type: "section",
-				Text: s.TextObject{
+				Text: slack.TextObject{
 					Type: "mrkdwn",
 					Text: "/lnkk feed list\nLists all RSS subscriptions for this channel",
 				},
 			},
 			{
 				Type: "section",
-				Text: s.TextObject{
+				Text: slack.TextObject{
 					Type: "mrkdwn",
 					Text: "/lnkk feed remove ID\nRemoves a RSS subscription from this channel",
 				},
 			},
 			{
 				Type: "section",
-				Text: s.TextObject{
+				Text: slack.TextObject{
 					Type: "mrkdwn",
 					Text: "/lnkk help\nThis command",
 				},
@@ -185,12 +184,12 @@ func helpMessage() *s.SectionBlocks {
 	return &response
 }
 
-func shortHelpMessage() *s.SectionBlocks {
-	return &s.SectionBlocks{
-		Blocks: []s.SectionBlock{
+func shortHelpMessage() *slack.SectionBlocks {
+	return &slack.SectionBlocks{
+		Blocks: []slack.SectionBlock{
 			{
 				Type: "section",
-				Text: s.TextObject{
+				Text: slack.TextObject{
 					Type: "mrkdwn",
 					Text: "Unsupported command.\nUse */lnkk help* to learn more about all supported commands",
 				},

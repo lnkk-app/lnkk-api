@@ -11,7 +11,7 @@ import (
 	"github.com/txsvc/commons/pkg/util"
 
 	"github.com/lnkk-app/lnkk-api/internal/backend"
-	s "github.com/lnkk-app/lnkk-api/pkg/slack"
+	s "github.com/txsvc/slack/pkg/slack"
 )
 
 // 1) extract callback_id from request
