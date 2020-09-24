@@ -18,3 +18,8 @@ A bot to help managing social interactions in a Slack community.
 * https://api.slack.com/apps
 
 
+## References
+
+### Google AppEngine
+
+* https://cloud.google.com/appengine/docs/standard/go/config/appref
