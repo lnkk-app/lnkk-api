@@ -1,6 +1,6 @@
-service: default
+service: api
 
-runtime: go113
+runtime: go114
 instance_class: F1
 
 handlers:
