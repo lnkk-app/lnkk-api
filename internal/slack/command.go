@@ -55,17 +55,18 @@ func handleShorten(c *gin.Context, cmd *slack.SlashCommand) (*slack.SectionBlock
 	}
 
 	msg := ""
-	tags := ""
-	if len(parts) > 2 {
-		tags = strings.Join(parts[2:], ",")
-	}
+	// FIXME
+	//tags := ""
+	//if len(parts) > 2 {
+	//	tags = strings.Join(parts[2:], ",")
+	//}
 	asset := types.Asset{
-		URL:       parts[1],
-		Owner:     cmd.UserID,
-		Source:    "slack",
-		Client:    "lnkk",
-		Affiliate: cmd.TeamID,
-		Tags:      tags,
+		//URL:       parts[1],
+		//Owner:     cmd.UserID,
+		//Source:    "slack",
+		//Client:    "lnkk",
+		//Affiliate: cmd.TeamID,
+		//Tags: tags,
 	}
 
 	ctx := appengine.NewContext(c.Request)

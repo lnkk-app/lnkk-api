@@ -5,13 +5,16 @@ import "github.com/lnkk-app/lnkk-api/pkg/types"
 // AsExternal create an external representation of the asset
 func (t *AssetDS) AsExternal() *types.Asset {
 	asset := types.Asset{
-		URI:       t.URI,
-		URL:       t.URL,
-		Owner:     t.Owner,
-		SecretID:  t.SecretID,
-		Client:    t.Client,
-		Affiliate: t.Affiliate,
-		Tags:      t.Tags,
+		LongLink:    t.LongLink,
+		ShortLink:   t.ShortLink,
+		PreviewLink: t.PreviewLink,
+		Owner: types.AssetOwner{
+			ID:       t.Owner,
+			Type:     t.OwnerType,
+			SecretID: t.SecretID,
+		},
+		Secret: t.Secret,
+		Parent: t.Parent,
 	}
 	return &asset
 }

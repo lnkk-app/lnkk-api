@@ -2,5 +2,8 @@ dispatch:
   - url: "lnkk.host/"
     service: default
 
+  - url: "lnkk.host/r/*"
+    service: api
+
   - url: "lnkk.host/a/1/*"
     service: api

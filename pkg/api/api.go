@@ -20,15 +20,14 @@ func ShortenEndpoint(c *gin.Context) {
 	ctx := appengine.NewContext(c.Request)
 
 	var asset types.Asset
-	var uri string
-
 	err := c.BindJSON(&asset)
-	if err == nil {
-		uri, err = shortener.CreateAsset(ctx, &asset)
-		asset.URI = uri
+	if err != nil {
+		svc.StandardJSONResponse(c, nil, err)
+		return
 	}
 
-	svc.StandardJSONResponse(c, asset, err)
+	_asset, err := shortener.CreateAsset(ctx, &asset)
+	svc.StandardJSONResponse(c, _asset, err)
 }
 
 // RedirectEndpoint receives a URI to be shortened
@@ -62,5 +61,5 @@ func RedirectEndpoint(c *gin.Context) {
 	shortener.CreateMeasurement(ctx, &m)
 
 	// TODO log the event
-	c.Redirect(http.StatusTemporaryRedirect, a.URL)
+	c.Redirect(http.StatusTemporaryRedirect, a.LongLink)
 }

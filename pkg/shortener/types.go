@@ -12,16 +12,20 @@ const (
 type (
 	// AssetDS is the interal structure used to store assets
 	AssetDS struct {
-		URI string `json:"uri,omitempty"`
-		URL string `json:"url" binding:"required"`
+		LongLink    string `json:"long_link" binding:"required"`
+		ShortLink   string `json:"short_link" binding:"required"`
+		PreviewLink string `json:"preview_link,omitempty"`
 		// ownership etc
-		Owner    string `json:"owner,omitempty"`
-		SecretID string `json:"secret_id,omitempty"`
+		Owner     string `json:"owner,omitempty"`
+		OwnerType string `json:"owner_type,omitempty"`
+		SecretID  string `json:"secret_id,omitempty"`
+		Secret    string `json:"secret,omitempty"`
 		// segmentation
-		Source    string `json:"source,omitempty"`
-		Client    string `json:"client,omitempty"`
-		Affiliate string `json:"affiliate,omitempty"`
-		Tags      string `json:"tags,omitempty"`
+		Source string `json:"source,omitempty"`
+		Client string `json:"client,omitempty"`
+		Parent string `json:"parent,omitempty"`
+		// metadata
+		Tags string `json:"tags,omitempty"`
 		// internal metadata
 		Created int64 `json:"-"`
 	}

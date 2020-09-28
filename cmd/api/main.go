@@ -41,8 +41,10 @@ func setupRoutes() *gin.Engine {
 	// static routes
 
 	// API endpoints and callbacks
-	api := r.Group(api.APIPrefix)
-	api.GET("/foo", staticIndexEndpoint)
+	apiNamespace := r.Group(api.APIPrefix)
+	apiNamespace.POST("/short", api.ShortenEndpoint)
+	// redirect endpoint
+	r.GET("/r/:uri", api.RedirectEndpoint)
 
 	return r
 }

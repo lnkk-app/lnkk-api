@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"cloud.google.com/go/datastore"
+	"github.com/txsvc/commons/pkg/errors"
 	"github.com/txsvc/commons/pkg/util"
 
 	"github.com/lnkk-app/lnkk-api/pkg/types"
@@ -13,30 +14,45 @@ import (
 )
 
 // CreateAsset stores an asset in the Datastore
-func CreateAsset(ctx context.Context, as *types.Asset) (string, error) {
+func CreateAsset(ctx context.Context, as *types.Asset) (*types.Asset, error) {
 
 	uri, _ := util.ShortUUID()
 	secret, _ := util.ShortUUID()
 
+	ownerType := strings.ToLower(as.Owner.Type)
+	if ownerType == "" {
+		ownerType = "session"
+	} else if ownerType != "user" && ownerType != "session" {
+		err := errors.New(fmt.Sprintf("Unknown owner type '%s'", ownerType))
+		platform.Report(err)
+		return nil, err
+	}
+
 	asset := AssetDS{
-		URI:       uri,
-		URL:       as.URL,
-		Owner:     as.Owner,
-		SecretID:  secret,
-		Source:    as.Source,
-		Client:    as.Client,
-		Affiliate: as.Affiliate,
-		Tags:      as.Tags,
-		Created:   util.Timestamp(),
+		LongLink:    as.LongLink,
+		ShortLink:   uri,
+		PreviewLink: uri,
+		Owner:       as.Owner.ID,
+		OwnerType:   ownerType,
+		SecretID:    as.Owner.SecretID,
+		Secret:      secret,
+		Parent:      as.Parent,
+		Created:     util.Timestamp(),
 	}
 
 	k := assetKey(uri)
 	if _, err := platform.DataStore().Put(ctx, k, &asset); err != nil {
 		platform.Report(err)
-		return "", err
+		return nil, err
 	}
 
-	return uri, nil
+	// update the request body
+	as.ShortLink = uri
+	as.PreviewLink = uri
+	as.Secret = secret
+
+	// return the enriched asset instance
+	return as, nil
 }
 
 // GetAsset retrieves the asset
