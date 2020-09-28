@@ -9,9 +9,6 @@ import (
 
 	"github.com/txsvc/commons/pkg/util"
 	"github.com/txsvc/service/pkg/svc"
-
-	"github.com/lnkk-app/lnkk-api/pkg/shortener"
-	"github.com/lnkk-app/lnkk-api/pkg/types"
 )
 
 // ShortenEndpoint receives a URI to be shortened
@@ -19,14 +16,14 @@ func ShortenEndpoint(c *gin.Context) {
 	//topic := "api.shorten.post"
 	ctx := appengine.NewContext(c.Request)
 
-	var asset types.Asset
+	var asset Asset
 	err := c.BindJSON(&asset)
 	if err != nil {
 		svc.StandardJSONResponse(c, nil, err)
 		return
 	}
 
-	_asset, err := shortener.CreateAsset(ctx, &asset)
+	_asset, err := CreateAsset(ctx, &asset)
 	svc.StandardJSONResponse(c, _asset, err)
 }
 
@@ -42,7 +39,7 @@ func RedirectEndpoint(c *gin.Context) {
 		return
 	}
 
-	a, err := shortener.GetAsset(ctx, uri)
+	a, err := GetAsset(ctx, uri)
 	if err != nil {
 		// TODO log this event
 		c.String(http.StatusOK, "42")
@@ -50,7 +47,7 @@ func RedirectEndpoint(c *gin.Context) {
 	}
 
 	// audit, i.e. extract some user data
-	m := shortener.MeasurementDS{ // FIXME use a public struct
+	m := MeasurementDS{ // FIXME use a public struct
 		URI:            uri,
 		User:           "anonymous",
 		IP:             c.ClientIP(),
@@ -58,7 +55,7 @@ func RedirectEndpoint(c *gin.Context) {
 		AcceptLanguage: strings.ToLower(c.GetHeader("Accept-Language")),
 		Created:        util.Timestamp(),
 	}
-	shortener.CreateMeasurement(ctx, &m)
+	CreateMeasurement(ctx, &m)
 
 	// TODO log the event
 	c.Redirect(http.StatusTemporaryRedirect, a.LongLink)

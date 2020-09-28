@@ -5,12 +5,12 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/txsvc/commons/pkg/env"
 	"google.golang.org/appengine"
 
-	"github.com/lnkk-app/lnkk-api/pkg/shortener"
-	"github.com/lnkk-app/lnkk-api/pkg/types"
+	"github.com/txsvc/commons/pkg/env"
 	"github.com/txsvc/slack/pkg/slack"
+
+	"github.com/lnkk-app/lnkk-api/pkg/api"
 )
 
 // CmdLnkkHandler dispatches /lnkk commands
@@ -60,7 +60,7 @@ func handleShorten(c *gin.Context, cmd *slack.SlashCommand) (*slack.SectionBlock
 	//if len(parts) > 2 {
 	//	tags = strings.Join(parts[2:], ",")
 	//}
-	asset := types.Asset{
+	asset := api.Asset{
 		//URL:       parts[1],
 		//Owner:     cmd.UserID,
 		//Source:    "slack",
@@ -70,7 +70,7 @@ func handleShorten(c *gin.Context, cmd *slack.SlashCommand) (*slack.SectionBlock
 	}
 
 	ctx := appengine.NewContext(c.Request)
-	uri, err := shortener.CreateAsset(ctx, &asset)
+	uri, err := api.CreateAsset(ctx, &asset)
 
 	if err != nil {
 		msg = err.Error() // FIXME better error message
