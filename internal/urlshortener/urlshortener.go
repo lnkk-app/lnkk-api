@@ -73,11 +73,18 @@ type (
 
 	// RedirectHistory records redirect events
 	RedirectHistory struct {
-		URI            string `json:"uri" binding:"required"`
-		User           string `json:"user" binding:"required"`
-		IP             string `json:"ip,omitempty"`
+		ShortLink string `json:"short_link" binding:"required"`
+		// requester metadata
+		Requester string `json:"requester" binding:"required"`
+		IP        string `json:"ip,omitempty"`
+		// browser metadata
 		UserAgent      string `json:"user_agent,omitempty"`
 		AcceptLanguage string `json:"accept_language,omitempty"`
+		// campaign metadata, see https://support.google.com/analytics/answer/1033863
+		Source   string `json:"utm_source,omitempty"`
+		Medium   string `json:"utm_medium,omitempty"`
+		Campaign string `json:"utm_campaign,omitempty"`
+		Content  string `json:"utm_content,omitempty"`
 		// internal metadata
 		Created int64 `json:"-"`
 	}
@@ -108,14 +115,18 @@ func GetURL(ctx context.Context, uri string) (*AssetResponse, error) {
 }
 
 // LogRedirectRequest creates the analytics data for a redirect request
-func LogRedirectRequest(ctx context.Context, uri string, c *gin.Context) error {
+func LogRedirectRequest(ctx context.Context, shortLink string, c *gin.Context) error {
 
 	h := RedirectHistory{
-		URI:            uri,
-		User:           "anonymous",
+		ShortLink:      shortLink,
+		Requester:      "unknown",                 // we don't know as we do not cookie requests
 		IP:             anonimizeIP(c.ClientIP()), // anonimize the IP to be GDPR compliant
 		UserAgent:      strings.ToLower(c.GetHeader("User-Agent")),
 		AcceptLanguage: strings.ToLower(c.GetHeader("Accept-Language")),
+		Source:         c.Query("mtu_source"),
+		Medium:         c.Query("mtu_medium"),
+		Campaign:       c.Query("mtu_campaign"),
+		Content:        c.Query("mtu_content"),
 		Created:        util.Timestamp(),
 	}
 

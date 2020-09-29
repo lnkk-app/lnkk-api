@@ -11,6 +11,11 @@ import (
 	"github.com/lnkk-app/lnkk-api/internal/urlshortener"
 )
 
+const (
+	// APIPrefix is the common namespace prefix of API releated routes
+	APIPrefix string = "/a/1"
+)
+
 // ShortenEndpoint receives a URI to be shortened
 func ShortenEndpoint(c *gin.Context) {
 	//topic := "api.shorten.post"
