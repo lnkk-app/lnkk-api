@@ -96,7 +96,7 @@ func CreateURL(ctx context.Context, as *AssetRequest) (*AssetResponse, error) {
 	asset := as.asInternal()
 
 	k := assetKey(asset.ShortLink)
-	if _, err := platform.DataStore().Put(ctx, k, &asset); err != nil {
+	if _, err := platform.DataStore().Put(ctx, k, asset); err != nil {
 		platform.Report(err)
 		return nil, err
 	}
@@ -134,7 +134,7 @@ func LogRedirectRequest(ctx context.Context, shortLink string, c *gin.Context) e
 	CreateGeoLocation(ctx, h.IP)
 
 	k := datastore.IncompleteKey(DatastoreRedirectHistory, nil)
-	if _, err := platform.DataStore().Put(ctx, k, h); err != nil {
+	if _, err := platform.DataStore().Put(ctx, k, &h); err != nil {
 		platform.Report(err)
 		return err
 	}
