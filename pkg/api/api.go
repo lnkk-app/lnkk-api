@@ -2,13 +2,13 @@ package api
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"google.golang.org/appengine"
 
-	"github.com/txsvc/commons/pkg/util"
 	"github.com/txsvc/service/pkg/svc"
+
+	"github.com/lnkk-app/lnkk-api/internal/urlshortener"
 )
 
 // ShortenEndpoint receives a URI to be shortened
@@ -16,14 +16,14 @@ func ShortenEndpoint(c *gin.Context) {
 	//topic := "api.shorten.post"
 	ctx := appengine.NewContext(c.Request)
 
-	var asset Asset
+	var asset urlshortener.AssetRequest
 	err := c.BindJSON(&asset)
 	if err != nil {
 		svc.StandardJSONResponse(c, nil, err)
 		return
 	}
 
-	_asset, err := CreateAsset(ctx, &asset)
+	_asset, err := urlshortener.CreateURL(ctx, &asset)
 	svc.StandardJSONResponse(c, _asset, err)
 }
 
@@ -32,31 +32,21 @@ func RedirectEndpoint(c *gin.Context) {
 	//topic := "api.redirect.get"
 	ctx := appengine.NewContext(c.Request)
 
-	uri := c.Param("uri")
-	if uri == "" {
+	shortLink := c.Param("short")
+	if shortLink == "" {
 		// TODO log this event
 		c.String(http.StatusOK, "42")
 		return
 	}
 
-	a, err := GetAsset(ctx, uri)
+	a, err := urlshortener.GetURL(ctx, shortLink)
 	if err != nil {
 		// TODO log this event
-		c.String(http.StatusOK, "42")
+		c.String(http.StatusOK, "42") // FIXME this is stupid ...
 		return
 	}
 
-	// audit, i.e. extract some user data
-	m := MeasurementDS{ // FIXME use a public struct
-		URI:            uri,
-		User:           "anonymous",
-		IP:             c.ClientIP(),
-		UserAgent:      strings.ToLower(c.GetHeader("User-Agent")),
-		AcceptLanguage: strings.ToLower(c.GetHeader("Accept-Language")),
-		Created:        util.Timestamp(),
-	}
-	CreateMeasurement(ctx, &m)
-
-	// TODO log the event
-	c.Redirect(http.StatusTemporaryRedirect, a.LongLink)
+	// log the event and redirect
+	urlshortener.LogRedirectRequest(ctx, shortLink, c)
+	c.Redirect(http.StatusTemporaryRedirect, a.Link)
 }

@@ -44,7 +44,7 @@ func setupRoutes() *gin.Engine {
 	apiNamespace := r.Group(api.APIPrefix)
 	apiNamespace.POST("/short", api.ShortenEndpoint)
 	// redirect endpoint
-	r.GET("/r/:uri", api.RedirectEndpoint)
+	r.GET("/r/:short", api.RedirectEndpoint)
 
 	return r
 }
