@@ -19,6 +19,19 @@ const (
 	DatastoreRedirectHistory string = "REDIRECT_HISTORY"
 )
 
+/*
+	StateActive and the other states decribe thr assets lifecycle
+	StateArchived = the asset was disabled by its owner
+	StateRetired = the asset was not activated for x days
+	StateBroken = the assets target does not exist
+*/
+const (
+	StateActive = iota
+	StateArchived
+	StateRetired
+	StateBroken
+)
+
 type (
 	// AssetRequest is the request body used to create a new asset
 	AssetRequest struct {
@@ -60,8 +73,12 @@ type (
 		Secret      string `json:"secret,omitempty"`
 		AccessToken string `json:"token,omitempty"`
 		// metadata
-		Tags     string `json:"tags,omitempty"`
-		ParentID string `json:"parent,omitempty"`
+		Tags        string `json:"tags,omitempty"`
+		ParentID    string `json:"parent,omitempty"`
+		Title       string `json:"title,omitempty"`
+		Description string `json:"description,omitempty"`
+		// status
+		State int `json:"state,omitempty"`
 		// segmentation
 		//Source string `json:"source,omitempty"`
 		//Client string `json:"client,omitempty"`
@@ -169,6 +186,7 @@ func (t *AssetRequest) asInternal() *Asset {
 		Secret:      t.Secret,
 		AccessToken: token,
 		ParentID:    t.ParentID,
+		State:       StateActive,
 		Created:     now,
 		Modified:    now,
 	}
