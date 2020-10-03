@@ -47,7 +47,7 @@ func RedirectEndpoint(c *gin.Context) {
 	a, err := urlshortener.GetURL(ctx, shortLink)
 	if err != nil {
 		// TODO log this event
-		c.String(http.StatusOK, "42") // FIXME this is stupid ...
+		c.String(http.StatusOK, "42") // FIXME: this is stupid ...
 		return
 	}
 

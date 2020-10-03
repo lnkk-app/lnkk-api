@@ -39,8 +39,6 @@ type (
 		Link string `json:"link" binding:"required"`
 		// Owner identifies the owner of the asset
 		Owner string `json:"owner" binding:"required"`
-		// Secret is an optional attribute that can be used to 'claim' the asset
-		Secret string `json:"secret,omitempty"`
 		// ParentID is the id of the category the asset belongs to
 		ParentID string `json:"parent,omitempty"`
 	}
@@ -70,7 +68,6 @@ type (
 		PreviewLink string `json:"preview_link,omitempty"`
 		// ownership etc
 		Owner       string `json:"owner,omitempty"`
-		Secret      string `json:"secret,omitempty"`
 		AccessToken string `json:"token,omitempty"`
 		// metadata
 		Tags        string `json:"tags,omitempty"`
@@ -174,7 +171,7 @@ func (t *Asset) asExternal() *AssetResponse {
 }
 
 func (t *AssetRequest) asInternal() *Asset {
-	shortLink, _ := util.ShortUUID()
+	shortLink, _ := util.ShortUUID() // FIXME: SHORT or UNGUESSABLE
 	token, _ := util.ShortUUID()
 	now := util.Timestamp()
 
@@ -183,7 +180,6 @@ func (t *AssetRequest) asInternal() *Asset {
 		ShortLink:   shortLink,
 		PreviewLink: fmt.Sprintf("https://lnkk.host/r/%s", shortLink),
 		Owner:       t.Owner,
-		Secret:      t.Secret,
 		AccessToken: token,
 		ParentID:    t.ParentID,
 		State:       StateActive,
