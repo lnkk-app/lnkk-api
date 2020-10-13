@@ -50,7 +50,6 @@ type (
 	// GeoLocation records a IP's geo location
 	GeoLocation struct {
 		IP          string `json:"ip"`
-		Host        string `json:"host"`
 		ISP         string `json:"isp"`
 		City        string `json:"city"`
 		CountryCode string `json:"country_code"`
@@ -117,7 +116,6 @@ func CreateGeoLocation(ctx context.Context, ip string) error {
 func (r *LocationType) asInternal() *GeoLocation {
 	location := GeoLocation{
 		IP:          r.IP,
-		Host:        r.Host,
 		ISP:         r.Isp,
 		City:        r.City,
 		CountryCode: r.Countrycode,
