@@ -1,11 +1,13 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"google.golang.org/appengine"
 
+	"github.com/txsvc/commons/pkg/env"
 	"github.com/txsvc/service/pkg/svc"
 
 	"github.com/lnkk-app/lnkk-api/internal/urlshortener"
@@ -39,15 +41,17 @@ func RedirectEndpoint(c *gin.Context) {
 
 	shortLink := c.Param("short")
 	if shortLink == "" {
-		// TODO log this event
+		// FIXME: log this event
+		// no point in sending the request to the error page ...
 		c.String(http.StatusOK, "42")
 		return
 	}
 
 	a, err := urlshortener.GetURL(ctx, shortLink)
 	if err != nil {
-		// TODO log this event
-		c.String(http.StatusOK, "42") // FIXME: this is stupid ...
+		// FIXME: log this event
+		redirectToErrorPage := fmt.Sprintf("%s/e/%s", env.Getenv("BASE_URL", "https://lnkk.host"), shortLink)
+		c.Redirect(http.StatusTemporaryRedirect, redirectToErrorPage)
 		return
 	}
 

@@ -77,7 +77,7 @@ type (
 		// status
 		State int `json:"state,omitempty"`
 		// segmentation
-		//Source string `json:"source,omitempty"`
+		Source string `json:"source,omitempty"`
 		//Client string `json:"client,omitempty"`
 
 		// internal
@@ -183,6 +183,7 @@ func (t *AssetRequest) asInternal() *Asset {
 		AccessToken: token,
 		ParentID:    t.ParentID,
 		State:       StateActive,
+		Source:      "lnkk.host",
 		Created:     now,
 		Modified:    now,
 	}
