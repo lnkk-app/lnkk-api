@@ -1,10 +1,10 @@
 cron:
 - description: "Hourly tasks, e.g. statistics, reports etc"
-  url: /_i/1/scheduler/hourly
+  url: /_i/1/hourly
   schedule: every 60 minutes synchronized
   target: api
 
 - description: "Daily tasks"
-  url: /_i/1/scheduler/daily
+  url: /_i/1/daily
   schedule: every 24 hours synchronized
   target: api
