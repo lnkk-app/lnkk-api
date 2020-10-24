@@ -40,9 +40,14 @@ func setupRoutes() *gin.Engine {
 
 	// static routes
 
-	// API endpoints and callbacks
+	// api endpoints and callbacks
 	apiNamespace := r.Group(api.APIPrefix)
 	apiNamespace.POST("/short", api.ShortenEndpoint)
+	// scheduler
+	schedulerNamespace := r.Group(api.SchedulerBaseURL)
+	schedulerNamespace.GET("/hourly", api.ScheduleHourlyTasks)
+	schedulerNamespace.GET("/daily", api.ScheduleDailyTasks)
+
 	// redirect endpoint
 	r.GET("/r/:short", api.RedirectEndpoint)
 

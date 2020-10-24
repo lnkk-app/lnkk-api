@@ -16,6 +16,8 @@ import (
 const (
 	// APIPrefix is the common namespace prefix of API releated routes
 	APIPrefix string = "/a/1"
+	// SchedulerBaseURL is the namespace for all scheduler routes
+	SchedulerBaseURL = "/_i/1"
 )
 
 // ShortenEndpoint receives a URI to be shortened

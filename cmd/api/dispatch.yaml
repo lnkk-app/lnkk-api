@@ -7,3 +7,6 @@ dispatch:
 
   - url: "lnkk.host/a/1/*"
     service: api
+
+  - url: "lnkk.host/_i/1/*"
+    service: api
