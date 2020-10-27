@@ -66,7 +66,7 @@ func LookupGeoLocation(ip string) (*LocationType, error) {
 
 	resp, err := http.Get(url)
 	if err != nil {
-		platform.Report(err)
+		platform.ReportError(err)
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -99,12 +99,12 @@ func CreateGeoLocation(ctx context.Context, ip string) error {
 		// assuming the location is unknown
 		l, err := LookupGeoLocation(ip)
 		if err != nil {
-			platform.Report(err)
+			platform.ReportError(err)
 			return err
 		}
 
 		if _, err := platform.DataStore().Put(ctx, k, l.asInternal()); err != nil {
-			platform.Report(err)
+			platform.ReportError(err)
 			return err
 		}
 	}

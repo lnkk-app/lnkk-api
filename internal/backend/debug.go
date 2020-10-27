@@ -13,12 +13,12 @@ func DumpPayload(c *gin.Context) {
 
 	buf, err := c.Copy().GetRawData()
 	if err != nil {
-		platform.Report(err)
+		platform.ReportError(err)
 	}
 
 	body, err := url.QueryUnescape(string(buf))
 	if err != nil {
-		platform.Report(err)
+		platform.ReportError(err)
 	}
 
 	log.Printf("%v", body)

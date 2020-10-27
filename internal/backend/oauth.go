@@ -32,7 +32,7 @@ func GetAuthToken(ctx context.Context, id string) (string, error) {
 
 	// check the in-memory cache
 	key := cacheKey(id)
-	token, err := platform.Get(ctx, key)
+	token, err := platform.GetKV(ctx, key)
 	if token != "" {
 		return token, nil
 	}
@@ -46,7 +46,7 @@ func GetAuthToken(ctx context.Context, id string) (string, error) {
 	}
 
 	// add the token to the cache
-	platform.Set(ctx, key, auth.AccessToken, 1800)
+	platform.SetKV(ctx, key, auth.AccessToken, 1800)
 
 	return auth.AccessToken, nil
 }
@@ -77,7 +77,7 @@ func UpdateAuthorization(ctx context.Context, id, name, token, tokenType, scope,
 	}
 
 	// remove the entry from the cache if it is already there ...
-	platform.Invalidate(ctx, cacheKey(id))
+	platform.InvalidateKV(ctx, cacheKey(id))
 
 	_, err = platform.DataStore().Put(ctx, key, &auth)
 	return err
