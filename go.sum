@@ -212,6 +212,7 @@ github.com/txsvc/platform v0.0.3 h1:ZGZMEKNqvCzvarbHgqI3BIsrx7RcQMv/1Q2xAOQybLo=
 github.com/txsvc/platform v0.0.3/go.mod h1:oIqE3mBrC91qI4ZnpY+9Pt6MQcZONq6ezyAnsHVdMQk=
 github.com/txsvc/platform v0.0.4 h1:dC4a8sEaZkdUQJFsns1/CLdmLtkppC+SKgpnGV7ZnQA=
 github.com/txsvc/platform v0.0.4/go.mod h1:Toj4PLadMUYKJ7j1YPua+ItPax3L88sZFqtBOdS+HWs=
+github.com/txsvc/platform v0.9.0 h1:DRAIHMbArE9/vaaUSLVDzAQEWgXsxYpZ4837r3dKauw=
 github.com/txsvc/platform v0.9.0/go.mod h1:7o0WQ2ti90Q04xRJ+y3yQWEbEA6BUwfmC+xepdGyQBc=
 github.com/txsvc/service v0.0.3 h1:zAF4/lXxm1g9jfhJwA2N2WDWcyrULwSeF5ZSrwoZNfw=
 github.com/txsvc/service v0.0.3/go.mod h1:gns44cR7oX74oq+QKgg4sDBEAYeiizAD77FGzLXDhhE=

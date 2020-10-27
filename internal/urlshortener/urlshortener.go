@@ -91,6 +91,7 @@ type (
 		// requester metadata
 		Requester string `json:"requester" binding:"required"`
 		IP        string `json:"ip,omitempty"`
+		Owner     string `json:"owner,omitempty"`
 		// browser metadata
 		UserAgent      string `json:"user_agent,omitempty"`
 		AcceptLanguage string `json:"accept_language,omitempty"`
@@ -118,9 +119,9 @@ func CreateURL(ctx context.Context, as *AssetRequest) (*AssetResponse, error) {
 }
 
 // GetURL retrieves the asset
-func GetURL(ctx context.Context, uri string) (*AssetResponse, error) {
+func GetURL(ctx context.Context, shortLink string) (*AssetResponse, error) {
 	var as Asset
-	k := assetKey(uri)
+	k := assetKey(shortLink)
 
 	if err := platform.DataStore().Get(ctx, k, &as); err != nil {
 		return nil, err
@@ -129,11 +130,12 @@ func GetURL(ctx context.Context, uri string) (*AssetResponse, error) {
 }
 
 // LogRedirectRequest creates the analytics data for a redirect request
-func LogRedirectRequest(ctx context.Context, shortLink string, c *gin.Context) error {
+func LogRedirectRequest(ctx context.Context, asset *AssetResponse, c *gin.Context) error {
 
 	h := RedirectHistory{
-		ShortLink:      shortLink,
-		Requester:      "unknown",                 // we don't know as we do not cookie requests
+		ShortLink:      asset.ShortLink,
+		Requester:      "unknown", // we don't know as we do not cookie requests
+		Owner:          asset.Owner,
 		IP:             anonimizeIP(c.ClientIP()), // anonimize the IP to be GDPR compliant
 		UserAgent:      strings.ToLower(c.GetHeader("User-Agent")),
 		AcceptLanguage: strings.ToLower(c.GetHeader("Accept-Language")),
