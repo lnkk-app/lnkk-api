@@ -17,15 +17,12 @@ const (
 	DatastoreAssets string = "ASSETS"
 	// DatastoreRedirectHistory collection MEASUREMENT
 	DatastoreRedirectHistory string = "REDIRECT_HISTORY"
-)
 
-/*
-	StateActive and the other states decribe thr assets lifecycle
-	StateArchived = the asset was disabled by its owner
-	StateRetired = the asset was not activated for x days
-	StateBroken = the assets target does not exist
-*/
-const (
+	// StateActive and the other states decribe thr assets lifecycle
+	// StateArchived = the asset was disabled by its owner
+	// StateRetired = the asset was not activated for x days
+	// StateBroken = the assets target does not exist
+
 	StateActive = iota
 	StateArchived
 	StateRetired

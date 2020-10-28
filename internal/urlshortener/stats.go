@@ -10,9 +10,14 @@ import (
 
 // NewAssetsSince returns the number of new assets since a given point in time
 func NewAssetsSince(ctx context.Context, owner string, ts int64) (int, error) {
+	var q *datastore.Query
 
-	// FIXME: include owner in thr query if != ""
-	q := datastore.NewQuery(DatastoreAssets).Filter("Created >=", ts).KeysOnly()
+	if owner != "" {
+		q = datastore.NewQuery(DatastoreAssets).Filter("Owner =", owner).Filter("Created >=", ts).KeysOnly()
+	} else {
+		q = datastore.NewQuery(DatastoreAssets).Filter("Created >=", ts).KeysOnly()
+	}
+
 	n, err := platform.DataStore().Count(ctx, q)
 	if err != nil {
 		return -1, err
@@ -22,9 +27,14 @@ func NewAssetsSince(ctx context.Context, owner string, ts int64) (int, error) {
 
 // RedirectsSince returns the number of new assets since a given point in time
 func RedirectsSince(ctx context.Context, owner string, ts int64) (int, error) {
+	var q *datastore.Query
 
-	// FIXME: include owner in thr query if != ""
-	q := datastore.NewQuery(DatastoreRedirectHistory).Filter("Created >=", ts).KeysOnly()
+	if owner != "" {
+		q = datastore.NewQuery(DatastoreRedirectHistory).Filter("Owner =", owner).Filter("Created >=", ts).KeysOnly()
+	} else {
+		q = datastore.NewQuery(DatastoreRedirectHistory).Filter("Created >=", ts).KeysOnly()
+	}
+
 	n, err := platform.DataStore().Count(ctx, q)
 	if err != nil {
 		return -1, err

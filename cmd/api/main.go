@@ -9,8 +9,10 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/txsvc/platform/pkg/platform"
-	"github.com/txsvc/service/pkg/svc"
+	"github.com/txsvc/slack/pkg/slack"
 
+	"github.com/lnkk-app/lnkk-api/internal/actions"
+	"github.com/lnkk-app/lnkk-api/internal/cmd"
 	"github.com/lnkk-app/lnkk-api/pkg/api"
 )
 
@@ -23,6 +25,10 @@ func main() {
 		shutdown()
 		os.Exit(1)
 	}()
+
+	// setup slack commands and actions
+	setupSlackCommands()
+	setupSlackActions()
 
 	// basic http stack config
 	gin.DisableConsoleColor()
@@ -43,6 +49,10 @@ func setupRoutes() *gin.Engine {
 	// api endpoints and callbacks
 	apiNamespace := r.Group(api.APIPrefix)
 	apiNamespace.POST("/short", api.ShortenEndpoint)
+	apiNamespace.GET("/auth", slack.OAuthEndpoint)
+	apiNamespace.POST("/slack/cmd", slack.SlashCmdEndpoint)
+	apiNamespace.POST("/slack/action", slack.ActionRequestEndpoint)
+
 	// scheduler
 	schedulerNamespace := r.Group(api.SchedulerBaseURL)
 	schedulerNamespace.GET("/hourly", api.ScheduleHourlyTasks)
@@ -54,8 +64,13 @@ func setupRoutes() *gin.Engine {
 	return r
 }
 
-func staticIndexEndpoint(c *gin.Context) {
-	svc.StandardAPIResponse(c, nil)
+func setupSlackCommands() {
+	slack.RegisterSlashCmdHandler("/lnkk", cmd.SlackCmdShorten)
+}
+
+func setupSlackActions() {
+	slack.RegisterStartAction("add_newsletter", actions.StartAddToNewsletter)
+	slack.RegisterCompleteAction("add_newsletter", actions.CompleteAddToNewsletter)
 }
 
 func shutdown() {

@@ -8,8 +8,8 @@ require (
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/txsvc/commons v1.0.2
 	github.com/txsvc/platform v0.9.0
-	github.com/txsvc/service v0.0.3
-	//github.com/txsvc/slack v1.0.2
-	golang.org/x/net v0.0.0-20201026091529-146b70c837a4
+	github.com/txsvc/service v0.0.4
+	github.com/txsvc/slack v1.0.3
+	golang.org/x/net v0.0.0-20201027133719-8eef5233e2a1
 	google.golang.org/appengine v1.6.7
 )
