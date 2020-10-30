@@ -65,7 +65,7 @@ func setupRoutes() *gin.Engine {
 }
 
 func setupSlackCommands() {
-	slack.RegisterSlashCmdHandler("/lnkk", cmd.SlackCmdShorten)
+	slack.RegisterSlashCmdHandler("/lnkk", cmd.SlackCmdLnkk)
 }
 
 func setupSlackActions() {
