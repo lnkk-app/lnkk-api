@@ -155,6 +155,12 @@ func LogRedirectRequest(ctx context.Context, asset *AssetResponse, c *gin.Contex
 	return nil
 }
 
+// GetAssets returns an array of count assets for owner, starting at page
+func GetAssets(ctx context.Context, owner string, count, page int) *datastore.Iterator {
+	q := datastore.NewQuery(DatastoreAssets).Filter("Owner =", owner).Limit(count).Order("-Created")
+	return platform.DataStore().Run(ctx, q)
+}
+
 func assetKey(uri string) *datastore.Key {
 	return datastore.NameKey(DatastoreAssets, uri, nil)
 }

@@ -1,0 +1,16 @@
+indexes:
+  - kind: ASSETS
+    properties:
+      - name: Owner
+      - name: Created
+        direction: desc
+
+  - kind: ASSETS
+    properties:
+      - name: Owner
+      - name: Created
+
+  - kind: REDIRECT_HISTORY
+    properties:
+      - name: Owner
+      - name: Created

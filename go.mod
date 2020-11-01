@@ -16,12 +16,12 @@ require (
 	github.com/txsvc/slack v1.0.6
 	github.com/ugorji/go v1.1.13 // indirect
 	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897 // indirect
-	golang.org/x/net v0.0.0-20201029221708-28c70e62bb1d
-	golang.org/x/sys v0.0.0-20201029080932-201ba4db2418 // indirect
+	golang.org/x/net v0.0.0-20201031054903-ff519b6c9102
+	golang.org/x/sys v0.0.0-20201101102859-da207088b7d1 // indirect
 	golang.org/x/text v0.3.4 // indirect
-	golang.org/x/tools v0.0.0-20201030010431-2feb2bb1ff51 // indirect
-	google.golang.org/api v0.34.0 // indirect
+	golang.org/x/tools v0.0.0-20201031021630-582c62ec74d0 // indirect
+	google.golang.org/api v0.34.0
 	google.golang.org/appengine v1.6.7
-	google.golang.org/genproto v0.0.0-20201029200359-8ce4113da6f7 // indirect
+	google.golang.org/genproto v0.0.0-20201030142918-24207fddd1c3 // indirect
 	google.golang.org/grpc v1.33.1 // indirect
 )
