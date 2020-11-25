@@ -38,6 +38,8 @@ type (
 		Owner string `json:"owner" binding:"required"`
 		// ParentID is the id of the category the asset belongs to
 		ParentID string `json:"parent,omitempty"`
+		// Source identiefies the client who created the request
+		Source string `json:"source,omitempty"`
 	}
 
 	// AssetResponse contains the relevant attributes after creating a new asset
@@ -188,7 +190,7 @@ func (t *AssetRequest) asInternal() *Asset {
 		AccessToken: token,
 		ParentID:    t.ParentID,
 		State:       StateActive,
-		Source:      "lnkk.host",
+		Source:      t.Source,
 		Created:     now,
 		Modified:    now,
 	}

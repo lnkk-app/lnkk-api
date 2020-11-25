@@ -23,6 +23,7 @@ func ScheduleHourlyTasks(c *gin.Context) {
 	now := util.Timestamp()
 	last := platform.GetJobTimestamp(ctx, hourlyStats)
 
+	// FIXME: this is cancelled somehow sometimes ...
 	go stats.AssetMetrics(ctx, stats.HourlyAssetMetric, "", last)
 	go stats.RedirectMetrics(ctx, stats.HourlyRedirectMetric, "", last)
 
@@ -37,6 +38,7 @@ func ScheduleDailyTasks(c *gin.Context) {
 	now := util.Timestamp()
 	last := platform.GetJobTimestamp(ctx, dailyStats)
 
+	// FIXME: this is cancelled somehow sometimes ...
 	go stats.AssetMetrics(ctx, stats.DailyAssetMetric, "", last)
 	go stats.RedirectMetrics(ctx, stats.DailyRedirectMetric, "", last)
 

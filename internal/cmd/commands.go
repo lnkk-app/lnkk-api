@@ -54,8 +54,9 @@ func shortenCmdHandler(ctx context.Context, cmd *slack.SlashCommand, cmdLn []str
 	}
 
 	asset := urlshortener.AssetRequest{
-		Link:  cmdLn[0],
-		Owner: ownerID(cmd),
+		Link:   cmdLn[0],
+		Owner:  ownerID(cmd),
+		Source: strings.ToLower("slack." + cmd.TeamID),
 	}
 	_asset, err := urlshortener.CreateURL(ctx, &asset)
 	if err != nil {
