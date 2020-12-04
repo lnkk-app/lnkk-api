@@ -15,8 +15,15 @@
 stuff.md
 hack/
 *.txt
+
 # possible binaries
 cmd/app/app
+cmd/app/main
+cmd/frontend/frontend
+cmd/frontend/main
+
+# static site assets
+#cmd/frontend/public
 
 # MAY CONTAIN SECRETS
 app.yaml
