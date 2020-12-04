@@ -30,7 +30,7 @@ func main() {
 
 	// add basic routes
 	svc.AddDefaultEndpoints()
-	svc.ServeStaticAssets("/", "./frontend/public")
+	svc.ServeStaticAssets("/", "./cmd/frontend/public")
 
 	// add custom endpoints with authentication
 	//api := svc.SecureGroup("/api", a.MiddlewareFunc())
