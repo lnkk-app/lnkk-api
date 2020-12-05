@@ -21,7 +21,7 @@ const (
 	// StateActive and the other states decribe thr assets lifecycle
 	// StateArchived = the asset was disabled by its owner
 	// StateRetired = the asset was not activated for x days
-	// StateBroken = the assets target does not exist
+	// StateBroken = the asset's target does not exist
 
 	StateActive = iota
 	StateArchived
@@ -74,7 +74,9 @@ type (
 		Title       string `json:"title,omitempty"`
 		Description string `json:"description,omitempty"`
 		// status
-		State int `json:"state,omitempty"`
+		State      int   `json:"state,omitempty"`
+		LastAccess int64 `json:"last_access"`
+
 		// segmentation
 		Source string `json:"source,omitempty"`
 		//Client string `json:"client,omitempty"`

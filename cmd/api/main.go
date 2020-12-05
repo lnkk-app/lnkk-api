@@ -53,6 +53,10 @@ func setupRoutes() *gin.Engine {
 	apiNamespace.POST("/slack/cmd", slack.SlashCmdEndpoint)
 	apiNamespace.POST("/slack/action", slack.ActionRequestEndpoint)
 
+	// hack
+	// apiNamespace.GET("/migrate", api.MigrationEndpoint001)
+	// end hack
+
 	// scheduler
 	schedulerNamespace := r.Group(api.SchedulerBaseURL)
 	schedulerNamespace.GET("/hourly", api.ScheduleHourlyTasks)
