@@ -13,6 +13,7 @@ import (
 
 	"github.com/lnkk-app/lnkk-api/internal/actions"
 	"github.com/lnkk-app/lnkk-api/internal/cmd"
+	"github.com/lnkk-app/lnkk-api/internal/stats"
 	"github.com/lnkk-app/lnkk-api/pkg/api"
 )
 
@@ -57,6 +58,11 @@ func setupRoutes() *gin.Engine {
 	schedulerNamespace := r.Group(api.SchedulerBaseURL)
 	schedulerNamespace.GET("/hourly", api.ScheduleHourlyTasks)
 	schedulerNamespace.GET("/daily", api.ScheduleDailyTasks)
+
+	// worker
+	workerNamespace := r.Group(api.WorkerBaseURL)
+	workerNamespace.POST("/metrics/assets", stats.AssetMetricsWorker)
+	workerNamespace.POST("/metrics/redirects", stats.RedirectMetricsWorker)
 
 	// redirect endpoint
 	r.GET("/r/:short", api.RedirectEndpoint)

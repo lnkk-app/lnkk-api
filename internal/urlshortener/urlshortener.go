@@ -203,7 +203,7 @@ func (t *AssetRequest) asInternal() *Asset {
 	return &Asset{
 		LongLink:    t.Link,
 		ShortLink:   shortLink,
-		PreviewLink: fmt.Sprintf("https://lnkk.host/r/%s", shortLink),
+		PreviewLink: fmt.Sprintf("https://lnkk.host/r/%s", shortLink), // FIXME: remove the static declaration of the host!
 		Owner:       t.Owner,
 		AccessToken: token,
 		ParentID:    t.ParentID,

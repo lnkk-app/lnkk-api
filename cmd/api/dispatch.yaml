@@ -10,3 +10,6 @@ dispatch:
 
   - url: "lnkk.host/_i/1/*"
     service: api
+
+  - url: "*/_w/1/*"
+    service: api

@@ -217,6 +217,7 @@ github.com/txsvc/goreq v1.0.1 h1:fVwv9fZzIjXuFymhFiUbE4NoCwk9glAHX37qEOYYvaI=
 github.com/txsvc/goreq v1.0.1/go.mod h1:KVwFVWBAMlmGW8EG4WABHwvbQ1kte/X3V66ocrFnVH8=
 github.com/txsvc/platform v0.9.0 h1:DRAIHMbArE9/vaaUSLVDzAQEWgXsxYpZ4837r3dKauw=
 github.com/txsvc/platform v0.9.0/go.mod h1:7o0WQ2ti90Q04xRJ+y3yQWEbEA6BUwfmC+xepdGyQBc=
+github.com/txsvc/platform v0.10.0/go.mod h1:btg82OUqieteUQ/tksD84xLAgFB9Asr6YMxvkA4QTxc=
 github.com/txsvc/service v0.9.0 h1:DXI5iou7+peiOi22xnFJ7btcBCUdWmgItBdxv0KWH7o=
 github.com/txsvc/service v0.9.0/go.mod h1:WB0JxQKzjVyYXJ9DyXzV+TfJuXNoELOBnuOgNCXET8A=
 github.com/txsvc/slack v1.0.6 h1:xey6uFaVctAvQlXC+Tx18CgUaXnldlzUK/zZiGJmE6w=

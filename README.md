@@ -1,6 +1,6 @@
-# lnkk.app
+# lnkk.api
 
-A bot to help managing social interactions in a Slack community.
+The lnkk.host API backend. The API is mainly used by the Slack integration and the web frontend (https://lnkk-host)[https://lnkk-host].
 
 ### Designing a great app experience
 * https://api.slack.com/start/designing
@@ -23,3 +23,4 @@ A bot to help managing social interactions in a Slack community.
 ### Google AppEngine
 
 * https://cloud.google.com/appengine/docs/standard/go/config/appref
+* https://cloud.google.com/tasks/docs/quickstart-appengine?hl=en_US

@@ -18,6 +18,8 @@ const (
 	APIPrefix string = "/a/1"
 	// SchedulerBaseURL is the namespace for all scheduler routes
 	SchedulerBaseURL = "/_i/1"
+	// WorkerBaseURL is the namespace for all worker routes
+	WorkerBaseURL = "/_w/1"
 )
 
 // ShortenEndpoint receives a URI to be shortened
