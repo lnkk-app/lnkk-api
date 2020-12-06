@@ -27,6 +27,9 @@ const (
 	StateArchived
 	StateRetired
 	StateBroken
+
+	// LastAccessThreshold is the time we allow to pass before updating the LastAccess attribute, again
+	LastAccessThreshold = 3600 * 6 // 6h
 )
 
 type (
@@ -120,18 +123,31 @@ func CreateURL(ctx context.Context, as *AssetRequest) (*AssetResponse, error) {
 }
 
 // GetURL retrieves the asset
-func GetURL(ctx context.Context, shortLink string) (*AssetResponse, error) {
-	var as Asset
+func GetURL(ctx context.Context, shortLink string, touch bool) (*Asset, error) {
+	var asset Asset
 	k := assetKey(shortLink)
 
-	if err := platform.DataStore().Get(ctx, k, &as); err != nil {
+	// FIXME: add caching at some point ...
+	if err := platform.DataStore().Get(ctx, k, &asset); err != nil {
 		return nil, err
 	}
-	return as.asExternal(), nil
+
+	if touch {
+		// not every retrieval needs updating ...
+		now := util.Timestamp()
+		if asset.LastAccess < now-LastAccessThreshold {
+			asset.LastAccess = now
+
+			if _, err := platform.DataStore().Put(ctx, k, &asset); err != nil {
+				platform.ReportError(err)
+			}
+		}
+	}
+	return &asset, nil
 }
 
 // LogRedirectRequest creates the analytics data for a redirect request
-func LogRedirectRequest(ctx context.Context, asset *AssetResponse, c *gin.Context) error {
+func LogRedirectRequest(ctx context.Context, asset *Asset, c *gin.Context) error {
 
 	h := RedirectHistory{
 		ShortLink:      asset.ShortLink,

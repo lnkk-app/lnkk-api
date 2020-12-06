@@ -15,7 +15,7 @@ import (
 	"github.com/lnkk-app/lnkk-api/internal/urlshortener"
 )
 
-// MigrationEndpoint001 is used to run any kind of data migrations
+// MigrationEndpoint001 added the LastAccess attribute and set the asset state correctly
 func MigrationEndpoint001(c *gin.Context) {
 	ctx := appengine.NewContext(c.Request)
 
