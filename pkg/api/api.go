@@ -16,8 +16,8 @@ import (
 const (
 	// APIPrefix is the common namespace prefix of API releated routes
 	APIPrefix string = "/a/1"
-	// SchedulerBaseURL is the namespace for all scheduler routes
-	SchedulerBaseURL = "/_i/1"
+	// CronBaseURL is the namespace for all scheduler routes
+	CronBaseURL = "/_c/1"
 	// WorkerBaseURL is the namespace for all worker routes
 	WorkerBaseURL = "/_w/1"
 )

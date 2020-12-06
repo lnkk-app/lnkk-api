@@ -20,7 +20,8 @@ The lnkk.host API backend. The API is mainly used by the Slack integration and t
 
 ## References
 
-### Google AppEngine
+### Google AppEngine & Google Cloud
 
+* https://godoc.org/cloud.google.com/go
 * https://cloud.google.com/appengine/docs/standard/go/config/appref
 * https://cloud.google.com/tasks/docs/quickstart-appengine?hl=en_US

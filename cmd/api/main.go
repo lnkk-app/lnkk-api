@@ -11,8 +11,9 @@ import (
 	"github.com/txsvc/platform/pkg/platform"
 	"github.com/txsvc/slack/pkg/slack"
 
-	"github.com/lnkk-app/lnkk-api/internal/actions"
-	"github.com/lnkk-app/lnkk-api/internal/cmd"
+	"github.com/lnkk-app/lnkk-api/internal/cron"
+	"github.com/lnkk-app/lnkk-api/internal/slack/actions"
+	"github.com/lnkk-app/lnkk-api/internal/slack/cmd"
 	"github.com/lnkk-app/lnkk-api/internal/stats"
 	"github.com/lnkk-app/lnkk-api/pkg/api"
 )
@@ -54,10 +55,10 @@ func setupRoutes() *gin.Engine {
 	apiNamespace.POST("/slack/cmd", slack.SlashCmdEndpoint)
 	apiNamespace.POST("/slack/action", slack.ActionRequestEndpoint)
 
-	// scheduler
-	schedulerNamespace := r.Group(api.SchedulerBaseURL)
-	schedulerNamespace.GET("/hourly", api.ScheduleHourlyTasks)
-	schedulerNamespace.GET("/daily", api.ScheduleDailyTasks)
+	// scheduler / cron tasks
+	cronNamespace := r.Group(api.CronBaseURL)
+	cronNamespace.GET("/hourly", cron.ScheduleHourlyTasks)
+	cronNamespace.GET("/daily", cron.ScheduleDailyTasks)
 
 	// worker
 	workerNamespace := r.Group(api.WorkerBaseURL)
@@ -66,15 +67,6 @@ func setupRoutes() *gin.Engine {
 
 	// redirect endpoint
 	r.GET("/r/:short", api.RedirectEndpoint)
-
-	// begin hack
-	//
-	// Maybe I will add some feature-flag thing here to turn the migration endpoint on/off.
-	// Or just use comment/uncomment as I have to redeploy anyways ---
-	//
-	// apiNamespace.GET("/migrate", api.MigrationEndpoint001)
-	//
-	// end hack
 
 	return r
 }

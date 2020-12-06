@@ -1,4 +1,4 @@
-package api
+package cron
 
 import (
 	"fmt"
@@ -11,6 +11,7 @@ import (
 	"github.com/txsvc/service/pkg/svc"
 
 	"github.com/lnkk-app/lnkk-api/internal/stats"
+	"github.com/lnkk-app/lnkk-api/pkg/api"
 )
 
 const (
@@ -25,8 +26,8 @@ func ScheduleHourlyTasks(c *gin.Context) {
 	now := util.Timestamp()
 	last := platform.GetJobTimestamp(ctx, hourlyStats)
 
-	platform.CreateSimpleTask(ctx, WorkerBaseURL+"/metrics/assets", fmt.Sprintf("%s:%s:%d", stats.HourlyAssetMetric, "-", last))
-	platform.CreateSimpleTask(ctx, WorkerBaseURL+"/metrics/redirects", fmt.Sprintf("%s:%s:%d", stats.HourlyRedirectMetric, "-", last))
+	platform.CreateSimpleTask(ctx, api.WorkerBaseURL+"/metrics/assets", fmt.Sprintf("%s:%s:%d", stats.HourlyAssetMetric, "-", last))
+	platform.CreateSimpleTask(ctx, api.WorkerBaseURL+"/metrics/redirects", fmt.Sprintf("%s:%s:%d", stats.HourlyRedirectMetric, "-", last))
 
 	platform.UpdateJob(ctx, hourlyStats, now)
 	svc.StandardAPIResponse(c, nil)
@@ -39,8 +40,8 @@ func ScheduleDailyTasks(c *gin.Context) {
 	now := util.Timestamp()
 	last := platform.GetJobTimestamp(ctx, dailyStats)
 
-	platform.CreateSimpleTask(ctx, WorkerBaseURL+"/metrics/assets", fmt.Sprintf("%s:%s:%d", stats.DailyAssetMetric, "-", last))
-	platform.CreateSimpleTask(ctx, WorkerBaseURL+"/metrics/redirects", fmt.Sprintf("%s:%s:%d", stats.DailyRedirectMetric, "-", last))
+	platform.CreateSimpleTask(ctx, api.WorkerBaseURL+"/metrics/assets", fmt.Sprintf("%s:%s:%d", stats.DailyAssetMetric, "-", last))
+	platform.CreateSimpleTask(ctx, api.WorkerBaseURL+"/metrics/redirects", fmt.Sprintf("%s:%s:%d", stats.DailyRedirectMetric, "-", last))
 
 	platform.UpdateJob(ctx, dailyStats, now)
 	svc.StandardAPIResponse(c, nil)
