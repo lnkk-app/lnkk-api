@@ -46,13 +46,12 @@ func RedirectMetricsWorker(c *gin.Context) {
 		owner = ""
 	}
 	last, err := strconv.ParseInt(parts[2], 10, 64)
-	if err == nil {
+	if err != nil {
 		platform.ReportError(errors.NewOperationError(fmt.Sprintf("Invalid parameter. Expected string(int64), got: %d of type %T", last, last), nil))
 		c.Status(http.StatusOK)
 		return
 	}
 
-	//RedirectMetrics(appengine.NewContext(c.Request), parts[0], owner, last)
 	ctx := appengine.NewContext(c.Request)
 	n, err := RedirectsSince(ctx, owner, last)
 	if err != nil {
