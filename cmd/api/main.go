@@ -14,7 +14,7 @@ import (
 	"github.com/lnkk-app/lnkk-api/internal/cron"
 	"github.com/lnkk-app/lnkk-api/internal/slack/actions"
 	"github.com/lnkk-app/lnkk-api/internal/slack/cmd"
-	"github.com/lnkk-app/lnkk-api/internal/stats"
+	"github.com/lnkk-app/lnkk-api/internal/statistics"
 	"github.com/lnkk-app/lnkk-api/pkg/api"
 )
 
@@ -55,15 +55,15 @@ func setupRoutes() *gin.Engine {
 	apiNamespace.POST("/slack/cmd", slack.SlashCmdEndpoint)
 	apiNamespace.POST("/slack/action", slack.ActionRequestEndpoint)
 
-	// scheduler / cron tasks
+	// speriodic cron tasks
 	cronNamespace := r.Group(api.CronBaseURL)
-	cronNamespace.GET("/hourly", cron.ScheduleHourlyTasks)
-	cronNamespace.GET("/daily", cron.ScheduleDailyTasks)
+	cronNamespace.GET("/hourly", cron.HourlyTasks)
+	cronNamespace.GET("/daily", cron.DailyTasks)
 
 	// worker
 	workerNamespace := r.Group(api.WorkerBaseURL)
-	workerNamespace.POST("/metrics/assets", stats.AssetMetricsWorker)
-	workerNamespace.POST("/metrics/redirects", stats.RedirectMetricsWorker)
+	workerNamespace.POST("/metrics/assets", statistics.AssetMetricsWorker)
+	workerNamespace.POST("/metrics/redirects", statistics.RedirectMetricsWorker)
 
 	// redirect endpoint
 	r.GET("/r/:short", api.RedirectEndpoint)

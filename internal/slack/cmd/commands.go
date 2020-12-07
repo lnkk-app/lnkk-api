@@ -8,13 +8,15 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lnkk-app/lnkk-api/internal/urlshortener"
 	"google.golang.org/api/iterator"
 	"google.golang.org/appengine"
 
 	"github.com/txsvc/commons/pkg/util"
 	"github.com/txsvc/platform/pkg/platform"
 	"github.com/txsvc/slack/pkg/slack"
+
+	"github.com/lnkk-app/lnkk-api/internal/statistics"
+	"github.com/lnkk-app/lnkk-api/internal/urlshortener"
 )
 
 const (
@@ -122,13 +124,13 @@ func listCmdHandler(ctx context.Context, cmd *slack.SlashCommand, cmdLn []string
 func statsCmdHandler(ctx context.Context, cmd *slack.SlashCommand, cmdLn []string) (interface{}, error) {
 	since := util.Timestamp() - int64(24*60*60)
 
-	assets, err := urlshortener.NewAssetsSince(ctx, ownerID(cmd), since)
+	assets, err := statistics.AssetsSince(ctx, ownerID(cmd), since)
 	if err != nil {
 		platform.ReportError(err)
 		assets = 0
 	}
 
-	redirects, err := urlshortener.RedirectsSince(ctx, ownerID(cmd), since)
+	redirects, err := statistics.RedirectsSince(ctx, ownerID(cmd), since)
 	if err != nil {
 		platform.ReportError(err)
 		redirects = 0
