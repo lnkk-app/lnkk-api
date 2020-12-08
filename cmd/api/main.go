@@ -56,7 +56,7 @@ func setupRoutes() *gin.Engine {
 	apiNamespace.POST("/slack/cmd", slack.SlashCmdEndpoint)
 	apiNamespace.POST("/slack/action", slack.ActionRequestEndpoint)
 
-	// speriodic cron tasks
+	// periodic cron tasks
 	cronNamespace := r.Group(api.CronBaseURL)
 	cronNamespace.GET("/hourly", cron.HourlyTasks)
 	cronNamespace.GET("/daily", cron.DailyTasks)

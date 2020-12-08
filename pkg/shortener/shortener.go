@@ -59,7 +59,7 @@ type (
 		PreviewLink string `json:"preview_link,omitempty"`
 		// Owner identifies the owner of the asset
 		Owner string `json:"owner" binding:"required"`
-		// AccessToken is used together with 'Secret' in order to claim the asset
+		// AccessToken is used as a 'Secret' in order to claim or access the asset
 		AccessToken string `json:"token,omitempty"`
 	}
 
