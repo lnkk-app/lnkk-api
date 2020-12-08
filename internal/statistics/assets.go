@@ -3,7 +3,6 @@ package statistics
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -15,22 +14,19 @@ import (
 	"github.com/txsvc/commons/pkg/errors"
 	"github.com/txsvc/platform/pkg/platform"
 
+	"github.com/lnkk-app/lnkk-api/internal/misc"
 	"github.com/lnkk-app/lnkk-api/internal/urlshortener"
 )
 
 // AssetMetricsWorker receives worker tasks to create asset metrics
 func AssetMetricsWorker(c *gin.Context) {
 
-	payload := ""
-	if c.Request.Body != nil {
-		body, err := ioutil.ReadAll(c.Request.Body)
-		if err != nil {
-			// just report and return, resending will not change anything
-			platform.ReportError(err)
-			c.Status(http.StatusOK)
-			return
-		}
-		payload = string(body)
+	payload, err := misc.ExtractBodyAsString(c)
+	if err != nil {
+		// just report and return, resending will not change anything
+		platform.ReportError(err)
+		c.Status(http.StatusOK)
+		return
 	}
 
 	parts := strings.Split(payload, ":")
@@ -56,9 +52,9 @@ func AssetMetricsWorker(c *gin.Context) {
 	n, err := AssetsSince(ctx, owner, last)
 	if err != nil {
 		platform.ReportError(err)
-		return
+	} else {
+		platform.Count(ctx, metric, owner, n)
 	}
-	platform.Count(ctx, metric, owner, n)
 
 	// all OK
 	c.Status(http.StatusOK)

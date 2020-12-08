@@ -10,6 +10,11 @@ indexes:
       - name: Owner
       - name: Created
 
+  - kind: ASSETS
+    properties:
+      - name: State
+      - name: LastAccess
+
   - kind: REDIRECT_HISTORY
     properties:
       - name: Owner

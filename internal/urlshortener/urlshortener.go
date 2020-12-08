@@ -19,17 +19,21 @@ const (
 	DatastoreRedirectHistory string = "REDIRECT_HISTORY"
 
 	// StateActive and the other states decribe thr assets lifecycle
-	// StateArchived = the asset was disabled by its owner
-	// StateRetired = the asset was not activated for x days
-	// StateBroken = the asset's target does not exist
-
 	StateActive = iota
+	// StateArchived = the asset was disabled by its owner
 	StateArchived
-	StateRetired
+	// StateExpired = the asset was not activated for x days
+	StateExpired
+	// StateBroken = the asset's target does not exist
 	StateBroken
 
 	// LastAccessThreshold is the time we allow to pass before updating the LastAccess attribute, again
 	LastAccessThreshold = 3600 * 6 // 6h
+	// ExpireAfter defines the age of an asset before it expires (in seconds).
+	ExpireAfter int64 = 86400 * 14 // 14 days
+
+	// DailyExpiration is a metric to track how many assets were expired
+	DailyExpiration = "DAILY_EXPIRATION"
 )
 
 type (
@@ -208,6 +212,7 @@ func (t *AssetRequest) asInternal() *Asset {
 		AccessToken: token,
 		ParentID:    t.ParentID,
 		State:       StateActive,
+		LastAccess:  0, // easy to select assets that were never used ...
 		Source:      t.Source,
 		Created:     now,
 		Modified:    now,
