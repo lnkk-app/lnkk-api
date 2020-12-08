@@ -1,4 +1,19 @@
-# API specification
+# Specification
+
+## Description
+
+TBD
+
+## Authentication
+
+TBD
+
+## Methods
+
+The API provides the following public endpoints:
+
+* POST /a/1/short
+* GET /r/:short [optional query parameters]
 
 ### POST /a/1/short
 
