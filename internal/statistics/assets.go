@@ -15,7 +15,7 @@ import (
 	"github.com/txsvc/platform/pkg/platform"
 
 	"github.com/lnkk-app/lnkk-api/internal/misc"
-	"github.com/lnkk-app/lnkk-api/internal/urlshortener"
+	"github.com/lnkk-app/lnkk-api/pkg/shortener"
 )
 
 // AssetMetricsWorker receives worker tasks to create asset metrics
@@ -65,9 +65,9 @@ func AssetsSince(ctx context.Context, owner string, ts int64) (int, error) {
 	var q *datastore.Query
 
 	if owner != "" {
-		q = datastore.NewQuery(urlshortener.DatastoreAssets).Filter("Owner =", owner).Filter("Created >=", ts).KeysOnly()
+		q = datastore.NewQuery(shortener.DatastoreAssets).Filter("Owner =", owner).Filter("Created >=", ts).KeysOnly()
 	} else {
-		q = datastore.NewQuery(urlshortener.DatastoreAssets).Filter("Created >=", ts).KeysOnly()
+		q = datastore.NewQuery(shortener.DatastoreAssets).Filter("Created >=", ts).KeysOnly()
 	}
 
 	n, err := platform.DataStore().Count(ctx, q)

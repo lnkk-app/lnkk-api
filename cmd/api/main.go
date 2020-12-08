@@ -15,8 +15,8 @@ import (
 	"github.com/lnkk-app/lnkk-api/internal/slack/actions"
 	"github.com/lnkk-app/lnkk-api/internal/slack/cmd"
 	"github.com/lnkk-app/lnkk-api/internal/statistics"
-	"github.com/lnkk-app/lnkk-api/internal/urlshortener"
 	"github.com/lnkk-app/lnkk-api/pkg/api"
+	"github.com/lnkk-app/lnkk-api/pkg/shortener"
 )
 
 func main() {
@@ -65,7 +65,7 @@ func setupRoutes() *gin.Engine {
 	workerNamespace := r.Group(api.WorkerBaseURL)
 	workerNamespace.POST("/statistics/assets", statistics.AssetMetricsWorker)
 	workerNamespace.POST("/statistics/redirects", statistics.RedirectMetricsWorker)
-	workerNamespace.POST("/expire", urlshortener.AssetExpirationWorker)
+	workerNamespace.POST("/expire", shortener.AssetExpirationWorker)
 
 	// redirect endpoint
 	r.GET("/r/:short", api.RedirectEndpoint)

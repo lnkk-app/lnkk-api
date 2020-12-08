@@ -10,7 +10,7 @@ import (
 	"github.com/txsvc/commons/pkg/env"
 	"github.com/txsvc/service/pkg/svc"
 
-	"github.com/lnkk-app/lnkk-api/internal/urlshortener"
+	"github.com/lnkk-app/lnkk-api/pkg/shortener"
 )
 
 const (
@@ -27,14 +27,14 @@ func ShortenEndpoint(c *gin.Context) {
 	//topic := "api.shorten.post"
 	ctx := appengine.NewContext(c.Request)
 
-	var asset urlshortener.AssetRequest
+	var asset shortener.AssetRequest
 	err := c.BindJSON(&asset)
 	if err != nil {
 		svc.StandardJSONResponse(c, nil, err)
 		return
 	}
 
-	_asset, err := urlshortener.CreateURL(ctx, &asset)
+	_asset, err := shortener.CreateURL(ctx, &asset)
 	svc.StandardJSONResponse(c, _asset, err)
 }
 
@@ -50,8 +50,8 @@ func RedirectEndpoint(c *gin.Context) {
 		return
 	}
 
-	asset, err := urlshortener.GetURL(ctx, shortLink, true)
-	if err != nil || asset.State != urlshortener.StateActive {
+	asset, err := shortener.GetURL(ctx, shortLink, true)
+	if err != nil || asset.State != shortener.StateActive {
 		// FIXME: log this event
 		redirectToErrorPage := fmt.Sprintf("%s/e/%s", env.Getenv("BASE_URL", "https://lnkk.host"), shortLink)
 		c.Redirect(http.StatusTemporaryRedirect, redirectToErrorPage)
@@ -59,6 +59,6 @@ func RedirectEndpoint(c *gin.Context) {
 	}
 
 	// log the event and redirect
-	urlshortener.LogRedirectRequest(ctx, asset, c)
+	shortener.LogRedirectRequest(ctx, asset, c)
 	c.Redirect(http.StatusTemporaryRedirect, asset.LongLink)
 }

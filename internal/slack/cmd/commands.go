@@ -16,7 +16,7 @@ import (
 	"github.com/txsvc/slack/pkg/slack"
 
 	"github.com/lnkk-app/lnkk-api/internal/statistics"
-	"github.com/lnkk-app/lnkk-api/internal/urlshortener"
+	"github.com/lnkk-app/lnkk-api/pkg/shortener"
 )
 
 const (
@@ -55,12 +55,12 @@ func shortenCmdHandler(ctx context.Context, cmd *slack.SlashCommand, cmdLn []str
 		return nil, e.New("Missing URL")
 	}
 
-	asset := urlshortener.AssetRequest{
+	asset := shortener.AssetRequest{
 		Link:   cmdLn[0],
 		Owner:  ownerID(cmd),
 		Source: strings.ToLower("slack." + cmd.TeamID),
 	}
-	_asset, err := urlshortener.CreateURL(ctx, &asset)
+	_asset, err := shortener.CreateURL(ctx, &asset)
 	if err != nil {
 		return nil, err
 	}
@@ -94,9 +94,9 @@ func listCmdHandler(ctx context.Context, cmd *slack.SlashCommand, cmdLn []string
 		count = 10
 	}
 
-	iter := urlshortener.GetAssets(ctx, ownerID(cmd), count, 0)
+	iter := shortener.GetAssets(ctx, ownerID(cmd), count, 0)
 	for {
-		var asset urlshortener.Asset
+		var asset shortener.Asset
 		_, err := iter.Next(&asset)
 		if err == iterator.Done {
 			break

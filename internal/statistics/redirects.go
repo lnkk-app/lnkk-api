@@ -15,7 +15,7 @@ import (
 	"github.com/txsvc/platform/pkg/platform"
 
 	"github.com/lnkk-app/lnkk-api/internal/misc"
-	"github.com/lnkk-app/lnkk-api/internal/urlshortener"
+	"github.com/lnkk-app/lnkk-api/pkg/shortener"
 )
 
 // RedirectMetricsWorker receives worker tasks to create redirect metrics
@@ -66,9 +66,9 @@ func RedirectsSince(ctx context.Context, owner string, ts int64) (int, error) {
 	var q *datastore.Query
 
 	if owner != "" {
-		q = datastore.NewQuery(urlshortener.DatastoreRedirectHistory).Filter("Owner =", owner).Filter("Created >=", ts).KeysOnly()
+		q = datastore.NewQuery(shortener.DatastoreRedirectHistory).Filter("Owner =", owner).Filter("Created >=", ts).KeysOnly()
 	} else {
-		q = datastore.NewQuery(urlshortener.DatastoreRedirectHistory).Filter("Created >=", ts).KeysOnly()
+		q = datastore.NewQuery(shortener.DatastoreRedirectHistory).Filter("Created >=", ts).KeysOnly()
 	}
 
 	n, err := platform.DataStore().Count(ctx, q)

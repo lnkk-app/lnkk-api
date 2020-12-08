@@ -12,7 +12,7 @@ import (
 	"github.com/txsvc/platform/pkg/platform"
 	"github.com/txsvc/service/pkg/svc"
 
-	"github.com/lnkk-app/lnkk-api/internal/urlshortener"
+	"github.com/lnkk-app/lnkk-api/pkg/shortener"
 )
 
 // MigrationEndpoint001 added the LastAccess attribute and set the asset state correctly
@@ -21,9 +21,9 @@ func MigrationEndpoint001(c *gin.Context) {
 
 	count := 0
 	now := util.Timestamp()
-	it := platform.DataStore().Run(ctx, datastore.NewQuery(urlshortener.DatastoreAssets))
+	it := platform.DataStore().Run(ctx, datastore.NewQuery(shortener.DatastoreAssets))
 	for {
-		var asset urlshortener.Asset
+		var asset shortener.Asset
 
 		_, err := it.Next(&asset)
 		if err == iterator.Done {
@@ -35,7 +35,7 @@ func MigrationEndpoint001(c *gin.Context) {
 
 		// update the asset
 		asset.LastAccess = now
-		asset.State = urlshortener.StateActive
+		asset.State = shortener.StateActive
 		k := assetKey(asset.ShortLink)
 		if _, err := platform.DataStore().Put(ctx, k, &asset); err != nil {
 			platform.ReportError(err)
@@ -48,5 +48,5 @@ func MigrationEndpoint001(c *gin.Context) {
 }
 
 func assetKey(uri string) *datastore.Key {
-	return datastore.NameKey(urlshortener.DatastoreAssets, uri, nil)
+	return datastore.NameKey(shortener.DatastoreAssets, uri, nil)
 }
