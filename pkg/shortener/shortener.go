@@ -86,11 +86,10 @@ type (
 
 		// segmentation
 		Source string `json:"source,omitempty"`
-		//Client string `json:"client,omitempty"`
 
 		// internal
-		Created  int64 `json:"-"`
-		Modified int64 `json:"-"`
+		Created  int64 `json:"created"`
+		Modified int64 `json:"modified"`
 	}
 
 	// RedirectHistory records redirect events
