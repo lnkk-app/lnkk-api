@@ -30,7 +30,7 @@ const (
 	// LastAccessThreshold is the time we allow to pass before updating the LastAccess attribute, again
 	LastAccessThreshold = 3600 * 6 // 6h
 	// ExpireAfter defines the age of an asset before it expires (in seconds).
-	ExpireAfter int64 = 86400 * 14 // 14 days
+	ExpireAfter int64 = 30 // days
 
 	// DailyExpiration is a metric to track how many assets were expired
 	DailyExpiration = "DAILY_EXPIRATION"

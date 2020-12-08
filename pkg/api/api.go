@@ -46,14 +46,14 @@ func RedirectEndpoint(c *gin.Context) {
 	shortLink := c.Param("short")
 	if shortLink == "" {
 		// FIXME: log this event
-		c.Redirect(http.StatusTemporaryRedirect, env.Getenv("BASE_URL", "https://lnkk.host"))
+		c.Redirect(http.StatusTemporaryRedirect, env.GetString("BASE_URL", "https://lnkk.host"))
 		return
 	}
 
 	asset, err := shortener.GetURL(ctx, shortLink, true)
 	if err != nil || asset.State != shortener.StateActive {
 		// FIXME: log this event
-		redirectToErrorPage := fmt.Sprintf("%s/e/%s", env.Getenv("BASE_URL", "https://lnkk.host"), shortLink)
+		redirectToErrorPage := fmt.Sprintf("%s/e/%s", env.GetString("BASE_URL", "https://lnkk.host"), shortLink)
 		c.Redirect(http.StatusTemporaryRedirect, redirectToErrorPage)
 		return
 	}

@@ -11,6 +11,7 @@ import (
 	"google.golang.org/api/iterator"
 	"google.golang.org/appengine"
 
+	"github.com/txsvc/commons/pkg/env"
 	"github.com/txsvc/commons/pkg/errors"
 	"github.com/txsvc/commons/pkg/util"
 	"github.com/txsvc/platform/pkg/platform"
@@ -37,7 +38,9 @@ func AssetExpirationWorker(c *gin.Context) {
 	}
 
 	ctx := appengine.NewContext(c.Request)
-	n, err := ExpireAssets(ctx, ts-ExpireAfter)
+	cutOffTimestamp := ts - (env.GetInt("MAX_ASSET_AGE", ExpireAfter) * 86400)
+
+	n, err := ExpireAssets(ctx, cutOffTimestamp)
 	if err != nil {
 		platform.ReportError(err)
 	} else {
