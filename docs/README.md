@@ -28,6 +28,7 @@ The API provides the following public endpoints:
 
 * POST /a/1/short
 * GET /a/1/short/:short
+* PUT /a/1/short/:short
 
 ### Redirecting
 
@@ -88,7 +89,7 @@ Note: If the short ID references an asset that belongs to the owner of the beare
 
 #### Response
 
-This is an example `AssetRequest` response:
+This is an example `Asset` response:
 
 ```json
 {
@@ -113,10 +114,54 @@ All timestamps are in seconds since 1.1.1970
 
 The following asset states are used:
 
-* active: 2 - the asset is active and redirection is in place.
-* archived: 3 - the owner deactivated the asset.
-* expired: 4 - the asset was not redirected in the last <n> days and was therefor deactivated.
-* broken: 5 - the longform link is no longer accessible.
+* active (2) - the asset is active and redirection is in place.
+* archived (3) - the owner deactivated the asset.
+* expired (4) - the asset was not redirected in the last <n> days and was therefor deactivated.
+* broken (5) - the longform link is no longer accessible.
+
+---
+
+---
+
+### PUT /a/1/short/:short
+
+#### Description
+
+Updates the metadata of an asset. Not all attributes can be updated though.
+
+#### Payload
+
+* :short -> the Short ID of the asset
+
+This is an example `Asset` response:
+
+```json
+{
+    "tags":"tag1,tag2",
+    "parent":"just a category",
+    "title":"Welcome - lnkk.host",
+    "description":"not_used",
+    "state":2,
+    "source":"not_used",
+}
+```
+
+Only the above attributes are accepted.
+
+In order to change the state of asset, e.g. in order to deactivate it, change its `state` attribute.
+
+#### Query parameters
+
+No query parameters.
+
+#### Response
+
+This is an example `StandardResponse` response:
+
+```json
+{
+}
+```
 
 ---
 
