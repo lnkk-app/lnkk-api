@@ -101,21 +101,22 @@ This is an example `AssetRequest` response:
     "parent":"not_used",
     "title":"Welcome - lnkk.host",
     "description":"not_used",
-    "state":2, // 2 = active, 
-    "last_access":"timestamp in sec since 1.1.1970",
+    "state":2,
+    "last_access":1601484658,
     "source":"not_used",
-    "created":"timestamp in sec since 1.1.1970",
-    "modified":"timestamp in sec since 1.1.1970"
+    "created":1601484658,
+    "modified":1601484658
 }
 ```
 
-#### Example
+All timestamps are in seconds since 1.1.1970
 
-```shell
+The following asset states are used:
 
-curl ...
-
-```
+* active: 2 - the asset is active and redirection is in place.
+* archived: 3 - the owner deactivated the asset.
+* expired: 4 - the asset was not redirected in the last <n> days and was therefor deactivated.
+* broken: 5 - the longform link is no longer accessible.
 
 ---
 
@@ -137,3 +138,5 @@ Takes a shortform URL (e.g. https://lnkk.host/r/6fb841d5b0e2) and redirects the 
 * mtu_content
 
 Example: https://lnkk.host/r/12345&mtu_source=blog&mtu_campaign=hackernews
+
+---
