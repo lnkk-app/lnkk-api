@@ -4,8 +4,7 @@ go 1.14
 
 require (
 	cloud.google.com/go/datastore v1.3.0
-	github.com/gin-gonic/gin v1.6.3
-	github.com/smallstep/assert v0.0.0-20200723003110-82e2b9b3b262
+	github.com/gin-gonic/gin v1.7.7
 	github.com/txsvc/commons v1.0.4
 	github.com/txsvc/platform v0.11.0
 	github.com/txsvc/service v0.10.0
